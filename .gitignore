@@ -1,0 +1,18 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Django
+*.log
+*.sqlite3
+db.sqlite3
+
+# Virtual Environment
+env/
+venv/
+myenv/
+
+# OS generated files
+.DS_Store
+Thumbs.db

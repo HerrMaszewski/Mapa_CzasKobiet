@@ -1,0 +1,44 @@
+<!-- mapa/templates/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mapa wsparcia dla kobiet{% endblock %}</title>
+
+    <!-- Link do zewnętrznych CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Możesz tu dodać swój własny CSS, np. z folderu static -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>Mapa wsparcia dla kobiet</h1>
+        <!-- Możesz tu dodać menu, logo itp. -->
+    </header>
+
+    <nav>
+        <!-- Linki nawigacyjne, jeśli potrzebujesz -->
+    </nav>
+
+    <main>
+        {% block content %}
+        <!-- Zawartość strony będzie wstawiana tutaj -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Wszystkie prawa zastrzeżone</p>
+    </footer>
+
+    <!-- Skrypty JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

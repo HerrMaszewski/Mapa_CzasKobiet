@@ -1,3 +1,7 @@
 from django.contrib import admin
+from leaflet.admin import LeafletGeoAdmin
+from .models import Institution
 
-# Register your models here.
+@admin.register(Institution)
+class InstitutionAdmin(LeafletGeoAdmin):
+    list_display = ('name', 'location')

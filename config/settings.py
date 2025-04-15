@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
+    'leaflet',
     'mapa',
 ]
 
@@ -55,10 +57,13 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [
+            BASE_DIR / 'templates',  # Ensure this is present
+        ],
+        'APP_DIRS': True,  # Ensure this is True to allow app-level templates to be loaded
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -66,8 +71,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
@@ -119,7 +122,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -128,4 +131,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import os
 
-GDAL_LIBRARY_PATH = r'C:\Users\masze\miniconda3\envs\myenv\Library\bin\gdal.dll'
+GDAL_LIBRARY_PATH = os.path.join(
+    os.environ['CONDA_PREFIX'], 'Library', 'bin', 'gdal308.dll'
+)
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (52.4064, 16.9252),  # Coordinates for Poznań, Poland
+    'DEFAULT_ZOOM': 12,
+    'MAX_ZOOM': 20,
+    'MIN_ZOOM': 3,
+    'SCALE': 'both',
+}
