@@ -2,59 +2,293 @@
 {% load static %}
 
 {% block content %}
-    <div id="map" style="height: 600px;"></div>
+<div style="display: flex; height: 100vh; overflow: hidden;">
+    <div class="sidebar">
+        <div>
+            <h3>Szukaj instytucji</h3>
 
-    <script id="institution-data" type="application/json">
-        {{ institutions_json|safe }}
-    </script>
+            <label for="address-input">Podaj swoją lokalizację:</label>
+            <input type="text" id="address-input" placeholder="np. Gdańsk, ul. Długa 10"/>
+            <div id="address-error" class="error-msg"></div>
+
+            <label for="radius-select">Promień wyszukiwania:</label>
+            <select id="radius-select">
+                <option value="10">10 km</option>
+                <option value="25">25 km</option>
+                <option value="50" selected>50 km</option>
+                <option value="100">100 km</option>
+                <option value="150">150 km</option>
+                <option value="200">200 km</option>
+                <option value="500">500 km</option>
+            </select>
+
+            <div class="type-filters-grid" id="type-filters">
+              <div class="filter-tile type-filter active" data-type="NGO">NGO</div>
+              <div class="filter-tile type-filter active" data-type="GOV">GOV</div>
+            </div>
+            <div id="type-error" class="error-msg"></div>
+
+            <div class="filters-grid" id="help-filters">
+              <div class="filter-tile active help-filter" data-filter="psychological_help">🧠<span>Psychologiczna</span></div>
+              <div class="filter-tile active help-filter" data-filter="legal_help">⚖️<span>Prawna</span></div>
+              <div class="filter-tile active help-filter" data-filter="social_help">🏠<span>Socjalna</span></div>
+              <div class="filter-tile active help-filter" data-filter="accommodation">🛏️<span>Nocleg</span></div>
+            </div>
+            <div id="help-error" class="error-msg"></div>
+        </div>
+
+        <div style="margin-top: auto;">
+            <hr>
+            <button id="search-btn">Szukaj</button>
+            <button id="geolocate-btn">Użyj mojej lokalizacji</button>
+            <button id="reset-btn">Resetuj</button>
+
+            <hr>
+            <h4 id="results-count"></h4>
+            <div id="results-list" style="margin-top: 10px;">
+                <p><em>Lista wyników pojawi się tutaj...</em></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="map" style="flex-grow: 1;"></div>
+</div>
+
+<script id="institution-data" type="application/json">
+    {{ institutions_json|safe }}
+</script>
 {% endblock %}
 
 {% block scripts %}
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const map = L.map('map').setView([52.0, 19.0], 6);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
 
-            const institutions = JSON.parse(document.getElementById('institution-data').textContent);
-            const iconBasePath = "{% static 'mapa/icons/' %}";
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const map = L.map('map', {
+        center: [52.0, 19.0],
+        zoom: 7,
+        minZoom: 6,
+        maxZoom: 16,
+        maxBounds: [[48.8, 13.5], [55.0, 24.5]]
+    });
 
-            institutions.forEach(inst => {
-                const color = inst.type === 'NGO' ? 'blue' : 'red';
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.remove('visible');
+      void el.offsetWidth; // reflow hack
+      el.classList.add('visible');
 
-                const icon = L.icon({
-                    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+      // automatyczne ukrycie po 4 sekundach
+      setTimeout(() => {
+        el.classList.remove('visible');
+        el.textContent = '';
+      }, 4000);
+    }
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const institutions = JSON.parse(document.getElementById('institution-data').textContent);
+    const markerCluster = L.markerClusterGroup();
+    let currentCircle = null;
+
+    function getActiveTypes() {
+        return Array.from(document.querySelectorAll('#type-filters .filter-tile.active'))
+        .map(tile => tile.dataset.type);
+    }
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2)**2;
+        return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+    }
+
+        // toggle kafelki
+    document.querySelectorAll('.filter-tile').forEach(tile => {
+        tile.addEventListener('click', () => {
+            tile.classList.toggle('active');
+        });
+    });
+
+    // Nadpisanie getActiveFilters()
+    function getActiveFilters() {
+        return Array.from(document.querySelectorAll('.filter-tile.active'))
+            .map(tile => tile.dataset.filter);
+    }
+
+    function renderInstitutions(center = null, radius = null) {
+        markerCluster.clearLayers();
+        const resultsContainer = document.getElementById('results-list');
+        resultsContainer.innerHTML = '';
+
+        const filters = getActiveFilters();
+        const types = getActiveTypes();
+        const results = [];
+
+        institutions.forEach(inst => {
+            const lat = inst.location.latitude;
+            const lng = inst.location.longitude;
+            const typeBadge = inst.type === 'GOV'
+                ? '<span style="background-color: red; color: white; padding: 2px 6px; border-radius: 4px;">GOV</span>'
+                : '<span style="background-color: #007bff; color: white; padding: 2px 6px; border-radius: 4px;">NGO</span>';
+            const distance = center ? getDistance(center.lat, center.lng, lat, lng) : null;
+
+            const matchesFilter = filters.length === 0 || filters.some(type => inst[type]);
+            const inRadius = !radius || (distance !== null && distance <= radius);
+            const matchesType = types.length === 0 || types.includes(inst.type);
+            const shouldDisplay = (!center && !radius) || (matchesFilter && matchesType && inRadius);
+
+            if (shouldDisplay) {
+            const icons = [];
+                if (inst.psychological_help) icons.push(`🧠`);
+                if (inst.legal_help) icons.push(`⚖️`);
+                if (inst.social_help) icons.push(`🏠`);
+                if (inst.accommodation) icons.push(`🛏️`);
+
+                const popup = `
+                    <strong>${inst.name}</strong><br>
+                    ${typeBadge}<br>
+                    ${inst.address}<br>
+                    📞 ${inst.phone_number}<br>
+                    📧 ${inst.email || 'brak'}<br>
+                    📍 Infolinia interwencyjna: ${inst.infoline || 'brak'}<br>
+                    🕒 ${inst.opening_hours || ''}<br>
+                    ${icons.join(' ')}
+                `;
+
+                const icon = new L.Icon({
+                    iconUrl: inst.type === 'GOV'
+                        ? 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'
+                        : 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+                    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
                     iconSize: [25, 41],
                     iconAnchor: [12, 41],
                     popupAnchor: [1, -34],
-                    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
                     shadowSize: [41, 41]
                 });
 
-                const marker = L.marker([inst.location.latitude, inst.location.longitude], { icon }).addTo(map);
-
-                let popupContent = `<b>${inst.name}</b><br>${inst.address}<br>${inst.phone_number}<br><br><strong>Pomoc:</strong><br><ul style="list-style: none; padding-left: 0;">`;
-
-                if (inst.psychological_help) {
-                    popupContent += `<li><img src="${iconBasePath}psy.png" width="20" /> Psychologiczna</li>`;
-                }
-                if (inst.social_help) {
-                    popupContent += `<li><img src="${iconBasePath}social.png" width="20" /> Społeczna</li>`;
-                }
-                if (inst.legal_help) {
-                    popupContent += `<li><img src="${iconBasePath}legal.png" width="20" /> Prawna</li>`;
-                }
-                if (inst.accommodation) {
-                    popupContent += `<li><img src="${iconBasePath}sleep.png" width="20" /> Zakwaterowanie</li>`;
-                }
-
-                popupContent += '</ul>';
-                marker.bindPopup(popupContent);
-            });
+                const marker = L.marker([lat, lng], { icon }).bindPopup(popup);
+                markerCluster.addLayer(marker);
+                results.push({ inst, distance, lat, lng, icons, typeBadge, marker });
+            }
         });
-    </script>
+
+    results.sort((a, b) => a.distance - b.distance);
+    results.forEach(result => {
+        const { inst, distance, lat, lng, icons, typeBadge } = result;
+        const div = document.createElement('div');
+        div.className = `result-card ${inst.type === 'GOV' ? 'gov-card' : 'ngo-card'}`;
+
+        div.innerHTML = `
+          <div class="result-header">
+            <div class="result-title">${inst.name}</div>
+            <div class="type-badge">${typeBadge}</div>
+          </div>
+          <div class="result-body collapsed">
+            <p>${inst.address}</p>
+            <p>📞 ${inst.phone_number || 'brak'}</p>
+            <p>📍 Infolinia: ${inst.infoline || 'brak'}</p>
+            <p>📧 ${inst.email || 'brak'}</p>
+            <p>🕒 ${inst.opening_hours || 'brak'}</p>
+            <div class="help-icons">${icons.join(' ')}</div>
+          </div>
+          <div class="result-footer">
+            <button class="toggle-btn">Pokaż więcej</button>
+            <span>${distance !== null ? `📏 ${distance.toFixed(1)} km` : ''}</span>
+          </div>
+        `;
+
+        // Obsługa rozwijania
+        const btn = div.querySelector('.toggle-btn');
+        const body = div.querySelector('.result-body');
+
+
+        let collapsed = true;
+        btn.addEventListener('click', () => {
+          collapsed = !collapsed;
+          body.classList.toggle('collapsed', collapsed);
+          btn.textContent = collapsed ? 'Pokaż więcej' : 'Pokaż mniej';
+        });
+
+        div.addEventListener('click', () => {
+            map.setView([lat, lng], 18);
+            result.marker.openPopup();
+        });
+
+        resultsContainer.appendChild(div);
+    });
+
+        if (center && radius) {
+            if (currentCircle) map.removeLayer(currentCircle);
+            currentCircle = L.circle(center, { radius: radius * 1000, color: 'blue', fillOpacity: 0.1 }).addTo(map);
+        }
+
+        map.addLayer(markerCluster);
+    }
+
+document.getElementById('search-btn').addEventListener('click', () => {
+    // wyczyść stare błędy
+    document.getElementById('address-error').textContent = '';
+    document.getElementById('type-error').textContent = '';
+    document.getElementById('help-error').textContent = '';
+
+    const address = document.getElementById('address-input').value.trim();
+    const radius = parseFloat(document.getElementById('radius-select').value) || 50;
+    const types = getActiveTypes();
+    const filters = getActiveFilters();
+
+    let hasError = false;
+
+    if (!address) {
+        showError('address-error', 'Wpisz lokalizację.');
+        hasError = true;
+    }
+
+    if (types.length === 0) {
+        showError('type-error', 'Wybierz rodzaj instytucji (GOV lub NGO).');
+        hasError = true;
+    }
+
+    if (filters.length === 0) {
+        showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
+        hasError = true;
+    }
+
+    if (hasError) return;
+
+    if (!L.Control.Geocoder) {
+        console.error("❌ L.Control.Geocoder nie jest dostępny. Czy na pewno załadowano leaflet-control-geocoder.js?");
+        showError('address-error', 'Wystąpił problem z geokoderem.');
+        return;
+    }
+
+    const geocoder = L.Control.Geocoder.nominatim();
+
+    geocoder.geocode(address, function (results) {
+        if (!results || results.length === 0) {
+            showError('address-error', 'Nie znaleziono lokalizacji.');
+            return;
+        }
+
+        const loc = results[0].center;
+        map.setView(loc, 10);
+        renderInstitutions(loc, radius);
+    });
+});
+    // <--- WYWOŁANIE NA STARCIE --->
+    renderInstitutions();
+});
+</script>
 {% endblock %}

@@ -1,0 +1,343 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f1f8;
+    color: #333;
+}
+
+/* Pasek z logotypami */
+.topbar {
+    background-color: #f3e5f5;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topbar img {
+    height: 50px;
+}
+
+.topbar p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #4a148c;
+}
+
+/* Nagłówek */
+header {
+    background-color: #8e44ad;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Lewa kolumna / sidebar */
+.sidebar {
+    width: 20%;
+    min-width: 300px;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #6a1b9a;
+    color: white;
+}
+
+.sidebar label,
+.sidebar h3 {
+    color: #fcddec;
+    margin-top: 0;
+}
+
+.sidebar input,
+.sidebar select {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 12px;
+    background-color: #f3e5f5;
+    color: #333;
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+    appearance: none; /* usuwa strzałki w select w Safari */
+}
+
+.sidebar select {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='10'%20height='10'%3E%3Cpolygon%20points='0,0%205,5%2010,0'%20style='fill:%236a1b9a'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px;
+    padding-right: 32px;
+}
+
+.sidebar input:focus,
+.sidebar select:focus {
+    box-shadow: 0 0 0 3px rgba(186, 104, 200, 0.3);
+}
+
+.sidebar input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.sidebar button {
+    width: 100%;
+    background: linear-gradient(to right, #ba68c8, #ab47bc);
+    border: none;
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sidebar button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Mapa */
+#map {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Popup Leaflet */
+.leaflet-popup-content-wrapper {
+    background-color: #fff0f5;
+    border-radius: 8px;
+    color: #333;
+}
+
+/* Stopka */
+footer {
+    background-color: #8e44ad;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.9rem;
+    position: relative;
+    bottom: 0;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+input[type="text"]::placeholder {
+    color: #ccc;
+}
+
+/* Kafelki filtrów */
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.filter-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+    background-color: #f3e5f5;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-size: 0.95rem;
+    color: #6a1b9a;
+    font-weight: 500;
+    border: 2px solid transparent;
+    user-select: none;
+}
+
+.filter-tile:hover {
+    background-color: #e1bee7;
+    scale: 1.02;
+}
+
+.filter-tile.active {
+    background-color: #ba68c8;
+    color: white;
+    border-color: white;
+}
+
+/* Karty wyników */
+.result-card {
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+/* GOV = czerwony pastel */
+.gov-card {
+    background-color: #fdecea;
+}
+
+/* NGO = niebieski pastel */
+.ngo-card {
+    background-color: #e3f2fd;
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.result-title {
+    flex-grow: 1;
+}
+
+.result-body p {
+    margin: 4px 0;
+    font-size: 0.88rem;
+    line-height: 1.4;
+}
+
+.help-icons {
+    font-size: 1.4rem;
+    margin-top: 8px;
+}
+
+.result-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.toggle-btn {
+    background: #ba68c8;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.toggle-btn:hover {
+    background: #9c27b0;
+}
+
+/* Rozwijanie sekcji */
+.result-body.collapsed {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.result-body {
+    max-height: 1000px;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+/* Styl domyślny – nieaktywny */
+.filter-tile[data-type="GOV"] {
+  background-color: #fdecea; /* jasno-czerwony */
+  color: #c62828;
+}
+
+.filter-tile[data-type="NGO"] {
+  background-color: #e3f2fd; /* jasno-niebieski */
+  color: #1565c0;
+}
+
+/* Gdy aktywne */
+.filter-tile[data-type="GOV"].active {
+  background-color: #f44336;
+  color: white;
+}
+
+.filter-tile[data-type="NGO"].active {
+  background-color: #2196f3;
+  color: white;
+}
+
+.type-filters-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.type-filters-grid .filter-tile {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.error-msg {
+  display: none;
+  color: #fff1f1;
+  background-color: #d32f2f;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: fadeInShake 0.4s ease;
+}
+
+.error-msg.visible {
+  display: block;
+}
+
+/* Efekt wejścia + lekkiego potrząśnięcia */
+@keyframes fadeInShake {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  25% {
+    opacity: 1;
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

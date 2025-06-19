@@ -16,6 +16,13 @@ def map_view(request):
                 'longitude': i.location.x
             },
             'description': i.description or "",
+            'psychological_help': i.psychological_help,
+            'legal_help': i.legal_help,
+            'social_help': i.social_help,
+            'accommodation': i.accommodation,
+            'opening_hours': i.opening_hours or "",
+            'email': i.email or '',
+            'infoline': i.infoline or '',
         })
     
     return render(request, 'mapa/map.html', {

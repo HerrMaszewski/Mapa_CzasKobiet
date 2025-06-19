@@ -1,4 +1,3 @@
-<!-- mapa/templates/base.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="pl">
@@ -7,38 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mapa wsparcia dla kobiet{% endblock %}</title>
 
-    <!-- Link do zewnętrznych CSS -->
+    <!-- Zewnętrzne CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <!-- Możesz tu dodać swój własny CSS, np. z folderu static -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+
+    <!-- Własny CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
+
     {% block head %}{% endblock %}
 </head>
 <body>
+
+    <!-- Pasek z logotypami i informacją o wsparciu -->
+    <div class="topbar">
+        <img src="{% static 'img/logo_czas_kobiet.png' %}" alt="Logo Czas Kobiet">
+        <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
+        <img src="{% static 'img/logo_fr_ch.png' %}" alt="Logo partnerów">
+    </div>
+
+    <!-- Nagłówek -->
     <header>
         <h1>Mapa wsparcia dla kobiet</h1>
-        <!-- Możesz tu dodać menu, logo itp. -->
     </header>
 
-    <nav>
-        <!-- Linki nawigacyjne, jeśli potrzebujesz -->
-    </nav>
+    <!-- Nawigacja (opcjonalna) -->
+    <nav></nav>
 
+    <!-- Główna zawartość -->
     <main>
-        {% block content %}
-        <!-- Zawartość strony będzie wstawiana tutaj -->
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
+    <!-- Stopka -->
     <footer>
-        <p>&copy; 2025 Wszystkie prawa zastrzeżone</p>
+        <p>&copy; 2025 Czas Kobiet. Wszystkie prawa zastrzeżone.</p>
     </footer>
 
     <!-- Skrypty JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     {% block scripts %}{% endblock %}
 </body>
 </html>

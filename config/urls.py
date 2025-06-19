@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from mapa.views import map_view
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('map/', map_view, name='map'),
     path('', include('mapa.urls')),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

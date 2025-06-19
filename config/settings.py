@@ -11,25 +11,18 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from decouple import config
+import platform
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = ['*']  # Ustaw docelowe domeny w produkcji
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=0mbxaskrl+@e9xs-2crn*f#-0sm_*7crynnzuam-wsia!#8d!'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
-# Application definition
-
+# APLIKACJE
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,11 +30,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
-    'leaflet',
-    'mapa',
+    'django.contrib.gis',        # GeoDjango
+    'leaflet',                   # Leaflet map support
+    'mapa',                      # Twoja aplikacja
 ]
 
+# MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -52,15 +46,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+# URLS / WSGI
+ROOT_URLCONF = 'MAPA.urls'
+WSGI_APPLICATION = 'MAPA.wsgi.application'
 
+# SZABLONY
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'templates',  # Ensure this is present
-        ],
-        'APP_DIRS': True,  # Ensure this is True to allow app-level templates to be loaded
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -72,25 +67,19 @@ TEMPLATES = [
     },
 ]
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+# BAZA DANYCH
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'mapa',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# WALIDACJA HASEŁ
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -106,39 +95,37 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+# I18N
+LANGUAGE_CODE = 'pl'
+TIME_ZONE = 'Europe/Warsaw'
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
+# STATIC FILES
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'mapa' / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Do collectstatic
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
+# AUTO PK
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-import os
+# GDAL PATH (dla GeoDjango)
+if platform.system() == 'Windows':
+    GDAL_LIBRARY_PATH = os.path.join(
+        os.environ.get('CONDA_PREFIX', ''), 'Library', 'bin', 'gdal308.dll'
+    )
+else:
+    GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
 
-GDAL_LIBRARY_PATH = os.path.join(
-    os.environ['CONDA_PREFIX'], 'Library', 'bin', 'gdal308.dll'
-)
-
+# Leaflet config (jeśli używasz map)
 LEAFLET_CONFIG = {
-    'DEFAULT_CENTER': (52.4064, 16.9252),  # Coordinates for Poznań, Poland
-    'DEFAULT_ZOOM': 12,
+    'DEFAULT_CENTER': (52.4064, 16.9252),
+    'DEFAULT_ZOOM': 6,
     'MAX_ZOOM': 20,
-    'MIN_ZOOM': 3,
+    'MIN_ZOOM': 4,
     'SCALE': 'both',
 }
+
+
+# API KEY for geocoding
+OPENCAGE_API_KEY = config("OPENCAGE_API_KEY")
