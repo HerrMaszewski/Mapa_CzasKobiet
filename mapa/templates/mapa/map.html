@@ -68,8 +68,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
-
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const map = L.map('map', {
@@ -80,20 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
         maxBounds: [[48.8, 13.5], [55.0, 24.5]]
     });
 
-    function showError(id, msg) {
-      const el = document.getElementById(id);
-      el.textContent = msg;
-      el.classList.remove('visible');
-      void el.offsetWidth; // reflow hack
-      el.classList.add('visible');
-
-      // automatyczne ukrycie po 4 sekundach
-      setTimeout(() => {
-        el.classList.remove('visible');
-        el.textContent = '';
-      }, 4000);
-    }
-
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
@@ -101,10 +85,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const institutions = JSON.parse(document.getElementById('institution-data').textContent);
     const markerCluster = L.markerClusterGroup();
     let currentCircle = null;
+    let userMarker = null;
+
+    function showError(id, msg) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.classList.remove('visible');
+        void el.offsetWidth;
+        el.classList.add('visible');
+        setTimeout(() => {
+            el.classList.remove('visible');
+            el.textContent = '';
+        }, 4000);
+    }
 
     function getActiveTypes() {
         return Array.from(document.querySelectorAll('#type-filters .filter-tile.active'))
         .map(tile => tile.dataset.type);
+    }
+
+    function getActiveFilters() {
+        return Array.from(document.querySelectorAll('.filter-tile.active'))
+            .map(tile => tile.dataset.filter);
     }
 
     function getDistance(lat1, lon1, lat2, lon2) {
@@ -115,18 +117,82 @@ document.addEventListener('DOMContentLoaded', function () {
         return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
     }
 
-        // toggle kafelki
     document.querySelectorAll('.filter-tile').forEach(tile => {
-        tile.addEventListener('click', () => {
-            tile.classList.toggle('active');
-        });
+        tile.addEventListener('click', () => tile.classList.toggle('active'));
     });
 
-    // Nadpisanie getActiveFilters()
-    function getActiveFilters() {
-        return Array.from(document.querySelectorAll('.filter-tile.active'))
-            .map(tile => tile.dataset.filter);
-    }
+    document.getElementById('geolocate-btn').addEventListener('click', () => {
+        if (!navigator.geolocation) {
+            showError('address-error', 'Twoja przeglądarka nie obsługuje geolokalizacji.');
+            return;
+        }
+
+        const radius = parseFloat(document.getElementById('radius-select').value) || 50;
+        const types = getActiveTypes();
+        const filters = getActiveFilters();
+
+        let hasError = false;
+
+        if (types.length === 0) {
+            showError('type-error', 'Wybierz rodzaj instytucji (GOV lub NGO).');
+            hasError = true;
+        }
+
+        if (filters.length === 0) {
+            showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const loc = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                map.setView(loc, 10);
+                renderInstitutions(loc, radius);
+
+                if (currentCircle) map.removeLayer(currentCircle);
+                currentCircle = L.circle(loc, {
+                    radius: radius * 1000,
+                    color: 'blue',
+                    fillOpacity: 0.1
+                }).addTo(map);
+
+                if (userMarker) map.removeLayer(userMarker);
+                userMarker = L.marker(loc, {
+                    icon: L.icon({
+                        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+                    })
+                }).addTo(map).bindPopup("Twoja lokalizacja").openPopup();
+            },
+            () => {
+                showError('address-error', 'Nie udało się pobrać lokalizacji.');
+            }
+        );
+    });
+
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        document.getElementById('address-input').value = '';
+        document.querySelectorAll('.filter-tile').forEach(tile => tile.classList.add('active'));
+
+        if (currentCircle) {
+            map.removeLayer(currentCircle);
+            currentCircle = null;
+        }
+
+        if (userMarker) {
+            map.removeLayer(userMarker);
+            userMarker = null;
+        }
+
+        renderInstitutions();
+        map.setView([52.0, 19.0], 7);
+    });
 
     function renderInstitutions(center = null, radius = null) {
         markerCluster.clearLayers();
@@ -151,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const shouldDisplay = (!center && !radius) || (matchesFilter && matchesType && inRadius);
 
             if (shouldDisplay) {
-            const icons = [];
+                const icons = [];
                 if (inst.psychological_help) icons.push(`🧠`);
                 if (inst.legal_help) icons.push(`⚖️`);
                 if (inst.social_help) icons.push(`🏠`);
@@ -185,109 +251,111 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-    results.sort((a, b) => a.distance - b.distance);
-    results.forEach(result => {
-        const { inst, distance, lat, lng, icons, typeBadge } = result;
-        const div = document.createElement('div');
-        div.className = `result-card ${inst.type === 'GOV' ? 'gov-card' : 'ngo-card'}`;
+        results.sort((a, b) => a.distance - b.distance);
+        results.forEach(result => {
+            const { inst, distance, lat, lng, icons, typeBadge } = result;
+            const div = document.createElement('div');
+            div.className = `result-card ${inst.type === 'GOV' ? 'gov-card' : 'ngo-card'}`;
+            div.innerHTML = `
+              <div class="result-header">
+                <div class="result-title">${inst.name}</div>
+                <div class="type-badge">${typeBadge}</div>
+              </div>
+              <div class="result-body collapsed">
+                <p>${inst.address}</p>
+                <p>📞 ${inst.phone_number || 'brak'}</p>
+                <p>📍 Infolinia: ${inst.infoline || 'brak'}</p>
+                <p>📧 ${inst.email || 'brak'}</p>
+                <p>🕒 ${inst.opening_hours || 'brak'}</p>
+                <div class="help-icons">${icons.join(' ')}</div>
+              </div>
+              <div class="result-footer">
+                <button class="toggle-btn">Pokaż więcej</button>
+                <span>${distance !== null ? `📏 ${distance.toFixed(1)} km` : ''}</span>
+              </div>
+            `;
 
-        div.innerHTML = `
-          <div class="result-header">
-            <div class="result-title">${inst.name}</div>
-            <div class="type-badge">${typeBadge}</div>
-          </div>
-          <div class="result-body collapsed">
-            <p>${inst.address}</p>
-            <p>📞 ${inst.phone_number || 'brak'}</p>
-            <p>📍 Infolinia: ${inst.infoline || 'brak'}</p>
-            <p>📧 ${inst.email || 'brak'}</p>
-            <p>🕒 ${inst.opening_hours || 'brak'}</p>
-            <div class="help-icons">${icons.join(' ')}</div>
-          </div>
-          <div class="result-footer">
-            <button class="toggle-btn">Pokaż więcej</button>
-            <span>${distance !== null ? `📏 ${distance.toFixed(1)} km` : ''}</span>
-          </div>
-        `;
+            const btn = div.querySelector('.toggle-btn');
+            const body = div.querySelector('.result-body');
+            let collapsed = true;
 
-        // Obsługa rozwijania
-        const btn = div.querySelector('.toggle-btn');
-        const body = div.querySelector('.result-body');
+            btn.addEventListener('click', () => {
+                collapsed = !collapsed;
+                body.classList.toggle('collapsed', collapsed);
+                btn.textContent = collapsed ? 'Pokaż więcej' : 'Pokaż mniej';
+            });
 
+            div.addEventListener('click', () => {
+                map.setView([lat, lng], 18);
+                result.marker.openPopup();
+            });
 
-        let collapsed = true;
-        btn.addEventListener('click', () => {
-          collapsed = !collapsed;
-          body.classList.toggle('collapsed', collapsed);
-          btn.textContent = collapsed ? 'Pokaż więcej' : 'Pokaż mniej';
+            resultsContainer.appendChild(div);
         });
 
-        div.addEventListener('click', () => {
-            map.setView([lat, lng], 18);
-            result.marker.openPopup();
-        });
-
-        resultsContainer.appendChild(div);
-    });
-
-        if (center && radius) {
-            if (currentCircle) map.removeLayer(currentCircle);
-            currentCircle = L.circle(center, { radius: radius * 1000, color: 'blue', fillOpacity: 0.1 }).addTo(map);
+        if (!center && !radius) {
+            resultsContainer.innerHTML = '<em>Wybierz lokalizację, aby zobaczyć listę wyników.</em>';
         }
 
         map.addLayer(markerCluster);
     }
 
-document.getElementById('search-btn').addEventListener('click', () => {
-    // wyczyść stare błędy
-    document.getElementById('address-error').textContent = '';
-    document.getElementById('type-error').textContent = '';
-    document.getElementById('help-error').textContent = '';
+    document.getElementById('search-btn').addEventListener('click', () => {
+        document.getElementById('address-error').textContent = '';
+        document.getElementById('type-error').textContent = '';
+        document.getElementById('help-error').textContent = '';
 
-    const address = document.getElementById('address-input').value.trim();
-    const radius = parseFloat(document.getElementById('radius-select').value) || 50;
-    const types = getActiveTypes();
-    const filters = getActiveFilters();
+        const address = document.getElementById('address-input').value.trim();
+        const radius = parseFloat(document.getElementById('radius-select').value) || 50;
+        const types = getActiveTypes();
+        const filters = getActiveFilters();
 
-    let hasError = false;
+        let hasError = false;
 
-    if (!address) {
-        showError('address-error', 'Wpisz lokalizację.');
-        hasError = true;
-    }
+        if (!address) {
+            showError('address-error', 'Wpisz lokalizację.');
+            hasError = true;
+        }
 
-    if (types.length === 0) {
-        showError('type-error', 'Wybierz rodzaj instytucji (GOV lub NGO).');
-        hasError = true;
-    }
+        if (types.length === 0) {
+            showError('type-error', 'Wybierz rodzaj instytucji (GOV lub NGO).');
+            hasError = true;
+        }
 
-    if (filters.length === 0) {
-        showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
-        hasError = true;
-    }
+        if (filters.length === 0) {
+            showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
+            hasError = true;
+        }
 
-    if (hasError) return;
+        if (hasError) return;
 
-    if (!L.Control.Geocoder) {
-        console.error("❌ L.Control.Geocoder nie jest dostępny. Czy na pewno załadowano leaflet-control-geocoder.js?");
-        showError('address-error', 'Wystąpił problem z geokoderem.');
-        return;
-    }
-
-    const geocoder = L.Control.Geocoder.nominatim();
-
-    geocoder.geocode(address, function (results) {
-        if (!results || results.length === 0) {
-            showError('address-error', 'Nie znaleziono lokalizacji.');
+        if (!L.Control.Geocoder) {
+            console.error("❌ L.Control.Geocoder nie jest dostępny.");
+            showError('address-error', 'Wystąpił problem z geokoderem.');
             return;
         }
 
-        const loc = results[0].center;
-        map.setView(loc, 10);
-        renderInstitutions(loc, radius);
+        const geocoder = L.Control.Geocoder.nominatim();
+
+        geocoder.geocode(address, function (results) {
+            if (!results || results.length === 0) {
+                showError('address-error', 'Nie znaleziono lokalizacji.');
+                return;
+            }
+
+            const loc = results[0].center;
+            map.setView(loc, 10);
+            renderInstitutions(loc, radius);
+
+            if (currentCircle) map.removeLayer(currentCircle);
+            currentCircle = L.circle(loc, {
+                radius: radius * 1000,
+                color: 'blue',
+                fillOpacity: 0.1
+            }).addTo(map);
+        });
     });
-});
-    // <--- WYWOŁANIE NA STARCIE --->
+
     renderInstitutions();
 });
 </script>

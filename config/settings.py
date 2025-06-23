@@ -47,8 +47,8 @@ MIDDLEWARE = [
 ]
 
 # URLS / WSGI
-ROOT_URLCONF = 'MAPA.urls'
-WSGI_APPLICATION = 'MAPA.wsgi.application'
+ROOT_URLCONF = 'config.urls'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 # SZABLONY
 TEMPLATES = [
@@ -129,3 +129,4 @@ LEAFLET_CONFIG = {
 
 # API KEY for geocoding
 OPENCAGE_API_KEY = config("OPENCAGE_API_KEY")
+GOOGLE_MAPS_API_KEY = config("GOOGLE_MAPS_API_KEY")

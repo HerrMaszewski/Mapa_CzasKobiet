@@ -12,9 +12,10 @@ db.sqlite3
 env/
 venv/
 myenv/
+.env
 
 # OS generated files
 .DS_Store
 Thumbs.db
 
-*.csv
+*.cs

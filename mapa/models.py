@@ -10,7 +10,7 @@ class Institution(models.Model):
 
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=500)
-    phone_number = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=200)
     type = models.CharField(max_length=3, choices=TYPE_CHOICES)
     psychological_help = models.BooleanField(default=False)
     social_help = models.BooleanField(default=False)

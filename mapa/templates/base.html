@@ -19,16 +19,13 @@
 </head>
 <body>
 
-    <!-- Pasek z logotypami i informacją o wsparciu -->
-    <div class="topbar">
-        <img src="{% static 'img/logo_czas_kobiet.png' %}" alt="Logo Czas Kobiet">
-        <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
-        <img src="{% static 'img/logo_fr_ch.png' %}" alt="Logo partnerów">
-    </div>
 
     <!-- Nagłówek -->
-    <header>
-        <h1>Mapa wsparcia dla kobiet</h1>
+    <header class="bg-purple-700 text-white flex justify-between items-center px-6 py-4 shadow-md">
+        <h1 class="text-xl font-bold">Mapa Instytucji Wsparcia Dla Kobiet</h1>
+            <div class="text-sm sm:text-base font-medium">
+            📞 SOS Bezpieczna Linia: <span class="font-bold">800 XXX XXX</span>
+            </div>
     </header>
 
     <!-- Nawigacja (opcjonalna) -->
@@ -40,8 +37,15 @@
     </main>
 
     <!-- Stopka -->
-    <footer>
-        <p>&copy; 2025 Czas Kobiet. Wszystkie prawa zastrzeżone.</p>
+    <footer class="bg-gray-100 text-center text-sm text-gray-600 py-4 border-t mt-2">
+      <div class="flex flex-col sm:flex-row items-center justify-between px-4">
+        <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
+        <p>© 2025 Czas Kobiet. Wszystkie prawa zastrzeżone.</p>
+        <div class="flex gap-2 mt-2 sm:mt-0">
+          <img src="/static/logo_fr.png" alt="Logo Francji" class="h-6">
+          <img src="/static/logo_ch.png" alt="Logo Szwajcarii" class="h-6">
+        </div>
+      </div>
     </footer>
 
     <!-- Skrypty JS -->

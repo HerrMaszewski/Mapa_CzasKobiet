@@ -1,29 +1,29 @@
-import csv
 import time
 import os
+import csv
+import googlemaps
 from django.core.management.base import BaseCommand
 from django.contrib.gis.geos import Point
 from mapa.models import Institution
-from opencage.geocoder import OpenCageGeocode
 from dotenv import load_dotenv
 load_dotenv()
 
 
 class Command(BaseCommand):
-    help = 'Importuje instytucje z CSV do bazy danych z użyciem OpenCage API'
+    help = 'Importuje instytucje z CSV do bazy danych z użyciem Google Maps API'
 
     def add_arguments(self, parser):
         parser.add_argument('csv_file', type=str, help='Ścieżka do pliku CSV')
 
     def handle(self, *args, **options):
         path = options['csv_file']
-        api_key = os.environ.get("OPENCAGE_API_KEY")
+        api_key = os.environ.get("GOOGLE_MAPS_API_KEY")
 
         if not api_key:
-            self.stderr.write("❌ Brak klucza OPENCAGE_API_KEY w zmiennych środowiskowych.")
+            self.stderr.write("❌ Brak klucza GOOGLE_MAPS_API_KEY w zmiennych środowiskowych.")
             return
 
-        geocoder = OpenCageGeocode(api_key)
+        gmaps = googlemaps.Client(key=api_key)
         errors = []
 
         def parse_bool(val):
@@ -34,40 +34,33 @@ class Command(BaseCommand):
         with open(path, newline='', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for idx, row in enumerate(reader, start=1):
-                name = row['name'].strip()
-                address = row['address'].strip()
+                name = row['name'].strip()[:255]
+                address = row['address'].strip()[:500]
 
                 query = f"{address}, Polska"
                 location = None
 
                 try:
-                    results = geocoder.geocode(query, language='pl', limit=5)
-                    time.sleep(0.4)
+                    results = gmaps.geocode(query, region='pl')
+                    time.sleep(0.2)  # ograniczenie do 5 zapytań/sek.
                 except Exception as e:
                     self.stderr.write(f"[{idx}] Błąd API: {e}")
                     errors.append({'index': idx, 'name': name, 'address': address, 'reason': str(e)})
                     continue
 
-                if results:
-                    for res in results:
-                        components = res.get('components', {})
-                        if 'city' in components and components['city'].lower() in address.lower():
-                            location = res
-                            break
-                    if not location:
-                        location = results[0]
-                else:
+                if not results:
                     self.stderr.write(f"[{idx}] ❗ Nie znaleziono lokalizacji: {address}")
                     errors.append({'index': idx, 'name': name, 'address': address, 'reason': 'Brak wyników'})
                     continue
 
-                point = Point(location['geometry']['lng'], location['geometry']['lat'])
+                location = results[0]['geometry']['location']
+                point = Point(location['lng'], location['lat'])
 
                 institution_type = type_map.get(row['type'].strip(), 'NGO')
-                phone = row.get('phone_number', '').strip()
-                email = row.get('email', '').strip()
-                infoline = row.get('infoline', '').strip()
-                opening_hours = row.get('opening_hours', '').strip()
+                phone = row.get('phone_number', '').strip()[:255]
+                email = row.get('email', '').strip()[:255]
+                infoline = row.get('infoline', '').strip()[:255]
+                opening_hours = row.get('opening_hours', '').strip()[:255]
 
                 if email.lower() in ['brak', 'nie', '']: email = ''
                 if infoline.lower() in ['brak', 'nie', '']: infoline = ''
