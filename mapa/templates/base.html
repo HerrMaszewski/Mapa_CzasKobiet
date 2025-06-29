@@ -18,38 +18,32 @@
     {% block head %}{% endblock %}
 </head>
 <body>
+    <div class="layout-container">
+    <div class="sidebar-left">
+        {% block left_sidebar %}{% endblock %}
+    </div>
 
+    <div class="main-panel">
+        <header>
+            <h1>Mapa Instytucji Wsparcia Dla Kobiet</h1>
+            <p>📞 SOS Bezpieczna Linia: 800 XXX XXX</p>
+        </header>
 
-    <!-- Nagłówek -->
-    <header class="bg-purple-700 text-white flex justify-between items-center px-6 py-4 shadow-md">
-        <h1 class="text-xl font-bold">Mapa Instytucji Wsparcia Dla Kobiet</h1>
-            <div class="text-sm sm:text-base font-medium">
-            📞 SOS Bezpieczna Linia: <span class="font-bold">800 XXX XXX</span>
-            </div>
-    </header>
+        <main>
+            {% block map %}{% endblock %}
+        </main>
 
-    <!-- Nawigacja (opcjonalna) -->
-    <nav></nav>
+        <footer>
+            <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
+            <p>© 2025 Czas Kobiet. Wszystkie prawa zastrzeżone.</p>
+            <div><img src="/static/logo_fr.png"> <img src="/static/logo_ch.png"></div>
+        </footer>
+    </div>
 
-    <!-- Główna zawartość -->
-    <main>
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Stopka -->
-    <footer class="bg-gray-100 text-center text-sm text-gray-600 py-4 border-t mt-2">
-      <div class="flex flex-col sm:flex-row items-center justify-between px-4">
-        <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
-        <p>© 2025 Czas Kobiet. Wszystkie prawa zastrzeżone.</p>
-        <div class="flex gap-2 mt-2 sm:mt-0">
-          <img src="/static/logo_fr.png" alt="Logo Francji" class="h-6">
-          <img src="/static/logo_ch.png" alt="Logo Szwajcarii" class="h-6">
-        </div>
-      </div>
-    </footer>
-
-    <!-- Skrypty JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    {% block scripts %}{% endblock %}
+    <div class="sidebar-right">
+        {% block right_sidebar %}{% endblock %}
+    </div>
+</div>
+{% block scripts %}{% endblock %}
 </body>
 </html>

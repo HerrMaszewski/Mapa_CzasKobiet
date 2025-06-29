@@ -1,65 +1,94 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block content %}
-<div style="display: flex; height: 100vh; overflow: hidden;">
-    <div class="sidebar">
-        <div>
-            <h3>Szukaj instytucji</h3>
-
-            <label for="address-input">Podaj swoją lokalizację:</label>
-            <input type="text" id="address-input" placeholder="np. Gdańsk, ul. Długa 10"/>
-            <div id="address-error" class="error-msg"></div>
-
-            <label for="radius-select">Promień wyszukiwania:</label>
-            <select id="radius-select">
-                <option value="10">10 km</option>
-                <option value="25">25 km</option>
-                <option value="50" selected>50 km</option>
-                <option value="100">100 km</option>
-                <option value="150">150 km</option>
-                <option value="200">200 km</option>
-                <option value="500">500 km</option>
-            </select>
-
-            <div class="type-filters-grid" id="type-filters">
-              <div class="filter-tile type-filter active" data-type="NGO">NGO</div>
-              <div class="filter-tile type-filter active" data-type="GOV">GOV</div>
-            </div>
-            <div id="type-error" class="error-msg"></div>
-
-            <div class="filters-grid" id="help-filters">
-              <div class="filter-tile active help-filter" data-filter="psychological_help">🧠<span>Psychologiczna</span></div>
-              <div class="filter-tile active help-filter" data-filter="legal_help">⚖️<span>Prawna</span></div>
-              <div class="filter-tile active help-filter" data-filter="social_help">🏠<span>Socjalna</span></div>
-              <div class="filter-tile active help-filter" data-filter="accommodation">🛏️<span>Nocleg</span></div>
-            </div>
-            <div id="help-error" class="error-msg"></div>
-        </div>
-
-        <div style="margin-top: auto;">
-            <hr>
-            <button id="search-btn">Szukaj</button>
-            <button id="geolocate-btn">Użyj mojej lokalizacji</button>
-            <button id="reset-btn">Resetuj</button>
-
-            <hr>
-            <h4 id="results-count"></h4>
-            <div id="results-list" style="margin-top: 10px;">
-                <p><em>Lista wyników pojawi się tutaj...</em></p>
-            </div>
-        </div>
+{% block right_sidebar %}
+    <div id="results-panel">
+      <h3>Wyniki</h3>
+      <div id="results-count"></div>
+      <div id="results-loader"><div class="loader"></div></div>
+      <div id="results-list"></div>
     </div>
+{% endblock %}
 
-    <div id="map" style="flex-grow: 1;"></div>
-</div>
+{% block map %}
+  <div id="map"></div>
+{% endblock %}
 
-<script id="institution-data" type="application/json">
-    {{ institutions_json|safe }}
-</script>
+{% block left_sidebar %}
+<a href="https://czaskobiet.org/" id="logo-link" target="_blank" rel="noopener">
+  <img src="{% static 'images/czas-kobiet-logo.png' %}" alt="Czas Kobiet" id="logo-image">
+</a>
+<div id="filters-panel">
+    <h3 class="text-lg font-semibold mb-2">Szukaj instytucji</h3>
+
+        <label for="address-input" class="block mt-2 mb-1">Podaj miejscowość:</label>
+        <input type="text" id="address-input" placeholder="np. Poznań"/>
+        <!-- <ul id="address-suggestions" class="bg-white text-black text-sm mt-1 rounded shadow-md absolute z-50 w-full hidden max-h-48 overflow-y-auto"></ul> -->
+        <div id="address-error" class="error-msg"></div>
+
+        <label for="radius-select" class="block mt-4 mb-1">Promień wyszukiwania:</label>
+        <select id="radius-select" class="w-full p-2 border rounded">
+            <option value="10">10 km</option>
+            <option value="25">25 km</option>
+            <option value="50" selected>50 km</option>
+            <option value="100">100 km</option>
+            <option value="150">150 km</option>
+            <option value="200">200 km</option>
+            <option value="500">500 km</option>
+        </select>
+
+        <h4 class="mt-4 font-semibold">Rodzaj instytucji:</h4>
+        <div class="type-filters-grid flex gap-2 my-2" id="type-filters">
+          <div class="filter-tile type-filter active" data-type="NGO">Pozarządowe</div>
+          <div class="filter-tile type-filter active" data-type="GOV">Publiczne</div>
+        </div>
+        <div id="type-error" class="error-msg"></div>
+
+        <h4 class="mt-4 font-semibold">Rodzaj pomocy:</h4>
+            <div class="filters-grid flex flex-wrap gap-2 my-2" id="help-filters">
+              <div class="filter-tile help-filter" data-filter="psychological_help">
+                <div class="icon">🧠</div>
+                <div class="label">Psychologiczna</div>
+              </div>
+              <div class="filter-tile help-filter" data-filter="legal_help">
+                <div class="icon">⚖️</div>
+                <div class="label">Prawna</div>
+              </div>
+              <div class="filter-tile help-filter" data-filter="social_help">
+                <div class="icon">🏠</div>
+                <div class="label">Socjalna</div>
+              </div>
+              <div class="filter-tile help-filter" data-filter="accommodation">
+                <div class="icon">🛏️</div>
+                <div class="label">Nocleg</div>
+              </div>
+            </div>
+        <div id="help-error" class="error-msg"></div>
+
+        <hr class="my-4">
+            <div class="flex flex-col gap-2">
+              <button id="search-btn">Szukaj</button>
+              <button id="geolocate-btn">Użyj mojej lokalizacji</button>
+              <button id="reset-btn">Resetuj</button>
+            </div>
+        </div>
+
 {% endblock %}
 
 {% block scripts %}
+<script id="institution-data" type="application/json">
+    {{ institutions_json|safe }}
+</script>
+
+<script>
+    let currentPage = 1;
+    let lastCenter = null;
+    let lastRadius = null;
+</script>
+
+
+
+<!-- Leaflet i dodatki -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
@@ -70,17 +99,28 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    console.log("✅ DOM załadowany");
+    const initialCenter = [52.0, 19.0];
+    const initialZoom = 6;
+
     const map = L.map('map', {
-        center: [52.0, 19.0],
-        zoom: 7,
+        center: initialCenter,
+        zoom: initialZoom,
         minZoom: 6,
         maxZoom: 16,
         maxBounds: [[48.8, 13.5], [55.0, 24.5]]
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
     }).addTo(map);
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 300);
 
     const institutions = JSON.parse(document.getElementById('institution-data').textContent);
     const markerCluster = L.markerClusterGroup();
@@ -101,20 +141,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getActiveTypes() {
         return Array.from(document.querySelectorAll('#type-filters .filter-tile.active'))
-        .map(tile => tile.dataset.type);
+            .map(tile => tile.dataset.type);
     }
 
     function getActiveFilters() {
-        return Array.from(document.querySelectorAll('.filter-tile.active'))
-            .map(tile => tile.dataset.filter);
+        return Array.from(document.querySelectorAll('#help-filters .filter-tile.active'))
+            .map(tile => tile.dataset.filter)
+            .filter(Boolean);
     }
 
     function getDistance(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2)**2;
-        return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+        return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
     }
 
     document.querySelectorAll('.filter-tile').forEach(tile => {
@@ -131,232 +172,331 @@ document.addEventListener('DOMContentLoaded', function () {
         const types = getActiveTypes();
         const filters = getActiveFilters();
 
-        let hasError = false;
-
         if (types.length === 0) {
-            showError('type-error', 'Wybierz rodzaj instytucji (GOV lub NGO).');
-            hasError = true;
-        }
-
-        if (filters.length === 0) {
-            showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
-            hasError = true;
-        }
-
-        if (hasError) return;
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const loc = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-
-                map.setView(loc, 10);
-                renderInstitutions(loc, radius);
-
-                if (currentCircle) map.removeLayer(currentCircle);
-                currentCircle = L.circle(loc, {
-                    radius: radius * 1000,
-                    color: 'blue',
-                    fillOpacity: 0.1
-                }).addTo(map);
-
-                if (userMarker) map.removeLayer(userMarker);
-                userMarker = L.marker(loc, {
-                    icon: L.icon({
-                        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
-                    })
-                }).addTo(map).bindPopup("Twoja lokalizacja").openPopup();
-            },
-            () => {
-                showError('address-error', 'Nie udało się pobrać lokalizacji.');
-            }
-        );
-    });
-
-    document.getElementById('reset-btn').addEventListener('click', () => {
-        document.getElementById('address-input').value = '';
-        document.querySelectorAll('.filter-tile').forEach(tile => tile.classList.add('active'));
-
-        if (currentCircle) {
-            map.removeLayer(currentCircle);
-            currentCircle = null;
-        }
-
-        if (userMarker) {
-            map.removeLayer(userMarker);
-            userMarker = null;
-        }
-
-        renderInstitutions();
-        map.setView([52.0, 19.0], 7);
-    });
-
-    function renderInstitutions(center = null, radius = null) {
-        markerCluster.clearLayers();
-        const resultsContainer = document.getElementById('results-list');
-        resultsContainer.innerHTML = '';
-
-        const filters = getActiveFilters();
-        const types = getActiveTypes();
-        const results = [];
-
-        institutions.forEach(inst => {
-            const lat = inst.location.latitude;
-            const lng = inst.location.longitude;
-            const typeBadge = inst.type === 'GOV'
-                ? '<span style="background-color: red; color: white; padding: 2px 6px; border-radius: 4px;">GOV</span>'
-                : '<span style="background-color: #007bff; color: white; padding: 2px 6px; border-radius: 4px;">NGO</span>';
-            const distance = center ? getDistance(center.lat, center.lng, lat, lng) : null;
-
-            const matchesFilter = filters.length === 0 || filters.some(type => inst[type]);
-            const inRadius = !radius || (distance !== null && distance <= radius);
-            const matchesType = types.length === 0 || types.includes(inst.type);
-            const shouldDisplay = (!center && !radius) || (matchesFilter && matchesType && inRadius);
-
-            if (shouldDisplay) {
-                const icons = [];
-                if (inst.psychological_help) icons.push(`🧠`);
-                if (inst.legal_help) icons.push(`⚖️`);
-                if (inst.social_help) icons.push(`🏠`);
-                if (inst.accommodation) icons.push(`🛏️`);
-
-                const popup = `
-                    <strong>${inst.name}</strong><br>
-                    ${typeBadge}<br>
-                    ${inst.address}<br>
-                    📞 ${inst.phone_number}<br>
-                    📧 ${inst.email || 'brak'}<br>
-                    📍 Infolinia interwencyjna: ${inst.infoline || 'brak'}<br>
-                    🕒 ${inst.opening_hours || ''}<br>
-                    ${icons.join(' ')}
-                `;
-
-                const icon = new L.Icon({
-                    iconUrl: inst.type === 'GOV'
-                        ? 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'
-                        : 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-                    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41]
-                });
-
-                const marker = L.marker([lat, lng], { icon }).bindPopup(popup);
-                markerCluster.addLayer(marker);
-                results.push({ inst, distance, lat, lng, icons, typeBadge, marker });
-            }
-        });
-
-        results.sort((a, b) => a.distance - b.distance);
-        results.forEach(result => {
-            const { inst, distance, lat, lng, icons, typeBadge } = result;
-            const div = document.createElement('div');
-            div.className = `result-card ${inst.type === 'GOV' ? 'gov-card' : 'ngo-card'}`;
-            div.innerHTML = `
-              <div class="result-header">
-                <div class="result-title">${inst.name}</div>
-                <div class="type-badge">${typeBadge}</div>
-              </div>
-              <div class="result-body collapsed">
-                <p>${inst.address}</p>
-                <p>📞 ${inst.phone_number || 'brak'}</p>
-                <p>📍 Infolinia: ${inst.infoline || 'brak'}</p>
-                <p>📧 ${inst.email || 'brak'}</p>
-                <p>🕒 ${inst.opening_hours || 'brak'}</p>
-                <div class="help-icons">${icons.join(' ')}</div>
-              </div>
-              <div class="result-footer">
-                <button class="toggle-btn">Pokaż więcej</button>
-                <span>${distance !== null ? `📏 ${distance.toFixed(1)} km` : ''}</span>
-              </div>
-            `;
-
-            const btn = div.querySelector('.toggle-btn');
-            const body = div.querySelector('.result-body');
-            let collapsed = true;
-
-            btn.addEventListener('click', () => {
-                collapsed = !collapsed;
-                body.classList.toggle('collapsed', collapsed);
-                btn.textContent = collapsed ? 'Pokaż więcej' : 'Pokaż mniej';
-            });
-
-            div.addEventListener('click', () => {
-                map.setView([lat, lng], 18);
-                result.marker.openPopup();
-            });
-
-            resultsContainer.appendChild(div);
-        });
-
-        if (!center && !radius) {
-            resultsContainer.innerHTML = '<em>Wybierz lokalizację, aby zobaczyć listę wyników.</em>';
-        }
-
-        map.addLayer(markerCluster);
-    }
-
-    document.getElementById('search-btn').addEventListener('click', () => {
-        document.getElementById('address-error').textContent = '';
-        document.getElementById('type-error').textContent = '';
-        document.getElementById('help-error').textContent = '';
-
-        const address = document.getElementById('address-input').value.trim();
-        const radius = parseFloat(document.getElementById('radius-select').value) || 50;
-        const types = getActiveTypes();
-        const filters = getActiveFilters();
-
-        let hasError = false;
-
-        if (!address) {
-            showError('address-error', 'Wpisz lokalizację.');
-            hasError = true;
-        }
-
-        if (types.length === 0) {
-            showError('type-error', 'Wybierz rodzaj instytucji (GOV lub NGO).');
-            hasError = true;
-        }
-
-        if (filters.length === 0) {
-            showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
-            hasError = true;
-        }
-
-        if (hasError) return;
-
-        if (!L.Control.Geocoder) {
-            console.error("❌ L.Control.Geocoder nie jest dostępny.");
-            showError('address-error', 'Wystąpił problem z geokoderem.');
+            showError('type-error', 'Wybierz rodzaj instytucji (Pozarządowa lub Publiczna).');
             return;
         }
 
-        const geocoder = L.Control.Geocoder.nominatim();
+        if (filters.length === 0) {
+            showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
+            return;
+        }
 
-        geocoder.geocode(address, function (results) {
-            if (!results || results.length === 0) {
-                showError('address-error', 'Nie znaleziono lokalizacji.');
-                return;
-            }
+        navigator.geolocation.getCurrentPosition((position) => {
+            const loc = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
 
-            const loc = results[0].center;
-            map.setView(loc, 10);
-            renderInstitutions(loc, radius);
+            map.setView(loc, 12);
+            renderInstitutions(loc, radius, true);;
 
-            if (currentCircle) map.removeLayer(currentCircle);
-            currentCircle = L.circle(loc, {
-                radius: radius * 1000,
-                color: 'blue',
-                fillOpacity: 0.1
-            }).addTo(map);
+            // ⛔ Tymczasowo wyłączone rysowanie okręgu – do ewentualnej poprawy w przyszłości (problemy z rozjeżdżaniem mapy)
+
+            // if (currentCircle) map.removeLayer(currentCircle);
+            // const markerRadiusPx = Math.min(radius * 2, 100); // np. 50km → 100px marker
+            // currentCircle = L.circleMarker(loc, {
+            //     radius: markerRadiusPx,
+            //     color: 'purple',
+            //     fillColor: 'purple',
+            //     fillOpacity: 0.15,
+            //     weight: 2
+            // }).addTo(map);
+            // currentCircle._path?.classList.add('search-radius-circle');
+        }, () => {
+            showError('address-error', 'Nie udało się pobrać lokalizacji.');
         });
     });
 
-    renderInstitutions();
+    document.getElementById('reset-btn').addEventListener('click', () => {
+    document.getElementById('address-input').value = '';
+    document.querySelectorAll('.filter-tile').forEach(tile => tile.classList.add('active'));
+
+    if (currentCircle) { map.removeLayer(currentCircle); currentCircle = null; }
+    if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
+
+    document.getElementById('results-list').innerHTML = '';
+    document.getElementById('results-count').textContent = '';
+    document.getElementById('results-loader').classList.remove('visible');
+
+    renderInstitutions(null, null, false); // Tylko markery
+    map.setView(initialCenter, initialZoom);
+});
+
+    document.getElementById('search-btn').addEventListener('click', () => {
+    const address = document.getElementById('address-input').value.trim();
+    const radius = parseFloat(document.getElementById('radius-select').value) || 50;
+    const types = getActiveTypes();
+    const filters = getActiveFilters();
+
+    if (!address) {
+        showError('address-error', 'Wpisz nazwę miejscowości.');
+        return;
+    }
+
+    if (types.length === 0) {
+        showError('type-error', 'Wybierz rodzaj instytucji (GOV lub NGO).');
+        return;
+    }
+
+    if (filters.length === 0) {
+        showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
+        return;
+    }
+
+    const geocoder = L.Control.Geocoder.nominatim();
+    geocoder.geocode(`${address}, Polska`, function (results) {
+        if (!results || results.length === 0) {
+            showError('address-error', 'Nie znaleziono miejscowości.');
+            return;
+        }
+
+        const cityResult = results.find(r =>
+        ['city', 'town', 'village', 'hamlet', 'municipality', 'locality', 'administrative', 'neighbourhood']
+        .includes(r.properties?.type)
+        );
+
+        if (!cityResult) {
+            showError('address-error', 'Nie znaleziono miejscowości w Polsce.');
+            return;
+        }
+
+        const loc = cityResult.center;
+        const lat = loc.lat;
+        const lng = loc.lng;
+
+        const isInPoland = lat >= 48.8 && lat <= 55.0 && lng >= 13.5 && lng <= 24.5;
+        if (!isInPoland) {
+            showError('address-error', 'Podana miejscowość nie znajduje się w Polsce.');
+            return;
+        }
+
+        // ✅ Jeśli przeszło wszystkie warunki:
+        map.setView(loc, 12);
+        renderInstitutions(loc, radius, true);
+
+    //    if (currentCircle) map.removeLayer(currentCircle);
+    //    currentCircle = L.circleMarker(loc, {
+    //        radius: Math.min(radius * 2, 100),
+    //        color: 'purple',
+    //        fillColor: 'purple',
+    //        fillOpacity: 0.15,
+    //        weight: 2
+    //    }).addTo(map);
+    //    currentCircle._path?.classList.add('search-radius-circle');
+
+    //    if (userMarker) map.removeLayer(userMarker);
+    //    userMarker = L.marker(loc).addTo(map);
+    });
+});
+
+    const addressInput = document.getElementById('address-input');
+    //const suggestionBox = document.getElementById('address-suggestions');
+    let debounceTimer;
+
+    addressInput.addEventListener('input', function () {
+        const query = this.value.trim();
+        clearTimeout(debounceTimer);
+
+        if (!query || query.length < 3) {
+            suggestionBox.classList.add('hidden');
+            suggestionBox.innerHTML = '';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=pl&limit=5&addressdetails=1`)
+                .then(res => res.json())
+                .then(data => {
+                    suggestionBox.innerHTML = '';
+                    if (data.length === 0) {
+                        suggestionBox.classList.add('hidden');
+                        return;
+                    }
+
+                    data.forEach(place => {
+                        const li = document.createElement('li');
+                        li.textContent = place.display_name;
+                        li.addEventListener('click', () => {
+                            addressInput.value = place.display_name;
+                            suggestionBox.classList.add('hidden');
+                            suggestionBox.innerHTML = '';
+                        });
+                        suggestionBox.appendChild(li);
+                    });
+                    suggestionBox.classList.remove('hidden');
+                });
+        }, 300);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!suggestionBox.contains(e.target) && e.target !== addressInput) {
+            suggestionBox.classList.add('hidden');
+        }
+    });
+
+    function renderInstitutions(center = null, radius = null, renderList = false) {
+    markerCluster.clearLayers();
+
+    const resultsContainer = document.getElementById('results-list');
+    const resultsCount = document.getElementById('results-count');
+    const loader = document.getElementById('results-loader');
+
+    if (renderList) {
+        resultsContainer.innerHTML = '';
+        resultsCount.textContent = '';
+        loader.classList.add('visible');
+        lastCenter = center;
+        lastRadius = radius;
+    }
+
+    const filters = getActiveFilters();
+    const types = getActiveTypes();
+    const results = [];
+
+    institutions.forEach(inst => {
+        const lat = inst.location.latitude;
+        const lng = inst.location.longitude;
+        const distance = center ? getDistance(center.lat, center.lng, lat, lng) : null;
+
+        const matchesFilter = filters.length === 0 || filters.every(type => inst[type]);
+        const inRadius = !radius || (distance !== null && distance <= radius);
+        const matchesType = types.length === 0 || types.includes(inst.type);
+        const shouldDisplay = (!center && !radius) || (matchesFilter && matchesType && inRadius);
+
+        if (shouldDisplay) {
+            const icons = [];
+            if (inst.psychological_help) icons.push('🧠');
+            if (inst.legal_help) icons.push('⚖️');
+            if (inst.social_help) icons.push('🏠');
+            if (inst.accommodation) icons.push('🛏️');
+
+            const typeBadge = inst.type === 'GOV'
+                ? '<span style="background:red;color:white;padding:2px 6px;border-radius:4px;">Publiczna</span>'
+                : '<span style="background:#007bff;color:white;padding:2px 6px;border-radius:4px;">Pozarządowa</span>';
+
+            const popup = `
+                <strong>${inst.name}</strong><br>
+                ${typeBadge}<br>
+                ${inst.address}<br>
+                📞 ${inst.phone_number}<br>
+                📧 ${inst.email || 'brak'}<br>
+                📍 Infolinia: ${inst.infoline || 'brak'}<br>
+                🕒 ${inst.opening_hours || ''}<br>
+                ${icons.join(' ')}
+            `;
+
+            const icon = new L.Icon({
+                iconUrl: inst.type === 'GOV'
+                    ? 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'
+                    : 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            const marker = L.marker([lat, lng], { icon }).bindPopup(popup);
+            markerCluster.addLayer(marker);
+
+            results.push({ inst, distance, lat, lng, icons, typeBadge, marker });
+        }
+    });
+
+    map.addLayer(markerCluster);
+
+    if (center && radius) {
+        const bounds = L.latLng(center.lat, center.lng).toBounds(radius * 2000);
+        map.fitBounds(bounds, { maxZoom: 12 });
+    }
+
+    if (renderList) {
+        setTimeout(() => {
+            loader.classList.remove('visible');
+            resultsContainer.innerHTML = results.length
+                ? ''
+                : '<em>Brak wyników dla podanych kryteriów.</em>';
+
+            results.sort((a, b) => a.distance - b.distance);
+
+            const resultsPerPage = 5;
+            const totalPages = Math.ceil(results.length / resultsPerPage);
+            const startIndex = (currentPage - 1) * resultsPerPage;
+            const endIndex = startIndex + resultsPerPage;
+            const pageResults = results.slice(startIndex, endIndex);
+
+            pageResults.forEach(({ inst, distance, lat, lng, icons, typeBadge, marker }) => {
+                const div = document.createElement('div');
+                div.className = `result-card ${inst.type === 'GOV' ? 'gov-card' : 'ngo-card'}`;
+                div.innerHTML = `
+                    <div class="result-header">
+                      <div class="result-title">${inst.name}</div>
+                      <div class="type-badge">${typeBadge}</div>
+                    </div>
+                    <div class="distance-info">📏 ${distance !== null ? `${distance.toFixed(1)} km` : ''}</div>
+                    <div class="result-body collapsed">
+                      <div class="result-content">
+                        <p>${inst.address}</p>
+                        <p>📞 ${inst.phone_number || 'brak'}</p>
+                        <p>📍 Infolinia: ${inst.infoline || 'brak'}</p>
+                        <p>📧 ${inst.email || 'brak'}</p>
+                        <p>🕒 ${inst.opening_hours || 'brak'}</p>
+                        <div class="help-icons">${icons.join(' ')}</div>
+                      </div>
+                    </div>
+                    <div class="result-footer">
+                      <button class="toggle-btn">Pokaż więcej</button>
+                    </div>
+                `;
+
+                const btn = div.querySelector('.toggle-btn');
+                const body = div.querySelector('.result-body');
+                let expanded = false;
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    expanded = !expanded;
+                    body.classList.toggle('expanded', expanded);
+                    btn.textContent = expanded ? 'Pokaż mniej' : 'Pokaż więcej';
+                });
+
+                div.addEventListener('click', () => {
+                    map.flyTo([lat, lng], 16, { animate: true, duration: 0.6 });
+                    setTimeout(() => marker.openPopup(), 600);
+                });
+
+                resultsContainer.appendChild(div);
+            });
+
+            const pagination = document.createElement('div');
+            pagination.className = 'pagination';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderInstitutions(lastCenter, lastRadius, true);
+                });
+                pagination.appendChild(pageBtn);
+            }
+
+            resultsContainer.appendChild(pagination);
+
+            if (results.length > 0 && center && radius) {
+                resultsCount.textContent = `Znaleziono ${results.length} instytucji w promieniu ${radius} km`;
+            } else if (results.length > 0) {
+                resultsCount.textContent = `Znaleziono ${results.length} instytucji`;
+            } else {
+                resultsCount.textContent = `Brak wyników`;
+            }
+        }, 300);
+    }
+}
+
+    // render po załadowaniu
+    renderInstitutions(null, null, false); ;
 });
 </script>
 {% endblock %}
