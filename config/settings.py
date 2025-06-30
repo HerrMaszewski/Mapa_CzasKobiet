@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from decouple import config
 import platform
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -71,14 +72,7 @@ TEMPLATES = [
 
 # BAZA DANYCH
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-    }
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 }
 
 # WALIDACJA HASEŁ
