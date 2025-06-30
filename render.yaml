@@ -3,4 +3,21 @@ services:
     name: mapa-czas-kobiet
     env: docker
     plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
     autoDeploy: true
+    envVars:
+      - key: OPENCAGE_API_KEY
+        value: 8533757d3614431da749947009307c69
+      - key: GOOGLE_MAPS_API_KEY
+        value: AIzaSyD_d6sm-guZR2vgJugt_R7cdDp--IZKDnQ
+      - key: SECRET_KEY
+        value: t25z1wc7^vgk0dv0_buz-j)%+@l$qa%lg17n!n0wfl!nt!4^7*
+      - key: DEBUG
+        value: "True"
+      - key: DATABASE_URL
+        value: postgresql://mapa_czas_kobier_user:HLNV18QVU16sxj7imgAyD2sZJlguKk9F@dpg-d1h7u6adbo4c73a1e1eg-a/mapa_czas_kobier
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: ALLOWED_HOSTS
+        value: localhost,127.0.0.1
