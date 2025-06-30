@@ -20,7 +20,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = ['*']  # Ustaw docelowe domeny w produkcji
+
+# Poprawka: domyślnie lokalny host, można nadpisać zmienną env
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 
 # APLIKACJE
 INSTALLED_APPS = [
@@ -104,7 +106,7 @@ USE_TZ = True
 # STATIC FILES
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'mapa' / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # Do collectstatic
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # AUTO PK
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -117,7 +119,7 @@ if platform.system() == 'Windows':
 else:
     GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
 
-# Leaflet config (jeśli używasz map)
+# Leaflet config
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (52.4064, 16.9252),
     'DEFAULT_ZOOM': 6,
@@ -126,7 +128,6 @@ LEAFLET_CONFIG = {
     'SCALE': 'both',
 }
 
-
-# API KEY for geocoding
+# API KEYS
 OPENCAGE_API_KEY = config("OPENCAGE_API_KEY")
 GOOGLE_MAPS_API_KEY = config("GOOGLE_MAPS_API_KEY")
