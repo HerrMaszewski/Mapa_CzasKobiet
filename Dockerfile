@@ -1,5 +1,8 @@
 FROM osgeo/gdal:ubuntu-full-3.6.2
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Warsaw
+
 # 🐍 Python + pip + GDAL
 RUN apt-get update && apt-get install -y \
     python3 \
