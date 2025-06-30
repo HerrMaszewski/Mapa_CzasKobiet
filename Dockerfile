@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     libgdal-dev \
     libgeos-dev \
     libpq-dev \
+    tzdata \
     && apt-get clean
 
 # 🔗 Link do GDAL
