@@ -20,10 +20,3 @@ services:
         value: config.settings
       - key: ALLOWED_HOSTS
         value: mapa-czas-kobiet.onrender.com
-
-  - type: postgres
-    name: mapa-postgis
-    env: docker
-    plan: free
-    dockerfilePath: ./postgis.Dockerfile
-    autoDeploy: false
