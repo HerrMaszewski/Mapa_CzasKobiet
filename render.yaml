@@ -26,3 +26,17 @@ services:
         value: config.settings
       - key: ALLOWED_HOSTS
         value: mapa-czas-kobiet.onrender.com
+
+  - type: pserv
+    name: postgis-custom
+    env: docker
+    plan: free
+    dockerfilePath: ./postgis.Dockerfile
+    envVars:
+      - key: POSTGRES_DB
+        value: mapa
+      - key: POSTGRES_USER
+        value: mapa_user
+      - key: POSTGRES_PASSWORD
+        value: supertajnehaslo
+
