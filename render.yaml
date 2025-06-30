@@ -5,7 +5,12 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     autoDeploy: true
-    startCommand: tail -f /dev/null
+    startCommand: >
+      bash -c "
+        until psql $DATABASE_URL -c 'SELECT 1'; do echo 'Waiting for DB...'; sleep 2; done;
+        psql $DATABASE_URL -c 'CREATE EXTENSION IF NOT EXISTS postgis';
+        python manage.py migrate;
+        gunicorn config.wsgi:application --bind 0.0.0.0:8000"
     envVars:
       - key: OPENCAGE_API_KEY
         value: 8533757d3614431da749947009307c69
