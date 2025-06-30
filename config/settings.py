@@ -16,6 +16,8 @@ from decouple import config
 import platform
 import dj_database_url
 
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY
@@ -75,7 +77,7 @@ DATABASES = {
     'default': dj_database_url.config(
         default=config("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=True,
     )
 }
 
