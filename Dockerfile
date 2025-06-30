@@ -1,32 +1,32 @@
 FROM osgeo/gdal:ubuntu-full-3.6.2
 
-# 🐍 Instalacja Pythona i narzędzi
+# 🐍 Python + pip
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
-    binutils \
+    python3-dev \
+    gcc \
     gdal-bin \
     libproj-dev \
     libgdal-dev \
     libgeos-dev \
     libpq-dev \
-    gcc \
     && ln -sf /usr/lib/x86_64-linux-gnu/libgdal.so /usr/lib/libgdal.so \
     && apt-get clean
 
-# 🧪 Ustaw GDAL/GEOS w zmiennych środowiskowych
+# 🔧 Zmienne środowiskowe dla GDAL
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
+ENV PYTHONUNBUFFERED=1
 
 # 🔧 Katalog roboczy
 WORKDIR /app
 
-# 📦 Instalacja zależności
+# 📦 Zależności Pythona
 COPY requirements.txt .
-
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install -r requirements.txt
 
 # 📁 Kod źródłowy
 COPY . .
