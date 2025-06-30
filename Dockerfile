@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     libgeos-dev \
     libpq-dev \
     gcc \
-    && ln -s /usr/lib/x86_64-linux-gnu/libgdal.so /usr/lib/libgdal.so \
+    && ln -sf /usr/lib/x86_64-linux-gnu/libgdal.so /usr/lib/libgdal.so
     && apt-get clean
 
 # 🧪 Ustaw GDAL/GEOS w zmiennych środowiskowych
