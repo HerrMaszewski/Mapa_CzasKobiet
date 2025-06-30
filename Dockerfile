@@ -4,10 +4,10 @@ FROM osgeo/gdal:ubuntu-full-3.6.2
 RUN apt-get update && apt-get install -y \
     python3-pip python3-dev python3-setuptools python-is-python3 gcc
 
-# 🧪 GDAL ENV (niektóre projekty tego wymagają)
+# 🧪 Ustaw GDAL/GEOS w zmiennych środowiskowych
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
-ENV LD_LIBRARY_PATH=/usr/lib
+ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
 
 # 🔧 Katalog roboczy
 WORKDIR /app
