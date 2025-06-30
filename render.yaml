@@ -5,6 +5,7 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     autoDeploy: true
+    startCommand: tail -f /dev/null
     envVars:
       - key: OPENCAGE_API_KEY
         value: 8533757d3614431da749947009307c69
