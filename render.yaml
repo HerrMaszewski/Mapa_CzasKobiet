@@ -21,7 +21,7 @@ services:
       - key: ALLOWED_HOSTS
         value: mapa-czas-kobiet.onrender.com
 
-  - type: private
+  - type: postgres
     name: mapa-postgis
     env: docker
     plan: free
