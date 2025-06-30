@@ -2,6 +2,8 @@ FROM osgeo/gdal:ubuntu-full-3.6.2
 
 # 🐍 Instalacja Pythona i narzędzi
 RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
     binutils \
     gdal-bin \
     libproj-dev \
@@ -22,8 +24,9 @@ WORKDIR /app
 
 # 📦 Instalacja zależności
 COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 
 # 📁 Kod źródłowy
 COPY . .
