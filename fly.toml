@@ -1,0 +1,25 @@
+primary_region = "waw"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  DEBUG = "True"
+  DJANGO_SETTINGS_MODULE = "config.settings"
+  ALLOWED_HOSTS = "mapa-czaskobiet.fly.dev"
+
+[[statics]]
+guest_path = "/app/staticfiles"
+url_prefix = "/static/"
+
+[[services]]
+  internal_port = 8000
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]

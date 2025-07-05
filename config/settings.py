@@ -23,6 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='').split(',')
+
+#COOKIES
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 
 # Poprawka: domyślnie lokalny host, można nadpisać zmienną env
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
@@ -49,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 # URLS / WSGI
@@ -75,7 +83,8 @@ TEMPLATES = [
 # BAZA DANYCH
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL')
+        default=config('DATABASE_URL'),
+        engine='django.contrib.gis.db.backends.postgis'
     )
 }
 
@@ -104,7 +113,8 @@ USE_TZ = True
 # STATIC FILES
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'mapa' / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # AUTO PK
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

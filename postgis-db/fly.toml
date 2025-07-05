@@ -1,0 +1,27 @@
+# fly.toml app configuration file generated for mapa-postgis-spring-surf-6865 on 2025-07-01T12:29:11+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'mapa-postgis-spring-surf-6865'
+primary_region = 'waw'
+
+[build]
+  image = 'postgis/postgis:15-3.3'
+
+[env]
+  POSTGRES_DB = 'mapa'
+  POSTGRES_PASSWORD = 'czas_kobiet'
+  POSTGRES_USER = 'postgres'
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 5432
+
+  [[services.ports]]
+    port = 5432
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

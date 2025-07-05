@@ -11,38 +11,48 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-
     <!-- Własny CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     {% block head %}{% endblock %}
 </head>
 <body>
-    <div class="layout-container">
-    <div class="sidebar-left">
-        {% block left_sidebar %}{% endblock %}
+<div class="layout-container">
+
+    <header class="header">
+      <a href="https://czaskobiet.org" class="header-logo">
+        <img src="{% static 'images/czas-kobiet-logo.png' %}" alt="Czas Kobiet">
+      </a>
+
+      <div class="header-center">
+        <h1>Mapa Instytucji Wsparcia Dla Kobiet</h1>
+        <p>📞 SOS Bezpieczna Linia: 800 XXX XXX</p>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <aside class="sidebar-left">
+          {% block left_sidebar %}{% endblock %}
+      </aside>
+
+      <main>
+          {% block map %}{% endblock %}
+      </main>
+
+      <aside class="sidebar-right">
+          {% block right_sidebar %}{% endblock %}
+      </aside>
     </div>
 
-    <div class="main-panel">
-        <header>
-            <h1>Mapa Instytucji Wsparcia Dla Kobiet</h1>
-            <p>📞 SOS Bezpieczna Linia: 800 XXX XXX</p>
-        </header>
+    <footer style="grid-area: footer;">
+        <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
+        <p>© 2025 Czas Kobiet. Wszystkie prawa zastrzeżsone.</p>
+        <div>
+            <img src="{% static 'logo_fr.png' %}" alt="Logo Francja">
+            <img src="{% static 'logo_ch.png' %}" alt="Logo Szwajcaria">
+        </div>
+    </footer>
 
-        <main>
-            {% block map %}{% endblock %}
-        </main>
-
-        <footer>
-            <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
-            <p>© 2025 Czas Kobiet. Wszystkie prawa zastrzeżone.</p>
-            <div><img src="/static/logo_fr.png"> <img src="/static/logo_ch.png"></div>
-        </footer>
-    </div>
-
-    <div class="sidebar-right">
-        {% block right_sidebar %}{% endblock %}
-    </div>
 </div>
 {% block scripts %}{% endblock %}
 </body>
