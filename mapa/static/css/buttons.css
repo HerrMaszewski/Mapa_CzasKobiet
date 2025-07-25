@@ -1,0 +1,136 @@
+/* === BUTTONS / FORMS === */
+
+.button-row {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.button-row button {
+  flex: 1 1 30%;
+  min-width: 0;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Podstawowe style buttonów */
+button {
+  background: linear-gradient(to right, #2e9a92, #91cfbf);
+  border: none;
+  color: white;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px 0;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Wspólne style formularzy */
+input,
+button,
+.filter-tile {
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  padding: clamp(6px, 2vw, 14px);
+  border-radius: clamp(6px, 1vw, 12px);
+}
+
+/* === FILTRY === */
+
+.filters-grid,
+.type-filters-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filter-tile {
+  flex: 1 1 calc(50% - 8px);
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: #91cfbf;
+  color: white;
+  text-align: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  min-height: clamp(40px, 8vh, 64px);
+}
+
+.filter-tile:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.filter-tile.active {
+  background-color: #2e9a92;
+  font-weight: bold;
+}
+
+/* Pomoc */
+.filter-tile.help-filter {
+  background-color: #91cfbf;
+}
+
+.filter-tile.help-filter.active {
+  background-color: #2e9a92;
+}
+
+/* Typ instytucji */
+.filter-tile.type-filter[data-type="NGO"] {
+  background-color: #e681bb;
+}
+
+.filter-tile.type-filter[data-type="GOV"] {
+  background-color: #c794df;
+}
+
+.filter-tile.type-filter.active[data-type="NGO"] {
+  background-color: #e5007e;
+}
+
+.filter-tile.type-filter.active[data-type="GOV"] {
+  background-color: #35173f;
+}
+
+/* Ikony i etykiety kafelków */
+.icon {
+  font-size: 1.5rem;
+}
+
+.label {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+/* === BŁĘDY === */
+
+.error-msg {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  background-color: #ba2121;
+  color: #ffcccc;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.error-msg.visible {
+  display: block;
+  opacity: 1;
+}

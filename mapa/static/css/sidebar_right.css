@@ -1,0 +1,218 @@
+.sidebar-right {
+    width: 20%;
+    min-width: 0px;
+    max-width: 30%;
+    overflow-y: auto;
+    padding-right: 10px;
+    position: relative;
+  }
+
+  .sidebar-right.mobile-hidden {
+    display: none;
+  }
+
+   /* === WYNIKI === */
+  /* 🟦 NGO = niebieska */
+
+  .result-card.ngo-card {
+  background-color: #fa93d1;
+  color: #090005;
+  border-left: 6px solid #d8288a;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin-bottom: 14px;
+  max-width: 100%;
+  overflow-wrap: break-word
+  }
+
+  /* 🟥 GOV = czerwona */
+
+  .result-card.gov-card {
+  background-color: #da8ff8;
+  color: #090005;
+  border-left: 6px solid #35173f;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin-bottom: 14px;
+  max-width: 100%;
+  overflow-wrap: break-word
+  }
+
+  /* Nagłówek karty */
+
+  .result-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 8px;
+  }
+
+  /* Treść karty (domyślnie schowana) */
+
+  .result-body {
+  display: none;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  }
+
+  .result-body.expanded {
+  display: block;
+  }
+
+  .result-title {
+  font-weight: bold;
+  font-size: 0.90rem;
+  line-height: 1.4;
+  }
+
+  .type-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 1;
+  box-shadow: none;
+  background-image: none;
+  background-color: #ccc; /* fallback jeśli coś się nie podłączy */
+  color: white;
+  }
+
+  .type-badge.public {
+  background-color: #35173f;
+  color: white;
+  }
+
+  .type-badge.ngo {
+  background-color: #d8288a;
+  color: white;
+  }
+
+
+  .gov-card .type-badge {
+  background-color: #35173f;
+  color: white;
+  }
+
+  .ngo-card .type-badge {
+  background-color: #d8288a;
+  color: white;
+  }
+
+  .pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  margin-bottom: 24px;
+  }
+
+  /* Reset stylów globalnych przycisków */
+
+  .pagination button.page-num,
+  .pagination button.page-arrow {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid #7b2cbf;
+  border-radius: 6px;
+  background-color: #2e9a92;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  }
+
+  .pagination button.page-num:hover,
+  .pagination button.page-arrow:hover {
+  background-color: #2e9a92;
+  color: #ffffff;
+  }
+
+  .pagination button.page-num.active {
+  background-color: #7b2cbf;
+  color: white;
+  }
+
+  /* Przycisk */
+
+  .toggle-btn {
+  background-color: #ba68c8;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  }
+
+  ::-webkit-scrollbar {
+  width: 20px;
+  }
+
+  ::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  }
+
+  ::-webkit-scrollbar-thumb {
+  background-color: #9b59b6;
+  border-radius: 6px;
+  border: 3px solid #f0f0f0;
+  }
+
+  /* Firefox */
+
+  * {
+  scrollbar-width: auto;
+  scrollbar-color: #9b59b6 #f0f0f0;
+  }
+
+  #results-loader {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+  }
+
+  #results-loader.visible {
+    display: flex;
+  }
+
+  .loader {
+    border: 4px solid #f3e5f5;
+    border-top: 4px solid #ab47bc;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    animation: spin 0.8s linear infinite;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 16px 0;
+  }
+
+  .leaflet-popup-content-wrapper {
+    background-color: #da8ff8; /* np. jasny fiolet */
+    color: #2d0033;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-family: 'Acumin', sans-serif;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
