@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .models import Institution  
+
+from .models import Institution
 import json
 
 def map_view(request):

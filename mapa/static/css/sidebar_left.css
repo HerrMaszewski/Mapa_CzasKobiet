@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  flex: 0 0 320px;
+  flex: 0 0 380px;
   padding: 24px 16px;
   gap: 16px;
   overflow-y: auto;
@@ -18,7 +18,7 @@
 }
 
 .sidebar-left label {
-  font-size: 0.85rem;
+  font-size: 1.0rem;
   margin-top: 12px;
   margin-bottom: 4px;
 }
@@ -27,47 +27,46 @@
 
 .location-row {
   display: flex;
-  flex-wrap: wrap;
   align-items: flex-end;
   gap: 12px;
   margin-bottom: 16px;
+  width: 100%;
+  flex-wrap: nowrap;
 }
 
 .location-col {
-  flex: 2;
-  min-width: 180px;
+  flex: 2 1 60%;
+  min-width: 230px;
   display: flex;
   flex-direction: column;
 }
 
 .radius-col {
-  flex: 1;
-  min-width: 100px;
+  flex: 1 1 20%;
+  min-width: 70px;
   display: flex;
   flex-direction: column;
+  max-width: 40%;
+  padding-right: 4px;
 }
 
-.location-col input,
-.radius-col select,
 .sidebar-left input,
 .sidebar-left select {
   padding: 10px 12px;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   border-radius: 10px;
   border: none;
   background-color: #f3e5f5;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   outline: none;
+  width: 100%;
 }
 
-/* === PRZYCISKI W SIDEBARZE === */
-.sidebar-left button {
-  font-size: 0.85rem;
-  padding: 8px 10px;
-  border-radius: 8px;
-  margin: 0;
-  flex: 1;
-  min-width: 0;
+
+.main-search-wrapper {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.4); /* lekki separator */
 }
 
 /* === TYTUŁY SEKCJI === */
@@ -77,29 +76,11 @@
   margin-bottom: 8px;
 }
 
-/* === KAFELKI Z POMOCĄ === */
-#help-filters {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 8px;
+.input-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-bottom: 4px;
 }
 
-/* === SIATKI KAFELKÓW === */
-.filters-grid {
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.type-filters-grid {
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-/* Styl kafelków tylko w sidebarze */
-.type-filters-grid .filter-tile,
-.filters-grid .filter-tile {
-  font-size: 0.85rem;
-  padding: 10px;
-  min-height: 56px;
-  border-radius: 10px;
-}

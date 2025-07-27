@@ -1,0 +1,38 @@
+    const addressInput = document.getElementById('address-input');
+    //const suggestionBox = document.getElementById('address-suggestions');
+    let debounceTimer;
+
+    addressInput.addEventListener('input', function () {
+        const query = this.value.trim();
+        clearTimeout(debounceTimer);
+
+        if (!query || query.length < 3) {
+            suggestionBox.classList.add('hidden');
+            suggestionBox.innerHTML = '';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=pl&limit=5&addressdetails=1`)
+                .then(res => res.json())
+                .then(data => {
+                    suggestionBox.innerHTML = '';
+                    if (data.length === 0) {
+                        suggestionBox.classList.add('hidden');
+                        return;
+                    }
+
+                    data.forEach(place => {
+                        const li = document.createElement('li');
+                        li.textContent = place.display_name;
+                        li.addEventListener('click', () => {
+                            addressInput.value = place.display_name;
+                            suggestionBox.classList.add('hidden');
+                            suggestionBox.innerHTML = '';
+                        });
+                        suggestionBox.appendChild(li);
+                    });
+                    suggestionBox.classList.remove('hidden');
+                });
+        }, 300);
+    });

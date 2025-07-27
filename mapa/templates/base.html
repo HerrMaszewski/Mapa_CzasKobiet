@@ -29,32 +29,35 @@
       </a>
 
       <div class="header-center">
-        <h1>Mapa Instytucji Wsparcia Dla Kobiet</h1>
-        <p>📞 SOS Bezpieczna Linia: 800 XXX XXX</p>
+        <h1>Mapa ośrodków wsparcia dla kobiet</h1>
+        <h2>📞 SOS Bezpieczna Linia: 800 XXX XXX</h2>
+      </div>
+
+      <div class="header-right">
+        <button class="toggle-results-btn desktop-only" onclick="toggleResults()">📄 Wyniki</button>
       </div>
     </header>
 
     <div class="main-content">
       <aside class="sidebar-left">
-          {% block left_sidebar %}{% endblock %}
+        {% block left_sidebar %}{% endblock %}
       </aside>
 
       <main>
-          {% block map %}{% endblock %}
+        {% block map %}{% endblock %}
       </main>
 
-      <aside class="sidebar-right">
-          {% block right_sidebar %}{% endblock %}
-      </aside>
+    {% block right_sidebar %}{% endblock %}
+
     </div>
 
     <footer style="grid-area: footer;">
-        <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
-        <p>© 2025 Czas Kobiet. Wszystkie prawa zastrzeżsone.</p>
-        <div>
-            <img src="{% static 'logo_fr.png' %}" alt="Logo Francja">
-            <img src="{% static 'logo_ch.png' %}" alt="Logo Szwajcaria">
-        </div>
+      <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
+      <p>© 2025 Czas Kobiet. Wszystkie prawa zastrzeżone.</p>
+      <div>
+        <img src="{% static 'logo_fr.png' %}" alt="Logo Francja">
+        <img src="{% static 'logo_ch.png' %}" alt="Logo Szwajcaria">
+      </div>
     </footer>
 
 </div>

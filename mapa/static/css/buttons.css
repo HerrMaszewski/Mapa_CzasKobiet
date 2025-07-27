@@ -4,7 +4,7 @@
   display: flex;
   gap: 8px;
   justify-content: space-between;
-  margin-top: 12px;
+  margin-top: 10px;
   flex-wrap: wrap;
 }
 
@@ -15,15 +15,21 @@
   text-align: center;
 }
 
+.button-row.small-controls button {
+  flex: 1 1 48%;
+  font-size: 0.80rem;
+  padding: 8px;
+}
+
 /* Podstawowe style buttonów */
-button {
+button:not(.main-search-btn):not(.toggle-results-btn) {
   background: linear-gradient(to right, #2e9a92, #91cfbf);
   border: none;
   color: white;
   padding: 12px;
-  font-size: 1rem;
+  font-size: 0.80rem;
   font-weight: bold;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   margin: 10px 0;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -33,6 +39,34 @@ button {
 button:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 🧨 Główny przycisk Szukaj */
+button.main-search-btn {
+  font-size: 0.90rem;
+  padding: 12px 18px;
+  background: linear-gradient(to right, #2e9a92, #91cfbf);
+  font-weight: bold;
+  border-radius: 16px;
+  margin: 18px 0 12px 0;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  /* DODANE POPRAWKI ⬇ */
+  color: white !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+button.main-search-btn:hover {
+  background: linear-gradient(to right, #087866, #1d9888);
+  transform: translateY(-2px);
+  box-shadow: none;
 }
 
 /* Wspólne style formularzy */
@@ -50,19 +84,19 @@ button,
 .type-filters-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 16px;
 }
 
 .filter-tile {
-  flex: 1 1 calc(50% - 8px);
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 12px;
+  flex: 1 1 calc(30% - 8px);
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
   background-color: #91cfbf;
   color: white;
   text-align: center;
-  font-size: 0.95rem;
+  font-size: 0.75rem;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -79,45 +113,94 @@ button,
   font-weight: bold;
 }
 
-/* Pomoc */
-.filter-tile.help-filter {
-  background-color: #91cfbf;
+/* === RODZAJE POMOCY === */
+#help-filters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 💥 4 w rzędzie */
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.filter-tile.help-filter.active {
-  background-color: #2e9a92;
+#help-filters .filter-tile.help-filter {
+  font-size: 0.75rem;
+  padding: 8px;
+  min-height: 48px;
+  border-radius: 8px;
+  text-align: center;
+  line-height: 1.2;
 }
 
-/* Typ instytucji */
+#help-filters .icon {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+#help-filters .label {
+  font-size: 0.75rem;
+}
+
+/* === TYP INSTYTUCJI === */
 .filter-tile.type-filter[data-type="NGO"] {
   background-color: #e681bb;
 }
-
 .filter-tile.type-filter[data-type="GOV"] {
   background-color: #c794df;
 }
-
 .filter-tile.type-filter.active[data-type="NGO"] {
   background-color: #e5007e;
 }
-
 .filter-tile.type-filter.active[data-type="GOV"] {
   background-color: #35173f;
 }
 
-/* Ikony i etykiety kafelków */
-.icon {
-  font-size: 1.5rem;
+.type-filters-grid .filter-tile.type-filter {
+  min-height: 36px;
+  border-radius: 6px;
+  flex: 1 1 45%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem; /* lekka poprawa czytelności */
+  padding: 10px 12px;
+  line-height: 1.2;
 }
 
+/* === IKONY i ETYKIETY === */
+.filter-tile .icon {
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+}
+.filter-tile .label {
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
 .label {
   display: block;
   margin-top: 12px;
   font-size: 0.9rem;
 }
 
-/* === BŁĘDY === */
+.toggle-results-btn {
+  width: auto !important; /* ← nadpisuje to globalne 100% */
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  background: linear-gradient(to right, #2e9a92, #91cfbf);
+  color: white;
+  font-weight: 600;
+  margin: 0;
 
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.toggle-results-btn:hover {
+  background-color: #155e57;
+}
+
+/* === BŁĘDY === */
 .error-msg {
   display: none;
   opacity: 0;
@@ -129,7 +212,6 @@ button,
   padding: 6px 8px;
   border-radius: 6px;
 }
-
 .error-msg.visible {
   display: block;
   opacity: 1;

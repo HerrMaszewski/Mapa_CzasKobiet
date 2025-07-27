@@ -2,49 +2,48 @@
 {% load static %}
 
 {% block right_sidebar %}
-    <div id="results-panel">
-      <div id="results-count"></div>
-      <div id="results-loader"><div class="loader"></div></div>
-      <div id="results-list"></div>
-    </div>
+  <div id="sidebarResults" class="sidebar-right">
+    <div id="results-count"></div>
+    <div id="results-loader"><div class="loader"></div></div>
+    <div id="results-list"></div>
+  </div>
 {% endblock %}
 
 {% block map %}
   <div id="map"></div>
+  <button class="toggle-results-btn" onclick="toggleResults()">📋 Wyniki</button>
 {% endblock %}
 
 {% block left_sidebar %}
 
 <div id="filters-panel">
-    <h3>Szukaj instytucji</h3>
+    <h3>Znajdź pomoc w swojej okolicy</h3>
 
-    <div class="location-row">
-      <div class="location-col">
-        <label for="address-input">Podaj miejscowość:</label>
-        <input type="text" id="address-input" placeholder="np. Poznań"/>
-        <div id="address-error" class="error-msg"></div>
-      </div>
+    <div class="location-wrapper">
+      <div class="location-row">
+          <div class="input-row">
+            <div class="location-col">
+              <label for="address-input">Podaj miejscowość:</label>
+              <input type="text" id="address-input" placeholder="np. Poznań"/>
+            </div>
 
-      <div class="radius-col">
-        <label for="radius-select">Promień:</label>
-        <select id="radius-select">
-            <option value="10">10 km</option>
-            <option value="25">25 km</option>
-            <option value="50" selected>50 km</option>
-            <option value="100">100 km</option>
-            <option value="150">150 km</option>
-            <option value="200">200 km</option>
-            <option value="500">500 km</option>
-        </select>
-      </div>
+            <div class="radius-col">
+              <label for="radius-select">Promień:</label>
+              <select id="radius-select">
+                  <option value="10">10 km</option>
+                  <option value="25">25 km</option>
+                  <option value="50" selected>50 km</option>
+                  <option value="100">100 km</option>
+                  <option value="150">150 km</option>
+                  <option value="200">200 km</option>
+                  <option value="500">500 km</option>
+              </select>
+            </div>
+        </div>
     </div>
 
-    <h4>Rodzaj instytucji:</h4>
-    <div class="type-filters-grid" id="type-filters">
-      <div class="filter-tile type-filter active" data-type="NGO">Pozarządowe</div>
-      <div class="filter-tile type-filter active" data-type="GOV">Publiczne</div>
+      <div id="address-error" class="error-msg"></div>
     </div>
-    <div id="type-error" class="error-msg"></div>
 
     <h4>Rodzaj pomocy:</h4>
     <div class="filters-grid" id="help-filters">
@@ -67,12 +66,20 @@
     </div>
     <div id="help-error" class="error-msg"></div>
 
+    <h4>Rodzaj instytucji:</h4>
+        <div class="type-filters-grid" id="type-filters">
+          <div class="filter-tile type-filter" data-type="NGO">Pozarządowe</div>
+          <div class="filter-tile type-filter" data-type="GOV">Publiczne</div>
+        </div>
+        <div id="type-error" class="error-msg"></div>
+
     <hr>
 
-    <div class="button-row">
-      <button id="search-btn">🔍 Szukaj</button>
-      <button id="geolocate-btn">📍 Lokalizuj</button>
-      <button id="reset-btn">🗑️ Resetuj</button>
+      <button id="search-btn" class="main-search-btn">🔍 Szukaj</button>
+
+    <div class="button-row small-controls">
+        <button id="geolocate-btn">📍 Lokalizuj</button>
+        <button id="reset-btn">🗑️ Resetuj</button>
     </div>
 
 </div>
@@ -105,7 +112,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log("✅ DOM załadowany");
     const initialCenter = [52.0, 19.0];
-    const initialZoom = 6;
+    const initialZoom = window.innerWidth <= 768 ? 3 : 6;
 
     const map = L.map('map', {
         center: initialCenter,
@@ -130,6 +137,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const markerCluster = L.markerClusterGroup();
     let currentCircle = null;
     let userMarker = null;
+
+    function toggleResults() {
+      const sidebar = document.getElementById('sidebarResults');
+      sidebar.classList.toggle('visible');
+
+      // Jeśli sidebar jest ukryty, zresetuj tekst przycisku
+      const btn = document.querySelector('.toggle-results-btn');
+      if (btn) {
+        const isVisible = sidebar.classList.contains('visible');
+        btn.textContent = isVisible ? '❌ Zamknij wyniki' : '📋 Wyniki';
+      }
+
+      setTimeout(() => map.invalidateSize(), 300);
+    }
+
+    window.toggleResults = toggleResults;
 
     function showError(id, msg) {
         const el = document.getElementById(id);
@@ -193,7 +216,9 @@ document.addEventListener('DOMContentLoaded', function () {
             };
 
             map.setView(loc, 12);
-            renderInstitutions(loc, radius, true);;
+            renderInstitutions(loc, radius, true);
+            const sidebar = document.getElementById('sidebarResults');
+            sidebar.classList.add('visible');;
 
             // ⛔ Tymczasowo wyłączone rysowanie okręgu – do ewentualnej poprawy w przyszłości (problemy z rozjeżdżaniem mapy)
 
@@ -225,6 +250,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     renderInstitutions(null, null, false); // Tylko markery
     map.setView(initialCenter, initialZoom);
+
+    document.getElementById('sidebarResults')?.classList.remove('visible');
+    const btn = document.querySelector('.toggle-results-btn');
+    if (btn) btn.textContent = '📋 Wyniki';
 });
 
     document.getElementById('search-btn').addEventListener('click', () => {
@@ -293,45 +322,6 @@ document.addEventListener('DOMContentLoaded', function () {
     //    userMarker = L.marker(loc).addTo(map);
     });
 });
-
-    const addressInput = document.getElementById('address-input');
-    //const suggestionBox = document.getElementById('address-suggestions');
-    let debounceTimer;
-
-    addressInput.addEventListener('input', function () {
-        const query = this.value.trim();
-        clearTimeout(debounceTimer);
-
-        if (!query || query.length < 3) {
-            suggestionBox.classList.add('hidden');
-            suggestionBox.innerHTML = '';
-            return;
-        }
-
-        debounceTimer = setTimeout(() => {
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=pl&limit=5&addressdetails=1`)
-                .then(res => res.json())
-                .then(data => {
-                    suggestionBox.innerHTML = '';
-                    if (data.length === 0) {
-                        suggestionBox.classList.add('hidden');
-                        return;
-                    }
-
-                    data.forEach(place => {
-                        const li = document.createElement('li');
-                        li.textContent = place.display_name;
-                        li.addEventListener('click', () => {
-                            addressInput.value = place.display_name;
-                            suggestionBox.classList.add('hidden');
-                            suggestionBox.innerHTML = '';
-                        });
-                        suggestionBox.appendChild(li);
-                    });
-                    suggestionBox.classList.remove('hidden');
-                });
-        }, 300);
-    });
 
     document.addEventListener('click', (e) => {
         if (!suggestionBox.contains(e.target) && e.target !== addressInput) {
@@ -421,23 +411,26 @@ document.addEventListener('DOMContentLoaded', function () {
     if (renderList) {
         setTimeout(() => {
             loader.classList.remove('visible');
-            resultsContainer.innerHTML = results.length
-                ? ''
-                : '<em>Brak wyników dla podanych kryteriów.</em>';
+
+            if (results.length === 0) {
+                document.getElementById('results-list').innerHTML = '';
+                document.getElementById('results-count').textContent = '';
+                document.getElementById('sidebarResults').classList.remove('visible');
+                showError('address-error', 'Brak wyników dla podanych kryteriów.');
+                return;
+            }
 
             const priorityNames = ['Fundacja Czas Kobiet', 'Feminoteka'];
 
             results.sort((a, b) => {
-            const isPriority = name => ['czas kobiet', 'feminoteka'].some(p => name.toLowerCase().includes(p));
+                const isPriority = name => priorityNames.some(p => name.toLowerCase().includes(p.toLowerCase()));
+                const aIsPriority = isPriority(a.inst.name);
+                const bIsPriority = isPriority(b.inst.name);
 
-            const aIsPriority = isPriority(a.inst.name);
-            const bIsPriority = isPriority(b.inst.name);
-
-            if (aIsPriority && !bIsPriority) return -1;
-            if (!aIsPriority && bIsPriority) return 1;
-            return a.distance - b.distance;
-        });
-
+                if (aIsPriority && !bIsPriority) return -1;
+                if (!aIsPriority && bIsPriority) return 1;
+                return a.distance - b.distance;
+            });
 
             const resultsPerPage = 5;
             const totalPages = Math.ceil(results.length / resultsPerPage);
@@ -445,28 +438,44 @@ document.addEventListener('DOMContentLoaded', function () {
             const endIndex = startIndex + resultsPerPage;
             const pageResults = results.slice(startIndex, endIndex);
 
+            // Wstawianie informacji na górę sidebaru
+            resultsCount.innerHTML = `
+                <div class="results-summary">
+                    ${results.length > 0
+                        ? center && radius
+                            ? `Znaleziono ${results.length} miejsc oferujących wybrane formy pomocy w promieniu ${radius} km`
+                            : `Znaleziono ${results.length} miejsc oferujących wybrane formy pomocy`
+                        : `Brak wyników`}
+                </div>
+            `;
+
+            // Czyść kontener na karty
+            resultsContainer.innerHTML = '';
+
             pageResults.forEach(({ inst, distance, lat, lng, icons, typeBadge, marker }) => {
                 const div = document.createElement('div');
                 div.className = `result-card ${inst.type === 'GOV' ? 'gov-card' : 'ngo-card'}`;
                 div.innerHTML = `
-                  <div class="result-header">
-                    <div class="type-badge">${typeBadge}</div>
-                    <div class="result-title">${inst.name}</div>
-                  </div>
-                  <div class="distance-info">📏 ${distance !== null ? `${distance.toFixed(1)} km` : ''}</div>
-                  <div class="result-body collapsed">
-                    <div class="result-content">
-                      <p>${inst.address}</p>
-                      <p>📞 ${inst.phone_number || 'brak'}</p>
-                      <p>📍 Infolinia: ${inst.infoline || 'brak'}</p>
-                      <p>📧 ${inst.email || 'brak'}</p>
-                      <p>🕒 ${inst.opening_hours || 'brak'}</p>
-                      <div class="help-icons">${icons.join(' ')}</div>
+                    <div class="result-header">
+                        <div class="type-badge ${inst.type === 'GOV' ? 'public' : 'ngo'}">
+                            ${inst.type === 'GOV' ? 'Publiczna' : 'Pozarządowa'}
+                        </div>
+                        <div class="result-title">${inst.name}</div>
                     </div>
-                  </div>
-                  <div class="result-footer">
-                    <button class="toggle-btn">Pokaż więcej</button>
-                  </div>
+                    <div class="distance-info">📏 ${distance !== null ? `${distance.toFixed(1)} km` : ''}</div>
+                    <div class="result-body collapsed">
+                        <div class="result-content">
+                            <p>${inst.address}</p>
+                            <p>📞 ${inst.phone_number || 'brak'}</p>
+                            <p>📍 Infolinia: ${inst.infoline || 'brak'}</p>
+                            <p>📧 ${inst.email || 'brak'}</p>
+                            <p>🕒 ${inst.opening_hours || 'brak'}</p>
+                            <div class="help-icons">${icons.join(' ')}</div>
+                        </div>
+                    </div>
+                    <div class="result-footer">
+                        <button class="toggle-btn">Pokaż więcej</button>
+                    </div>
                 `;
 
                 const btn = div.querySelector('.toggle-btn');
@@ -491,40 +500,31 @@ document.addEventListener('DOMContentLoaded', function () {
             pagination.className = 'pagination';
 
             if (currentPage > 1) {
-              const prevBtn = document.createElement('button');
-              prevBtn.className = 'page-arrow';
-              prevBtn.innerHTML = '←';
-              prevBtn.addEventListener('click', () => renderPage(currentPage - 1));
-              pagination.appendChild(prevBtn);
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-arrow';
+                prevBtn.innerHTML = '←';
+                prevBtn.addEventListener('click', () => renderPage(currentPage - 1));
+                pagination.appendChild(prevBtn);
             }
 
             for (let i = 1; i <= totalPages; i++) {
-              const pageBtn = document.createElement('button');
-              pageBtn.className = 'page-num';
-              if (i === currentPage) pageBtn.classList.add('active');
-              pageBtn.innerText = i;
-              pageBtn.addEventListener('click', () => renderPage(i));
-              pagination.appendChild(pageBtn);
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'page-num';
+                if (i === currentPage) pageBtn.classList.add('active');
+                pageBtn.innerText = i;
+                pageBtn.addEventListener('click', () => renderPage(i));
+                pagination.appendChild(pageBtn);
             }
 
             if (currentPage < totalPages) {
-              const nextBtn = document.createElement('button');
-              nextBtn.className = 'page-arrow';
-              nextBtn.innerHTML = '→';
-              nextBtn.addEventListener('click', () => renderPage(currentPage + 1));
-              pagination.appendChild(nextBtn);
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-arrow';
+                nextBtn.innerHTML = '→';
+                nextBtn.addEventListener('click', () => renderPage(currentPage + 1));
+                pagination.appendChild(nextBtn);
             }
 
-            resultsContainer.appendChild(pagination); // lub inny kontener
-
-
-            if (results.length > 0 && center && radius) {
-                resultsCount.textContent = `Znaleziono ${results.length} instytucji w promieniu ${radius} km`;
-            } else if (results.length > 0) {
-                resultsCount.textContent = `Znaleziono ${results.length} instytucji`;
-            } else {
-                resultsCount.textContent = `Brak wyników`;
-            }
+            resultsContainer.appendChild(pagination);
         }, 300);
     }
 }
@@ -533,8 +533,11 @@ function renderPage(page) {
     currentPage = page;
     renderInstitutions(lastCenter, lastRadius, true);
 }
-    // render po załadowaniu
-    renderInstitutions(null, null, false); ;
+
+// render po załadowaniu
+renderInstitutions(null, null, false);
 });
+
 </script>
+
 {% endblock %}
