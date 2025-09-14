@@ -1,18 +1,22 @@
 /* === LEWY SIDEBAR === */
 
 .sidebar-left {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex: 0 0 380px;
-  padding: 24px 16px;
-  gap: 16px;
-  overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex: 0 0 500px;
+    padding: 24px 16px;
+    gap: 16px;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1100;
 }
+
+.header { overflow: hidden; }
 
 /* Nagłówki i etykiety */
 .sidebar-left h3 {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 16px;
 }
@@ -35,10 +39,11 @@
 }
 
 .location-col {
-  flex: 2 1 60%;
-  min-width: 230px;
+  flex: 2 1 50%;
+  min-width: 250px;
   display: flex;
   flex-direction: column;
+  max-width: 60%;
 }
 
 .radius-col {
@@ -46,17 +51,17 @@
   min-width: 70px;
   display: flex;
   flex-direction: column;
-  max-width: 40%;
+  max-width: 30%;
   padding-right: 4px;
 }
 
 .sidebar-left input,
 .sidebar-left select {
-  padding: 10px 12px;
+  padding: 12px 14px;
   font-size: 0.85rem;
   border-radius: 10px;
   border: none;
-  background-color: #f3e5f5;
+  background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   outline: none;
   width: 100%;
@@ -72,7 +77,7 @@
 /* === TYTUŁY SEKCJI === */
 #filters-panel > h3,
 #filters-panel > h4 {
-  margin-top: 16px;
+  margin-top: 8px;
   margin-bottom: 8px;
 }
 

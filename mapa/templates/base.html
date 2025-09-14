@@ -22,21 +22,20 @@
 </head>
 <body>
 <div class="layout-container">
-
     <header class="header">
-      <a href="https://czaskobiet.org" class="header-logo">
-        <img src="{% static 'images/czas-kobiet-logo.png' %}" alt="Czas Kobiet">
-      </a>
 
       <div class="header-center">
         <h1>Mapa ośrodków wsparcia dla kobiet</h1>
-        <h2>📞 SOS Bezpieczna Linia: 800 XXX XXX</h2>
       </div>
 
       <div class="header-right">
         <button class="toggle-results-btn desktop-only" onclick="toggleResults()">📄 Wyniki</button>
       </div>
+
     </header>
+
+
+    <div class="header-right-extension"></div>
 
     <div class="main-content">
       <aside class="sidebar-left">
@@ -44,22 +43,16 @@
       </aside>
 
       <main>
-        {% block map %}{% endblock %}
+        {% block map %}
+            <section class="map-wrap">
+                <div id="map"></div>
+            </section>
+        {% endblock %}
       </main>
 
     {% block right_sidebar %}{% endblock %}
 
     </div>
-
-    <footer style="grid-area: footer;">
-      <p>Mapa powstała dzięki wsparciu Ambasady Francji i Szwajcarii</p>
-      <p>© 2025 Czas Kobiet. Wszystkie prawa zastrzeżone.</p>
-      <div>
-        <img src="{% static 'logo_fr.png' %}" alt="Logo Francja">
-        <img src="{% static 'logo_ch.png' %}" alt="Logo Szwajcaria">
-      </div>
-    </footer>
-
 </div>
 {% block scripts %}{% endblock %}
 </body>

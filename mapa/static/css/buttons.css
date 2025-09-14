@@ -22,7 +22,7 @@
 }
 
 /* Podstawowe style buttonów */
-button:not(.main-search-btn):not(.toggle-results-btn) {
+button:not(.main-search-btn):not(.toggle-results-btn):not(#reset-btn) {
   background: linear-gradient(to right, #2e9a92, #91cfbf);
   border: none;
   color: white;
@@ -85,22 +85,28 @@ button,
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .filter-tile {
   flex: 1 1 calc(30% - 8px);
   margin-top: 10px;
-  padding: 10px;
+  padding: 28px 20px;
   border-radius: 10px;
-  background-color: #91cfbf;
-  color: white;
+  background-color: #2e9a92;
+  color: #ffffff;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: 1.3rem;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   min-height: clamp(40px, 8vh, 64px);
+}
+
+.filter-tile svg{
+  width: 42px;             /* powiększony ikon */
+  height: 42px;
+  margin-bottom: 12px;     /* więcej miejsca pod ikoną */
 }
 
 .filter-tile:hover {
@@ -111,6 +117,7 @@ button,
 .filter-tile.active {
   background-color: #2e9a92;
   font-weight: bold;
+  color: white;
 }
 
 /* === RODZAJE POMOCY === */
@@ -122,57 +129,61 @@ button,
 }
 
 #help-filters .filter-tile.help-filter {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   padding: 8px;
-  min-height: 48px;
+  min-height: 42px;
   border-radius: 8px;
   text-align: center;
   line-height: 1.2;
 }
 
 #help-filters .icon {
-  font-size: 1.1rem;
+  font-size: 0.85rem;
   margin-bottom: 4px;
 }
 
 #help-filters .label {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
 }
 
 /* === TYP INSTYTUCJI === */
 .filter-tile.type-filter[data-type="NGO"] {
-  background-color: #e681bb;
+  background-color: #d8288a;
+  color: #ffffff;
 }
 .filter-tile.type-filter[data-type="GOV"] {
-  background-color: #c794df;
+  background-color: #35173f;
+  color: #ffffff;
 }
 .filter-tile.type-filter.active[data-type="NGO"] {
   background-color: #e5007e;
+    color: #ffffff;
 }
 .filter-tile.type-filter.active[data-type="GOV"] {
   background-color: #35173f;
+    color: #ffffff;
 }
 
 .type-filters-grid .filter-tile.type-filter {
-  min-height: 36px;
+  min-height: 32px;
   border-radius: 6px;
   flex: 1 1 45%;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem; /* lekka poprawa czytelności */
+  font-size: 1.0rem; /* lekka poprawa czytelności */
   padding: 10px 12px;
   line-height: 1.2;
 }
 
 /* === IKONY i ETYKIETY === */
 .filter-tile .icon {
-  font-size: 1.2rem;
+  font-size: 0.6rem;
   margin-bottom: 4px;
 }
 .filter-tile .label {
-  font-size: 0.8rem;
+  font-size: 0.4rem;
   line-height: 1.2;
 }
 .label {
@@ -185,13 +196,13 @@ button,
   width: auto !important; /* ← nadpisuje to globalne 100% */
   display: inline-block;
   padding: 8px 16px;
-  font-size: 0.9rem;
+  padding: 8px 16px;
+  font-size: 0.85rem;
   border-radius: 6px;
   background: linear-gradient(to right, #2e9a92, #91cfbf);
   color: white;
   font-weight: 600;
   margin: 0;
-
   border: none !important;
   box-shadow: none !important;
 }
@@ -216,3 +227,185 @@ button,
   display: block;
   opacity: 1;
 }
+
+.info-btn {
+  background-color: #35173f; /* turkus */
+  color: white;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.info-btn:hover {
+  background-color: #5f2b75;
+}
+
+/* 4) Ujednolicone przyciski – bez gradientów, większe litery, biały ring przy kliknięciu */
+button,
+.button-row button,
+button.main-search-btn{
+  border-radius: 12px !important;
+  background: #2e9a92 !important;      /* możesz podmienić na swój brand */
+  color: #fff !important;
+  border: 2px solid rgba(255,255,255,.25) !important; /* 👈 ring bazowy */
+  background-image: none !important;
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .02em;
+}
+button:hover,
+.button-row button:hover,
+button.main-search-btn:hover,
+.toggle-results-btn:hover{
+  box-shadow: 0 0 0 2px #fff, 0 6px 14px rgba(0,0,0,.2);
+  transform: none !important;
+}
+button:active,
+.button-row button:active,
+button.main-search-btn:active,
+.toggle-results-btn:active{
+  box-shadow: 0 0 0 3px #fff, 0 4px 10px rgba(0,0,0,.18) inset;
+}
+
+/* 5) Wyniki – małe piktogramy w kartach (opcjonalnie) */
+.result-card .help-icons img{
+  width: 18px; height:18px; margin-right:6px; vertical-align: -3px;
+}
+
+/* 6) Markery SVG (fiolet/magenta) – wygląd divIcon */
+.leaflet-div-icon.svg-pin { background: transparent; border: none; }
+.svg-pin svg{ filter: drop-shadow(0 2px 4px rgba(0,0,0,.35)); }
+
+/* 7) Kółko promienia – kolory brand (pomarańcz/geolokacja, żółty/szukaj, turkus/zapas) */
+:root{
+  --ring-geo:   #ff4713;          /* pomarańcz */
+  --ring-search:#f2e500;          /* żółty */
+  --ring-alt:   #7bb2a1;          /* seledyn */
+}
+
+
+/* ====== SZUKAJ – ta sama biała „ramka” na hover/focus ====== */
+.main-search-btn{
+  border:2px solid rgba(255,255,255,.25); /* nie zmienia wymiaru */
+  transition:box-shadow .15s, background .15s, transform .05s;
+}
+.main-search-btn:hover,
+.main-search-btn:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px #fff inset;       /* taka sama ramka jak niżej */
+}
+.main-search-btn:active{ transform:translateY(1px); }
+
+/* === FINAL: białe ramki + identyczny rozmiar przycisków === */
+:root { --btn-ring: rgba(255,255,255,.25); }
+
+/* Ramka (ring) dla wszystkich kluczowych przycisków */
+#search-btn,
+#geolocate-btn,
+#reset-btn,
+.header .toggle-results-btn {
+  border: 2px solid var(--btn-ring) !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Duży przycisk „Szukaj” – cofamy wcześniejsze border:none */
+button.main-search-btn {
+  border: 2px solid var(--btn-ring) !important;
+}
+
+/* Kolory (jak wcześniej): reset czerwony, reszta turkus */
+#reset-btn       { background: #d30404 !important; color: #fff !important; }
+#geolocate-btn   { background: #2e9a92 !important; color: #fff !important; }
+#search-btn      { background: #2e9a92 !important; color: #fff !important; }
+
+/* Jednolity hover/focus (ten sam „biały ring” w środku) */
+#search-btn:hover,
+#geolocate-btn:hover,
+#reset-btn:hover,
+#search-btn:focus-visible,
+#geolocate-btn:focus-visible,
+#reset-btn:focus-visible {
+  box-shadow: 0 0 0 3px #fff inset, 0 6px 14px rgba(0,0,0,.2) !important;
+  transform: none !important;
+}
+
+/* === U K Ł A D  – mała para (Lokalizuj + Resetuj) jak dawniej === */
+.button-row.small-controls {
+  display: flex !important;
+  gap: 8px !important;
+}
+.button-row.small-controls button {
+  flex: 1 0 0 !important;   /* równa szerokość */
+  height: 44px !important;  /* identyczna wysokość */
+  padding: 8px 12px !important;
+  margin: 0 !important;     /* usuń różne marginesy */
+  line-height: 1.2 !important;
+}
+
+/* Dla pewności – nadpisz „globalny” styl z gradientem (zdejmuje border) */
+button:not(.main-search-btn):not(.toggle-results-btn):not(#reset-btn) {
+  border: 2px solid var(--btn-ring) !important;
+}
+
+/* Wspólna reguła dla przycisków */
+button,
+.button-row button,
+button.main-search-btn,
+.toggle-results-btn,
+#search-btn,
+#geolocate-btn,
+#reset-btn,
+.help-filter,
+.type-filters-grid .filter-tile {
+  transition: box-shadow 0.2s, transform 0.1s;
+}
+
+/* Zaznaczenie po kliknięciu/focus */
+button:focus,
+.button-row button:focus,
+button.main-search-btn:focus,
+.toggle-results-btn:focus,
+#search-btn:focus,
+#geolocate-btn:focus,
+#reset-btn:focus,
+.help-filter.active,
+.type-filters-grid .filter-tile.active {
+  outline: none; /* usuń domyślne focus */
+  box-shadow: 0 0 0 3px #fff inset, 0 6px 14px rgba(0,0,0,.2);
+}
+
+/* Jeśli chcesz, żeby kliknięcie zmieniało kolor tła, np. lekko jaśniejsze */
+.help-filter.active,
+.type-filters-grid .filter-tile.active {
+  background-color: #2e9a92; /* dopasuj do grupy */
+  color: #fff;
+}
+
+/* Styl dla przycisku „O nas” */
+.info-btn {
+  display: inline-block;
+  text-align: center;         /* wycentrowany napis */
+/*  text-transform: uppercase;   duże litery */
+  font-weight: bold;
+  color: white;
+  background-color: #35173f;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 2px solid transparent;  /* domyślnie brak obwódki */
+  transition: box-shadow 0.2s, transform 0.1s;
+}
+
+/* Hover / focus */
+.info-btn:hover,
+.info-btn:focus {
+  box-shadow: 0 0 0 3px #fff inset, 0 6px 14px rgba(0,0,0,.2);
+  outline: none;
+  transform: none;
+}
+
+
+

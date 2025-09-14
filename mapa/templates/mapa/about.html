@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O nas – Mapa wsparcia dla kobiet</title>
+  <style>
+    body {
+      font-family: "Acumin Pro", Arial, sans-serif;
+      background-color: #fff;
+      color: #2F0A41;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: #FF4712;
+      color: white;
+      padding: 24px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    h2 {
+      color: #471768;
+      margin-top: 32px;
+    }
+
+    p {
+      margin-bottom: 16px;
+    }
+
+    .button-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding: 12px 24px;
+      background-color: #471768;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .button-back:hover {
+      background-color: #2F0A41;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .btn-public {
+      background-color: #35173f;
+    }
+
+    .btn-public:hover {
+      background-color: #2F0A41;
+    }
+
+    .btn-ngo {
+      background-color: #d8288a;
+    }
+
+    .btn-ngo:hover {
+      background-color: #d8288a;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 20px;
+      background: #2F0A41;
+      text-align: center;
+      font-size: 0.9em;
+      color: #fff;
+    }
+
+    .partners {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 1rem;
+      color: #2F0A41; /* ciemny fiolet zamiast białego */
+    }
+
+    .partners .logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .partners img {
+      max-height: 200px;   /* większe loga */
+      max-width: 280px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      .button-back {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>O nas</h1>
+  </header>
+
+  <div class="container">
+    <a href="/map" class="button-back"><span>Powrót do mapy</span></a>
+
+    <p>
+      Mapa została stworzona w ramach realizacji projektu przygotowującego do uruchomienia
+      pierwszej w Polsce całodobowej infolinii dla kobiet doświadczających przemocy seksualnej,
+      finansowanego przez Ambasadę Francji oraz przy wsparciu Ambasady Szwajcarii.
+    </p>
+
+    <p>
+      Jest częścią działań Fundacji Czas Kobiet, która od lat wspiera kobiety, przeciwdziała
+      przemocy i dyskryminacji oraz dąży do systemowych zmian w obszarze praw kobiet w Polsce.
+      Fundacja zapewnia profesjonalne, bezpłatne i kompleksowe wsparcie, a stworzenie tej bazy
+      to krok w kierunku łatwiejszego i szybszego dostępu do pomocy dla każdej osoby,
+      która jej potrzebuje.
+    </p>
+
+    <h2>Dołącz jako instytucja, kliknij przycisk i wypełnij formularz zgłoszeniowy. Pomóż nam tworzyć mapę wsparcia!</h2>
+    <p>
+
+    </p>
+
+    <div class="buttons">
+      <a href="https://docs.google.com/forms/d/1537CVTX9SHD_eUstzOKZuKDVucZVAqavsuVT6vUlHRg/viewform" target="_blank" class="btn btn-public">
+        Instytucje publiczne
+      </a>
+      <a href="https://docs.google.com/forms/d/1V0TFshOUISved7yYmoG_2H-lhMpuWzcLG0H3HImFt9o/viewform" target="_blank" class="btn btn-ngo">
+        Organizacje pozarządowe
+      </a>
+    </div>
+
+    <h2>Informacje i kontakt</h2>
+    <p><strong>Zgłoś błąd na stronie:</strong><br>
+    <a href="mailto:mapa@czaskobiet.org">mapa@czaskobiet.org</a></p>
+
+    <p><strong>Edycja i aktualizacja danych:</strong><br>
+    Dane są weryfikowane i aktualizowane przez Fundację Czas Kobiet z siedzibą w Poznaniu.<br>
+    Ostatnia aktualizacja: sierpień 2025</p>
+
+    <p><strong>Bezpieczeństwo i prywatność:</strong><br>
+    Fundacja nie zbiera i nie przetwarza danych personalnych.<br>
+    Korzystanie z mapy jest anonimowe!</p>
+
+    <p><strong>Kontakt:</strong><br>
+    mail: biuro@czaskobiet.org<br>
+    tel. +48 577 998 112<br>
+    <a href="https://czaskobiet.org" target="_blank">czaskobiet.org</a></p>
+  </div>
+
+<div class="partners">
+ <p>Projekt finansowany i wspierany przez:</p>
+  <div class="logos">
+    <img src="/static/images/ambasada_francja.png" alt="Ambasada Francji">
+    <img src="/static/images/ambasada_szwajcaria.jpg" alt="Ambasada Szwajcarii">
+  </div>
+</div>
+
+  <footer>
+    &copy; 2025 Fundacja Czas Kobiet
+  </footer>
+
+</body>
+</html>

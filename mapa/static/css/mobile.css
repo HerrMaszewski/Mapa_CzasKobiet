@@ -1,240 +1,315 @@
-/* === MEDIA QUERIES: MOBILE (max 768px) === */
-@media (max-width: 768px) {
+/* === MOBILE ONLY (max 768px) === */
+@media (max-width: 768px){
 
-  html, body {
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: auto;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
+  /* Stałe */
+  :root{
+    --fab-w: clamp(120px, 42vw, 170px); /* szerokość FAB-a */
+    --header-h: 0px;                    /* header zwinięty */
   }
 
-  .desktop-only {
-    display: none !important;
+  /* Podstawy */
+  html, body{
+    margin:0; padding:0;
+    min-height:100vh; height:auto;
+    overflow-x:hidden; overflow-y:auto;
   }
 
-  /* === STRUKTURA GŁÓWNA === */
-  .layout-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    height: auto;
-    min-height: 100vh;
-  }
-
-
-  .main-content {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: 600px;
-    flex: 1;
+  /* ==== HEADER (zwinięty, ale NIE ukrywamy .header-right) ==== */
+  .header{
+    min-height:0 !important;
+    height:0 !important;
+    padding:0 !important;
+    background: transparent !important;
+    overflow: visible !important;
     position: relative;
   }
+  /* chowamy tytuł i fioletowy pasek, ale ZOSTAWIAMY .header-right */
+  .header-center,
+  .header-right-extension,
+  .header::after{ display:none !important; }
 
-  main {
-    order: 2;
-    flex: 0 0 auto;
+  .header-right{
+    display:block !important;     /* <-- przycisk ma gdzie żyć */
+    position: static !important;
+  }
+
+  /* ==== LOGO — idealnie wyśrodkowane u góry ==== */
+  .header-logo-wrapper{
+    position: static !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 12px 0 0 !important;
+    background: #ff4713;
+    z-index: 10;
+    text-align: center !important;
+  }
+  .header-logo-wrapper a{ display:inline-flex !important; }
+  .header-logo-wrapper img{
+    max-width: 200px !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;    /* centrum */
+    object-fit: contain !important;
+  }
+
+  /* ==== LAYOUT + MAPA ==== */
+  .layout-container{
+    display:flex; flex-direction:column;
+    width:100%; height:auto; min-height:100vh;
     position: relative;
-    width: 100%;
-    height: 400px; /* większa mapa */
-    min-height: 400px;
-    padding: 8px;
   }
+  .main-content{ display:block; width:100%; height:auto; position: relative; }
 
-  #map {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+  /* Filtry nad mapą */
+  .sidebar-left{
+    order:1; width:100%;
+    padding:16px; height:auto; overflow:visible;
   }
+  .location-row{ display:flex; flex-direction:column; gap:12px; }
+  .location-row > *{ width:100%; }
+  .button-row{ flex-direction:column; gap:10px; }
+  .button-row button{ width:100%; }
 
-  /* === LEWY PANEL === */
-  .sidebar-left {
-    width: 100%;
-    order: 1;
-    padding: 16px;
-    overflow: visible;
-    height: auto;
+  /* Mapa – stabilna wysokość */
+  main{
+    order:2; position:relative; width:100%;
+    height: 60vh;                 /* zmień wg potrzeb: 55–70vh */
+    min-height: 360px;
+    padding: 0 !important;
   }
+  #map{ position:absolute; inset:0; z-index:0; }
 
-  .location-row {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .location-row > * {
-    width: 100%;
-  }
-
-  .form-wrapper {
-    gap: 12px;
-  }
-
-  input,
-  button,
-  .filter-tile {
-    font-size: clamp(1rem, 2.5vw, 1.1rem);
-    padding: clamp(10px, 2vw, 16px);
-  }
-
-  .filter-tile {
-    min-height: clamp(48px, 8vh, 64px);
-  }
-
-  .button-row {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .button-row button {
-    width: 100%;
-  }
-
-  button.main-search-btn {
-    font-size: 1.2rem;
-    padding: 18px;
-    margin: 24px 0;
-    width: 100%;
-    border-radius: 24px;
-    background: linear-gradient(to right, #0ca98d, #2e9a92);
-    color: white;
-    font-weight: bold;
-  }
-
-  #geolocate-btn,
-  #reset-btn {
-    font-size: 1rem;
-    padding: 12px;
-  }
-
-  /* === PRAWY PANEL (WYNIKI) === */
-  .sidebar-right {
-    position: fixed;
-    bottom: -100%;
-    left: 0;
-    width: 100%;
-    max-height: 60vh;
+  /* ==== PRAWY PANEL (WYNIKI) jako bottom sheet ==== */
+  .sidebar-right{
+    position: fixed; left: 0; right: 0; bottom: -100%;
+    width: 100%; max-height: 65vh;
     overflow-y: auto;
-    background-color: #ff4713;
-    color: white;
+    background: #ff4713; color: #fff;
     padding: 16px;
-    transition: bottom 0.3s ease-in-out;
+    border-top-left-radius: 16px; border-top-right-radius: 16px;
+    transition: bottom .3s ease;
     z-index: 9999;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
+  }
+  .sidebar-right.visible{ bottom: 0; }
+
+  /* ==== FAB „Wyniki/Zamknij” ==== */
+  /* domyślnie masz klasę .desktop-only – jawnie pokazujemy ją na mobile */
+  .toggle-results-btn.desktop-only{ display:inline-flex !important; }
+
+  .toggle-results-btn{
+    position: fixed !important;
+    right: 16px !important;
+    bottom: max(16px, env(safe-area-inset-bottom)) !important;
+    transform: none !important;
+
+    display: inline-flex !important;
+    align-items: center; justify-content: center; gap: .4rem;
+
+    width: var(--fab-w) !important;
+    max-width: var(--fab-w) !important; min-width: 0 !important;
+
+    padding: 10px 12px !important;   /* kompaktowy (nie za wysoki) */
+    line-height: 1 !important;
+    font-size: .95rem !important; font-weight: 700 !important;
+
+    border-radius: 12px !important;
+    background: linear-gradient(to right, #2e9a92, #91cfbf) !important;
+    color: #fff !important; border: none !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.25);
+
+    z-index: 11000 !important;       /* ponad sheetem i mapą */
+    white-space: nowrap !important;
+    pointer-events: auto !important;
   }
 
-  .sidebar-right.visible {
-    bottom: 0;
+  /* Na wszelki wypadek – upewniamy się, że nikt go nie ukryje gdziekolwiek */
+  header .toggle-results-btn,
+  main .toggle-results-btn,
+  .mobile-toggle-wrapper .toggle-results-btn,
+  .sidebar-right .toggle-results-btn{ display:inline-flex !important; }
+
+  /* Delikatny reset rozmiarów pozostałych kontrolek (nie dotyka FAB-a) */
+  input, .filter-tile, button{ font-size: clamp(.95rem, 2.6vw, 1.05rem); }
+
+    /* Header zwijamy, ale NIE polegamy na nim dla przycisku */
+  .header{
+    min-height:0 !important; height:0 !important; padding:0 !important;
+    background: transparent !important; overflow: visible !important;
+    position: relative;
+  }
+  .header-center,
+  .header-right-extension,
+  .header::after{ display:none !important; }
+
+  /* LOGO – pokaż i wycentruj (jeśli chcesz je mieć na mobile) */
+  .header-logo-wrapper{
+    position: static !important;
+    display:flex !important; justify-content:center !important; align-items:center !important;
+    width:100% !important; padding:12px 0 0 !important; background:#ff4713;
+    text-align:center !important; z-index:10;
+  }
+  .header-logo-wrapper img{
+    max-width:200px !important; height:auto !important; display:block !important; margin:0 auto !important;
+    object-fit:contain !important;
   }
 
-  .result-card {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    margin-bottom: 16px;
+  .desktop-only { display: none !important; }
+
+  /* FAB „Wyniki/Zamknij” – tylko mobile */
+  .mobile-only{
+    display: inline-flex !important;
+    position: fixed !important;
+    right: 16px !important;
+    bottom: max(16px, env(safe-area-inset-bottom)) !important;
+    z-index: 11000 !important;           /* ponad panelem wyników i mapą */
+    align-items: center; justify-content: center; gap: .4rem;
+    padding: 10px 12px !important;
+    line-height: 1 !important;
+    font-size: .95rem !important; font-weight: 700 !important;
+    white-space: nowrap !important;
+    border: 0 !important; border-radius: 12px !important;
+    background: linear-gradient(to right, #2e9a92, #91cfbf) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.25);
   }
 
-  .result-header,
-  .result-body,
-  .result-footer {
-    word-break: break-word;
+  /* Bottom-sheet wyników zostaje jak był; upewniamy się o warstwach */
+  .sidebar-right{ z-index: 9999 !important; }
+
+  /* Mapa – stabilna wysokość sekcji */
+  main{ height: 60vh; min-height: 360px; padding: 0 !important; position: relative; }
+  #map{ position: absolute; inset: 0; z-index: 0; }
+
+    /* 1) brak fioletowych pasów po bokach na mobile */
+  body{
+    background-color: #ff4713 !important; /* na mobile tło całej strony = orange */
   }
-
-  .result-title {
-    font-size: 1rem;
+  /* opcjonalnie wyłącz zaokrąglenia/karty, jeśli gdzieś są */
+  .header, .sidebar-left, .main-content, footer{
+    border-radius: 0 !important;
+    margin: 0 !important;
   }
+  /* margin-right, który robił „pasek” po prawej */
+  .main-content{ margin-right: 0 !important; }
+  /* pasek pseudo-element headera – schowaj na mobile */
+  .header::after{ width: 0 !important; }
+  body.results-open .header::after{ width: 0 !important; }
 
-  .result-card button {
-    word-break: break-word;
-    white-space: normal;
-    text-align: center;
-    font-size: clamp(0.9rem, 4vw, 1rem);
+  /* 2) logo – trochę w prawo i trochę „od sufitu” */
+  .sidebar-logo{
+    justify-content: flex-start !important;
+    padding-left: 28px;         /* przesunięcie w prawo */
+    margin-top: 8px;            /* trochę odsunąć od góry */
   }
-
-  .results-summary {
-    font-size: 1rem;
-    text-align: center;
-    padding: 8px 0;
-  }
-
-  .pagination button {
-    font-size: 1rem;
-    padding: 6px 10px;
-  }
-
-
-  /* === LINK O PROJEKCIE === */
-  .about-link {
-    display: block;
-    text-align: center;
-    font-size: 0.9rem;
-    color: white;
-    margin-bottom: 12px;
-    text-decoration: underline;
-  }
-
-  .about-link:hover {
-    text-decoration: none;
-  }
-
-  /* === NAGŁÓWEK === */
-  .header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 12px;
-    padding: 16px 0px;
-    margin: 0 auto;
-  }
-
-  .header-logo img {
-    max-width: 300px;
+  .sidebar-logo img{
+    max-width: 180px;           /* można dostroić */
     height: auto;
   }
 
-  .header-center {
-    padding-left: 0;
-    text-align: center;
-    flex: unset;
-    margin: 0 auto;
-  }
-
-  .header-center h1 {
-    font-size: clamp(1.0rem, 5vw, 2rem);
-    line-height: 1.2;
-    margin: 0;
-  }
-
-  .header-center p {
-    font-size: clamp(1.5rem, 4vw, 1.1rem);
-    margin: 0;
-  }
-
-  .toggle-results-btn {
+  /* 3) węższe pole „Miejscowość” */
+  #filters-panel .location-col #address-input{
+    width: 86% !important;      /* było na całą szerokość – zawężamy */
+    max-width: 280px;           /* twardy limit, żeby nie było za szerokie */
+    margin-left: auto;
+    margin-right: auto;
     display: block;
-    position: relative;
-    width: 100%;
-    margin-top: 16px;
-    padding: 14px;
-    font-size: 1rem;
-    font-weight: bold;
-    background-color: #ab47bc;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    z-index: 99999;
   }
 
+  /* trochę ciaśniej ogólnie w panelu */
+  #filters-panel{
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* wyłącz desktopowy przycisk na mobile – zostaje tylko FAB */
+  .toggle-results-btn.desktop-only{ display: none !important; }
+
+  /* FAB (ten mobilny) – normalny rozmiar, nie rozciąga się na całą wysokość */
+  .toggle-results-btn,
+  .toggle-results-btn.mobile-only{
+    display:inline-flex !important;
+    align-items:center; justify-content:center;
+    height:auto !important;
+    min-height:44px !important;
+    width: clamp(120px,42vw,170px) !important;
+    padding:10px 12px !important;
+    border-radius:12px !important;
+    position: fixed !important;
+    right:16px !important;
+    bottom:max(16px, env(safe-area-inset-bottom)) !important;
+    z-index:11000 !important;
+  }
+
+  /* Nadpisz desktopowe #sidebarResults (ma większą specyficzność) */
+  #sidebarResults{
+    position: fixed !important;
+    left:0 !important; right:0 !important;
+    top:auto !important;                 /* nie podpinaj pod header */
+    bottom:-100% !important;             /* startowo schowany */
+    width:100% !important;
+    height:min(65vh, 70dvh) !important;
+    max-height:70dvh !important;
+    background:#35173f !important;
+    transform:none !important;           /* ZABIJA translateX z desktopu */
+    box-shadow:0 -8px 24px rgba(0,0,0,.25);
+    overflow:auto !important;
+    z-index:9999 !important;
+  }
+  #sidebarResults.visible{
+    bottom:0 !important;                 /* wysuwa się z dołu */
+  }
+
+  /* Schowaj fioletowy „pasek” z desktopu */
+  .header-right-extension, .header::after{ display:none !important; }
+
+  /* tło strony na pomarańczowo, żeby nie prześwitywały pasy */
+  body{ background:#ff4713 !important; }
+
+    /* zabij desktopowy gutter/pasek po prawej */
+  .layout-container{ padding-right: 0 !important; }
+  .main-content{ margin-right: 0 !important; }
+  .header::after{ width: 0 !important; }
+
+  /* bottom-sheet – na wszelki wypadek trzyma się krawędzi */
+  #sidebarResults{ left: 0 !important; right: 0 !important; }
+
+  /* panel z filtrami – pełna szerokość kolumny adresu */
+  .location-col{
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* pole „Miejscowość” – do lewej, 100% szerokości */
+  #filters-panel .location-col #address-input{
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+    .sidebar-logo{
+    justify-content: center !important;
+    padding-left: 0 !important;
+    margin-top: 8px;
+  }
+  .sidebar-logo img{
+    display:block !important;
+    margin: 0 auto !important;
+    max-width: 180px; /* jak lubisz */
+    height:auto;
+  }
+
+    /* pozwól na pionowe przewijanie nad mapą kosztem pionowego dragowania mapy */
+  .leaflet-container{ touch-action: pan-y !important; }
+
+    main::after{
+    content:"";
+    display:block;
+    height: 96px; /* możesz zmniejszyć do 72px, jeśli wolisz */
+  }
 }
+
+
+

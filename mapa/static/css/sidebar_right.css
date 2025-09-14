@@ -1,8 +1,8 @@
 /* === SIDEBAR-WYNIKI / PANEL PRAWY === */
 .sidebar-right {
-  width: 320px;
+  width: 400px;
   max-width: 100%;
-  background-color: #ff4713;
+  background-color: #35173f;
   position: absolute;
   top: 0;
   right: 0;
@@ -50,7 +50,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .result-title {
@@ -59,7 +59,8 @@
   flex: 1;
   line-height: 1.3;
   word-break: break-word;
-  margin-top: 4px
+  margin-top: 4px;
+  margin-bottom: 8px;
 }
 
 .result-body {
@@ -90,7 +91,7 @@
 
 /* === DODATKI W KARTACH === */
 .help-icons {
-  margin-top: 4px;
+  margin-top: 14px;
   font-size: 1rem;
 }
 
@@ -109,6 +110,7 @@
   color: white;
   white-space: nowrap;
   margin-right: 8px;
+  margin-bottom: 8px;
 }
 
 .type-badge.ngo {
@@ -209,4 +211,50 @@
 * {
   scrollbar-width: thin;
   scrollbar-color: #9b59b6 #f0f0f0;
+}
+
+/* Pasek "Publiczna" – większy odstęp od tytułu */
+.leaflet-popup-content .result-header {
+  margin-top: 6px;     /* dystans od nazwy ośrodka */
+  margin-bottom: 10px; /* trochę miejsca zanim zacznie się reszta */
+}
+
+/* Tekst główny (adres, kontakt itp.) */
+.leaflet-popup-content p {
+  margin: 4px 0; /* delikatne pionowe odstępy między liniami */
+}
+
+/* Ikony na dole – odklejone od tekstu powyżej */
+.leaflet-popup-content .result-icons {
+  margin-top: 12px;  /* przestrzeń nad ikonami */
+  display: flex;
+  gap: 10px;         /* odstępy między samymi ikonami */
+}
+
+/* Ikony kontaktowe w sidebarze */
+.result-content .contact-icon {
+  width: 18px;          /* odpowiedni rozmiar */
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 6px;    /* odstęp między ikoną a tekstem */
+}
+
+/* Help icons (psychologiczna, prawna itd.) */
+.result-content .help-icons img.help-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+/* Dodatkowe marginesy między wierszami */
+.result-content p {
+  margin: 4px 0;
+}
+
+/* Ewentualnie zmniejszenie ogólnej wysokości result-card */
+.result-card {
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.3;
 }

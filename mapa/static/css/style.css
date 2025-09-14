@@ -1,131 +1,595 @@
 /* === RESET === */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --header-h: 60px;            /* wysokość nagłówka (desktop) */
 }
 
 html, body {
-  min-height: 100vh;
+  min-height: 100dvh;
   font-family: 'Acumin', sans-serif;
   font-size: 14px;
-  background-color: #ff4713;
+  background-color: #35173f;
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
-  height: 100vh;
-  width: 100vw;
 }
 
-/* === FLEX LAYOUT === */
+/* === LAYOUT === */
 .layout-container {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  position: relative;
+  min-height: 100dvh;     /* zostaw flex kolumnę, ale bez sztywnej wysokości */
+  overflow: visible;/* dla absolutów w headerze/pasku */
+/*  padding-right: 32px; */
 }
 
-/* === HEADER === */
+/* === HEADER (tytuł nad mapą) === */
 .header {
   display: flex;
   align-items: center;
-  gap: 20px;
+  justify-content: space-between;
   flex-wrap: wrap;
   background-color: #ff4713;
-  color: white;
-  text-align: left;
+  color: #ffffff;
+  padding: 12px 16px;
+  z-index: 3000;          /* nad mapą i paskiem */
+  overflow: visible;
   position: relative;
-  justify-content: space-between;
-  padding: 16px;
 }
 
-.header-logo img {
-  max-height: 64px;
-  height: auto;
-  width: auto;
-  display: block;
-}
-
-.header-center {
-  flex: 1;
-  min-width: 220px;
-  margin-left: 150px;
-}
-
+.header-center { flex: 1 1 auto; min-width: 240px; }
 .header-center h1 {
+  margin-right: 20px;
+  line-height: 1.1;
   font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 700;
-  margin-bottom: 4px;
+  white-space: normal;
+  word-break: break-word;
+  padding-left: 460px;
 }
 
-.header-center p {
-  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
-  margin: 0;
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header .toggle-results-btn { position: fixed; z-index: 1205; } /* ponad paskiem */
+
+
+/* === MAIN / MAPA === */
+.main-content{
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr; /* lewy panel + mapa */
+  gap: 16px;
+  min-height: calc(100dvh - var(--header-h));
+  position: relative;      /* kotwica dla absolutów niżej */
+  background: transparent; /* ważne: nie zasłaniaj mapy tłem */
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
+.sidebar-left { width: var(--sidebar-w); } /* jawnie, dla czytelności */
 
-/* === MAIN CONTENT === */
-.main-content {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  min-height: 400px;
-  position: relative;
-}
 
-/* === MAP === */
-main {
-  flex: 1;
-  position: relative;
-  min-width: 0;
-  height: auto;
-  margin-right: 32px;
-  transition: margin 0.3s ease;
-}
-
-#map {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  min-height: 300px;
-}
+main{ flex: 1 1 auto; min-width: 0; min-height: 0; height: 100%;}
 
 .info-bar {
   background-color: #ff4713;
-  color: white;
+  color: #ffffff;
   text-align: center;
   padding: 8px 16px;
   font-size: 1rem;
 }
 
-/* === SIDEBARS === */
+/* === SIDEBARY === */
 .sidebar-left,
 .sidebar-right {
   background-color: #ff4713;
-  color: white;
+  color: #ffffff;
+  z-index: 1;
 }
+
+/* Logo w lewym panelu (pierwszy element w aside.sidebar-left) */
+.sidebar-left { padding-top: 10px; position: relative; }
+.sidebar-logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0px 10px 10px 40px;
+}
+.sidebar-logo a{ display:inline-block; }
+.sidebar-logo img{
+  width: 80%;
+  max-width: 330px;   /* zmień według potrzeb */
+  height: auto;
+  object-fit: contain;
+}
+
+/* Jeśli w DOM zostało stare logo w headerze — ukryj je */
+.header-logo-wrapper { display: none !important; }
 
 /* === FOOTER === */
 footer {
-  background-color: #2e9a92;
-  color: white;
+  background-color: #35173f;
+  color: #fff;
   text-align: center;
-  padding: 12px;
+  padding: 4px;
   font-size: 0.9rem;
   flex-shrink: 0;
   width: 100%;
+}
+
+/* Dodatkowe tekstowe sekcje (jak miałeś) */
+.about-link { text-align: center; margin-top: 24px; font-size: 0.95rem; text-decoration: underline; color: #555; }
+.about-link a { color: inherit; }
+.about-page { max-width: 800px; margin: 0 auto; padding: 32px 16px; font-size: 1.05rem; line-height: 1.6; }
+.about-page h1, .about-page h2 { margin-top: 2em; font-weight: bold; }
+.about-page ul { margin-left: 1.2em; padding-left: 0; }
+.about-page a { color: #2e9a92; text-decoration: underline; }
+.about-page a:hover { text-decoration: none; }
+.about-page details summary { cursor: pointer; font-weight: bold; margin-top: 1em; }
+.about-page .thanks { margin-top: 3em; font-style: italic; text-align: center; font-size: 1.1rem; }
+
+/* === RESPONSYWKA === */
+@media (max-width: 1200px){
+  :root{ --header-h: 80px; }
+}
+
+@media (max-width: 768px){
+  :root{ --header-h: 72px; }
+  .header-right-extension{ height: var(--header-h); }
+}
+
+/* ——— konfiguracja ——— */
+:root{
+  --sidebar-w: 560px;                 /* szerokość lewego panelu */
+  --bar-collapsed: 0px;              /* wąski pasek */
+  --bar-expanded: calc(30px + 290px); /* szeroki pasek (po otwarciu wyników) */
+  --btn-safe: 170px;                  /* bezpieczna szerokość przycisku */
+  --btn-gap: 12px;                    /* odstęp od paska */
+}
+
+/* 1) header jest kotwicą dla absolutów wewnątrz (przycisk) */
+.header{ position: relative !important; }
+
+/* 2) tytuł przesuwamy nad mapę i rezerwujemy miejsce po prawej
+      na pasek + przycisk, żeby nic się nie nachodziło */
+.header-center{
+  margin-left: calc(var(--sidebar-w)) !important;
+  margin-right: calc(var(--bar-collapsed) + var(--btn-safe) + var(--btn-gap)) !important;
+  min-width: 0;
+}
+body.results-open .header-center{
+  margin-right: calc(var(--bar-expanded) + var(--btn-safe) + var(--btn-gap)) !important;
+}
+/* nie używamy padding-left na h1 */
+.header-center h1{ padding-left: 0 !important; }
+
+body.results-open .header .toggle-results-btn{
+  right: 16px !important; /* na rozsuniętym pasku */
+}
+
+/* 4) pasek ma być NA headerze (zamyka ramkę), ale nie blokuje klików */
+.header-right-extension{
+  position: absolute !important;
+  top: 0; right: 0;
+  height: var(--header-h) !important;
+  width: var(--bar-collapsed);
+  background: #35173f;
+  z-index: 1000 !important;     /* > header(1000), < przycisk(1205) */
+  pointer-events: none;
+  transition: width .3s ease;
+}
+body.results-open .header-right-extension{ width: var(--bar-expanded); }
+
+
+/* 3) Nowy pasek – jako pseudo-element headera */
+:root{
+  --bar-collapsed: 0px;
+  --bar-expanded: calc(30px + 290px);
+}
+
+.header::after{
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: var(--bar-collapsed);
+  background: #35173f;
+  pointer-events: none;
+  z-index: 3000;          /* pasek nad tłem headera, ale pod przyciskiem */
+  transition: width .3s ease;
+}
+body.results-open .header::after{
+  width: var(--bar-expanded);
+}
+
+body.results-open .header .toggle-results-btn{
+  right: 16px !important;               /* gdy pasek rozsunięty */
+}
+
+/* (opcjonalnie) miejsce po prawej dla tytułu, żeby nie wpadał pod przycisk */
+.header-center{
+  margin-right: calc(var(--bar-collapsed) + 170px + 12px) !important;
+}
+body.results-open .header-center{
+  margin-right: calc(var(--bar-expanded) + 170px + 12px) !important;
+}
+
+.desktop-only { display: inline-flex; }    /* przycisk w headerze na desktopie */
+.mobile-only  { display: none !important; }/* FAB domyślnie ukryty */
+
+html, body, .layout-container {
+  width: 100% !important;  /* zamiast 100vw */
+  overflow-x: hidden !important;
+}
+
+/* === KAFELKI POMOCY — UKŁAD DOKŁADNIE JAK BYŁ === */
+#help-filters{
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important; /* 4 w rzędzie na desktopie */
+  gap: 12px !important;
+  margin-bottom: 16px !important;
+}
+
+/* responsywka tylko kolumny, bez zmiany rozmiarów/odstępów kafelków */
+@media (max-width: 1100px){
+  #help-filters{ grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
+}
+@media (max-width: 720px){
+  #help-filters{ grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+}
+@media (max-width: 420px){
+  #help-filters{ grid-template-columns: 1fr !important; }
+}
+
+/* kafelek – bez grzebania w paddingach/flexach które już masz */
+#help-filters .help-filter{
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* ikona i podpis – tylko kosmetyka, żeby nie rozjeżdżało się przy różnych tłach */
+#help-filters .help-filter .icon img{
+  width: 52px; height: 52px;
+  display: block;
+  margin: 2px auto 6px;
+  transition: filter .15s ease;
+}
+#help-filters .help-filter .label{
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+/* Na ciemnym aktywnym kaflu – napisy białe (żadnego wpływu na layout) */
+#help-filters .help-filter.active:not(.on-light) .label{ color: #ffffff !important; }
+
+
+/* Etykieta też zmienia kolor przy aktywnym kafelku */
+#help-filters .help-filter .label{ color: #ffffff; }
+#help-filters .help-filter.active .label{ color: #ffffff; }
+
+/* 1) Jedna zmienna na prawy gutter */
+:root{
+  --gutter-r: var(--bar-collapsed);
+}
+body.results-open{
+  --gutter-r: var(--bar-expanded);
+}
+
+:root{
+  --sidebar-w: 420px;
+  --header-h: 60px;
+
+  --bar-collapsed: 32px;           /* pasek gdy sidebar schowany */
+  --bar-expanded: 320px;           /* szerokość wysuwanego sidebara */
+}
+
+/* Pasek po prawej – ZOSTAJE na layout-container */
+.layout-container { padding-right: var(--bar-collapsed); }
+body.results-open .layout-container { padding-right: var(--bar-expanded); }
+
+/* Pasek wizualny w headerze (żeby było spójnie z paddingiem powyżej) */
+.header { position: relative; }
+.header::after{
+  content: "";
+  position: absolute; inset: 0 auto 0 100%;
+  width: var(--bar-collapsed);
+  right: 0; top: 0; bottom: 0;
+  background: #35173f;
+  pointer-events: none;
+  transition: width .3s ease;
+}
+body.results-open .header::after{ width: var(--bar-expanded); }
+
+/* Sidebar z wynikami – NA mapie, nigdy pod mapą */
+#sidebarResults{
+  position: fixed;
+  top: var(--header-h);
+  right: 0;
+  width: var(--bar-expanded);
+  height: calc(100dvh - var(--header-h));
+  background: #35173f;
+  color: #fff;
+  z-index: 3500;               /* ponad mapą */
+  transform: translateX(100%); /* schowany */
+  transition: transform .25s ease;
+  overflow: auto;
+  pointer-events: auto;
+}
+#sidebarResults.visible{ transform: translateX(0); }
+
+/* Mapa nigdy nie zasłania sidebara */
+.leaflet-container{ z-index: 0; }
+
+/* Przycisk „Wyniki” – zawsze widoczny (fixed),
+   nie zmieniamy jego kolorów – te masz w buttons.css */
+.header .toggle-results-btn{
+  position: fixed !important;
+  top: 10px !important;
+  right: calc(var(--bar-collapsed) + 16px) !important;
+  z-index: 3600 !important;  /* powyżej sidebara */
+}
+body.results-open .header .toggle-results-btn{
+  right: 16px !important;
+}
+
+.leaflet-top {
+  top: calc(var(--header-h) + 16px) !important;
+}
+
+.leaflet-right {
+  right: calc(var(--bar-collapsed) + 16px) !important;
+}
+
+/* Gdy pasek wyników otwarty */
+body.results-open .leaflet-right {
+  right: calc(var(--bar-expanded) + 16px) !important;
+}
+
+/* Zbij przerwę między kolumnami do zera */
+.main-content {
+  gap: 0 !important;
+}
+
+/* A „oddech” przenieś do środka panelu, żeby nic nie zjechało */
+.sidebar-left {
+  padding-right: 16px; /* tyle co wcześniejszy gap */
+}
+
+
+/* wspólna zmienna na ring */
+:root { --btn-ring: rgba(255,255,255,.25); }
+
+/* === PRZYCISKI === */
+
+/* wszystkie przyciski dostają ring */
+button,
+.button-row button,
+button.main-search-btn,
+#search-btn,
+#geolocate-btn,
+#reset-btn,
+.toggle-results-btn {
+  border: 2px solid var(--btn-ring) !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
+}
+
+/* główny SZUKAJ (duży) */
+button.main-search-btn {
+  border: 2px solid var(--btn-ring) !important;
+}
+
+/* RESET – czerwony */
+#reset-btn {
+  background: #ff4d4d !important;
+  color: #fff !important;
+}
+
+/* LOKALIZUJ – ten sam rozmiar, kolor jak reszta */
+#geolocate-btn {
+  background: #2e9a92 !important;
+  color: #fff !important;
+}
+
+/* mała para (Lokalizuj + Resetuj) – identyczne wymiary */
+.button-row.small-controls {
+  display: flex !important;
+  gap: 8px !important;
+}
+.button-row.small-controls button {
+  flex: 1 0 0 !important;      /* równa szerokość */
+  height: 44px !important;     /* identyczna wysokość */
+  padding: 8px 12px !important;
+  line-height: 1.2 !important;
+}
+
+/* === KAFELKI === */
+#help-filters .help-filter,
+.type-filters-grid .filter-tile {
+  border: 2px solid var(--btn-ring) !important;
+  border-radius: 12px !important;
+}
+#help-filters .help-filter:hover,
+#help-filters .help-filter:focus-visible,
+.type-filters-grid .filter-tile:hover,
+.type-filters-grid .filter-tile:focus-visible {
+  box-shadow: 0 0 0 3px #fff inset, 0 6px 14px rgba(0,0,0,.2);
+}
+
+/* === H1: nie ucina się, przesunięty o 20px w lewo, stabilny przy otwartych wynikach === */
+
+/* 0) Pasek w headerze ma być POD treścią, a nie nad nią */
+html body .header::after{
+  z-index: 0 !important;            /* wcześniej było wysoko – zasłaniało h1 */
+}
+
+/* 0.1) Sam header nie może ucinać zawartości */
+html body .header{
+  overflow: visible !important;     /* nadpisuje ewentualne overflow:hidden */
+}
+
+/* 1) Rezerwa miejsca po prawej, żeby otwieranie wyników NIE zmieniało szerokości tytułu */
+html body .header-center{
+  margin-right: 0 !important;
+  padding-right: calc(var(--bar-expanded) + var(--btn-safe) + var(--btn-gap)) !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;          /* pozwala się poprawnie „zmieścić” w flexie */
+}
+
+/* 2) Sam tytuł – 20px w lewo, bez sztucznego paddingu z dawnych reguł */
+html body .header-center h1{
+  padding-left: 0 !important;
+  transform: translateX(+20px);     /* przesunięcie o 20px w lewo */
+  white-space: nowrap !important;   /* nie zawijaj przy otwieraniu panelu */
+  overflow: visible !important;     /* nic nie ucinamy */
+  text-overflow: clip !important;   /* 'wrap' nie jest prawidłową wartością */
+}
+
+/* ==== DESKTOP BUTTON SAFETY (końcówka style.css) ==== */
+.header .toggle-results-btn{
+  height:auto !important;
+  min-height:36px !important;
+  width:auto !important;
+  padding:8px 12px !important;
+}
+
+/* krawędź (biała ramka) – wymuszona na wszystkich buttonach */
+#search-btn,
+#geolocate-btn,
+#reset-btn,
+button.main-search-btn,
+.button-row button{
+  border:2px solid rgba(255,255,255,.25) !important;
+  box-sizing:border-box !important;
+}
+
+.filter-tile button,
+.filter-tile span{
+  font-size: 1rem;           /* wielkość jak „Publiczne” / „Pozarządowe” */
+  font-weight: 700;          /* boldowane */
+}
+
+.popup-body .contact-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+/* === POPUP === */
+.leaflet-popup-content {
+  line-height: 1.4;
+}
+
+/* tytuł */
+.leaflet-popup-content .popup-title {
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* badge – pełna szerokość i odstęp od tytułu */
+.leaflet-popup-content .type-badge {
+  display: block;
+  width: 100%;
+  margin: 6px 0 12px 0;
+  text-align: center;
+  border-radius: 6px;
+}
+
+/* odstępy między liniami treści */
+.leaflet-popup-content .popup-body p {
+  margin: 6px 0;
+  font-size: 0.8rem;
+}
+
+/* ikony na dole */
+.leaflet-popup-content .popup-icons {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+
+/* Dodatkowe ustawienie przycisku toggle */
+.header .toggle-results-btn {
+  position: fixed;
+  top: 10px;
+  right: 16px;
+  z-index: 3600;
+}
+
+.main-content {
+  height: calc(100dvh - var(--header-h)) !important;
+}
+
+/* Sidebar wyników – wysuwany nad mapą */
+#sidebarResults {
+  position: fixed;
+  top: var(--header-h);           /* start pod headerem */
+  right: 0;
+  width: var(--bar-expanded, 320px);
+  height: calc(100dvh - var(--header-h));
+  background: #35173f;
+  color: #fff;
+  z-index: 3500;                  /* niższy niż przycisk */
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  overflow: auto;
+}
+#sidebarResults.visible {
+  transform: translateX(0);
+}
+
+/* Przycisk toggle – zawsze nad sidebarem */
+.header .toggle-results-btn {
+  position: fixed !important;     /* nie absolut, bo header może zmieniać kontekst */
+  top: 10px !important;
+  right: calc(var(--bar-collapsed) + 16px) !important;
+  z-index: 3600 !important;       /* zawsze nad sidebarem */
+}
+
+/* Przesunięcie przycisku, gdy sidebar jest otwarty */
+body.results-open .header .toggle-results-btn {
+  right: 16px !important;         /* zawsze po prawej od sidebaru */
+}
+
+#map {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: calc(80dvh - var(--header-h) + 150px) !important;
+  flex: 1 1 auto;
+  z-index: 0;
+}
+
+.partners {
+  margin-top: 48px;
+  text-align: center;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.partners .logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin-top: 20px;
+  flex-wrap: wrap;  /* pozwala łamać się w kolumny na mniejszych ekranach */
+}
+
+.partners img {
+  max-height: 70px;   /* kontrola wysokości loga */
+  max-width: 180px;   /* żeby szerokie loga nie wystrzeliły */
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* opcjonalnie – białe na ciemnym tle */
 }
 
