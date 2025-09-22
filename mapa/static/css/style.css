@@ -1,9 +1,6 @@
 /* === RESET === */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --header-h: 60px;            /* wysokość nagłówka (desktop) */
-}
 
 html, body {
   min-height: 100dvh;
@@ -22,9 +19,8 @@ html, body {
   display: flex;
   flex-direction: column;
   position: relative;
-  min-height: 100dvh;     /* zostaw flex kolumnę, ale bez sztywnej wysokości */
-  overflow: visible;/* dla absolutów w headerze/pasku */
-/*  padding-right: 32px; */
+  min-height: 100dvh;
+  overflow: visible;/
 }
 
 /* === HEADER (tytuł nad mapą) === */
@@ -53,7 +49,6 @@ html, body {
 }
 
 .header-right { display: flex; align-items: center; gap: 12px; }
-.header .toggle-results-btn { position: fixed; z-index: 1205; } /* ponad paskiem */
 
 
 /* === MAIN / MAPA === */
@@ -87,21 +82,6 @@ main{ flex: 1 1 auto; min-width: 0; min-height: 0; height: 100%;}
   z-index: 1;
 }
 
-/* Logo w lewym panelu (pierwszy element w aside.sidebar-left) */
-.sidebar-left { padding-top: 10px; position: relative; }
-.sidebar-logo{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0px 10px 10px 40px;
-}
-.sidebar-logo a{ display:inline-block; }
-.sidebar-logo img{
-  width: 80%;
-  max-width: 330px;   /* zmień według potrzeb */
-  height: auto;
-  object-fit: contain;
-}
 
 /* Jeśli w DOM zostało stare logo w headerze — ukryj je */
 .header-logo-wrapper { display: none !important; }
@@ -138,14 +118,6 @@ footer {
   .header-right-extension{ height: var(--header-h); }
 }
 
-/* ——— konfiguracja ——— */
-:root{
-  --sidebar-w: 560px;                 /* szerokość lewego panelu */
-  --bar-collapsed: 0px;              /* wąski pasek */
-  --bar-expanded: calc(30px + 290px); /* szeroki pasek (po otwarciu wyników) */
-  --btn-safe: 170px;                  /* bezpieczna szerokość przycisku */
-  --btn-gap: 12px;                    /* odstęp od paska */
-}
 
 /* 1) header jest kotwicą dla absolutów wewnątrz (przycisk) */
 .header{ position: relative !important; }
@@ -153,7 +125,7 @@ footer {
 /* 2) tytuł przesuwamy nad mapę i rezerwujemy miejsce po prawej
       na pasek + przycisk, żeby nic się nie nachodziło */
 .header-center{
-  margin-left: calc(var(--sidebar-w)) !important;
+  margin-left: calc(var(--sidebar-w) - 35px) !important;
   margin-right: calc(var(--bar-collapsed) + var(--btn-safe) + var(--btn-gap)) !important;
   min-width: 0;
 }
@@ -184,7 +156,7 @@ body.results-open .header-right-extension{ width: var(--bar-expanded); }
 /* 3) Nowy pasek – jako pseudo-element headera */
 :root{
   --bar-collapsed: 0px;
-  --bar-expanded: calc(30px + 290px);
+  --bar-expanded: calc(30px + 220px);
 }
 
 .header::after{
@@ -203,9 +175,6 @@ body.results-open .header::after{
   width: var(--bar-expanded);
 }
 
-body.results-open .header .toggle-results-btn{
-  right: 16px !important;               /* gdy pasek rozsunięty */
-}
 
 /* (opcjonalnie) miejsce po prawej dla tytułu, żeby nie wpadał pod przycisk */
 .header-center{
@@ -228,7 +197,7 @@ html, body, .layout-container {
   display: grid !important;
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important; /* 4 w rzędzie na desktopie */
   gap: 12px !important;
-  margin-bottom: 16px !important;
+  margin-bottom: 6px !important;
 }
 
 /* responsywka tylko kolumny, bez zmiany rozmiarów/odstępów kafelków */
@@ -280,11 +249,11 @@ body.results-open{
 }
 
 :root{
-  --sidebar-w: 420px;
-  --header-h: 60px;
+  --sidebar-w: 480px;
+  --header-h: 70px;
 
   --bar-collapsed: 32px;           /* pasek gdy sidebar schowany */
-  --bar-expanded: 320px;           /* szerokość wysuwanego sidebara */
+  --bar-expanded: 420px;           /* szerokość wysuwanego sidebara */
 }
 
 /* Pasek po prawej – ZOSTAJE na layout-container */
@@ -324,14 +293,7 @@ body.results-open .header::after{ width: var(--bar-expanded); }
 /* Mapa nigdy nie zasłania sidebara */
 .leaflet-container{ z-index: 0; }
 
-/* Przycisk „Wyniki” – zawsze widoczny (fixed),
-   nie zmieniamy jego kolorów – te masz w buttons.css */
-.header .toggle-results-btn{
-  position: fixed !important;
-  top: 10px !important;
-  right: calc(var(--bar-collapsed) + 16px) !important;
-  z-index: 3600 !important;  /* powyżej sidebara */
-}
+
 body.results-open .header .toggle-results-btn{
   right: 16px !important;
 }
@@ -357,54 +319,6 @@ body.results-open .leaflet-right {
 /* A „oddech” przenieś do środka panelu, żeby nic nie zjechało */
 .sidebar-left {
   padding-right: 16px; /* tyle co wcześniejszy gap */
-}
-
-
-/* wspólna zmienna na ring */
-:root { --btn-ring: rgba(255,255,255,.25); }
-
-/* === PRZYCISKI === */
-
-/* wszystkie przyciski dostają ring */
-button,
-.button-row button,
-button.main-search-btn,
-#search-btn,
-#geolocate-btn,
-#reset-btn,
-.toggle-results-btn {
-  border: 2px solid var(--btn-ring) !important;
-  box-sizing: border-box !important;
-  box-shadow: none !important;
-}
-
-/* główny SZUKAJ (duży) */
-button.main-search-btn {
-  border: 2px solid var(--btn-ring) !important;
-}
-
-/* RESET – czerwony */
-#reset-btn {
-  background: #ff4d4d !important;
-  color: #fff !important;
-}
-
-/* LOKALIZUJ – ten sam rozmiar, kolor jak reszta */
-#geolocate-btn {
-  background: #2e9a92 !important;
-  color: #fff !important;
-}
-
-/* mała para (Lokalizuj + Resetuj) – identyczne wymiary */
-.button-row.small-controls {
-  display: flex !important;
-  gap: 8px !important;
-}
-.button-row.small-controls button {
-  flex: 1 0 0 !important;      /* równa szerokość */
-  height: 44px !important;     /* identyczna wysokość */
-  padding: 8px 12px !important;
-  line-height: 1.2 !important;
 }
 
 /* === KAFELKI === */
@@ -449,23 +363,6 @@ html body .header-center h1{
   text-overflow: clip !important;   /* 'wrap' nie jest prawidłową wartością */
 }
 
-/* ==== DESKTOP BUTTON SAFETY (końcówka style.css) ==== */
-.header .toggle-results-btn{
-  height:auto !important;
-  min-height:36px !important;
-  width:auto !important;
-  padding:8px 12px !important;
-}
-
-/* krawędź (biała ramka) – wymuszona na wszystkich buttonach */
-#search-btn,
-#geolocate-btn,
-#reset-btn,
-button.main-search-btn,
-.button-row button{
-  border:2px solid rgba(255,255,255,.25) !important;
-  box-sizing:border-box !important;
-}
 
 .filter-tile button,
 .filter-tile span{
@@ -517,16 +414,8 @@ button.main-search-btn,
 
 
 
-/* Dodatkowe ustawienie przycisku toggle */
-.header .toggle-results-btn {
-  position: fixed;
-  top: 10px;
-  right: 16px;
-  z-index: 3600;
-}
-
 .main-content {
-  height: calc(100dvh - var(--header-h)) !important;
+  height: calc(90dvh - var(--header-h)) !important;
 }
 
 /* Sidebar wyników – wysuwany nad mapą */
@@ -547,12 +436,18 @@ button.main-search-btn,
   transform: translateX(0);
 }
 
-/* Przycisk toggle – zawsze nad sidebarem */
-.header .toggle-results-btn {
-  position: fixed !important;     /* nie absolut, bo header może zmieniać kontekst */
-  top: 10px !important;
-  right: calc(var(--bar-collapsed) + 16px) !important;
-  z-index: 3600 !important;       /* zawsze nad sidebarem */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;       /* żeby się nie nachodziły */
+  gap: 0.3rem;
+}
+
+.header h1 {
+  flex: 1 1 auto;        /* tytuł może się zawijać */
+  font-size: clamp(1.0rem, 1.5vw, 1.6rem); /* responsywny rozmiar */
+  margin: 0;
 }
 
 /* Przesunięcie przycisku, gdy sidebar jest otwarty */
@@ -562,11 +457,12 @@ body.results-open .header .toggle-results-btn {
 
 #map {
   width: 100% !important;
-  height: 100% !important;
-  min-height: calc(80dvh - var(--header-h) + 150px) !important;
+  min-height: calc(70dvh - var(--header-h)) !important;
   flex: 1 1 auto;
   z-index: 0;
+  height: calc(95vh - 18px); /* odejmujemy header + footer */
 }
+
 
 .partners {
   margin-top: 48px;
@@ -593,3 +489,68 @@ body.results-open .header .toggle-results-btn {
   filter: brightness(0) invert(1); /* opcjonalnie – białe na ciemnym tle */
 }
 
+html, body {
+  min-height: 100vh;
+  height: auto !important;       /* usuń sztywne blokowanie */
+  overflow-y: auto !important;   /* zawsze można przewinąć */
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: auto !important;       /* zamiast height:100vh */
+}
+
+/* Sekcja main – sidebar i mapa równe wysokości */
+.main-content {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  align-items: stretch;           /* sidebar i mapa mają tę samą wysokość */
+  min-height: calc(100vh - var(--header-h));
+}
+
+.leaflet-popup-content .help-icons img,
+.result-content .contact-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain; /* zachowanie proporcji */
+}
+
+.about-link { margin-bottom: 24px; }
+
+/* Firefoks */
+.sidebar-left {
+  scrollbar-width: auto;                    /* nie thin, tylko normalny/gruby */
+  scrollbar-color: #35173f #ff4713;         /* thumb (fiolet) | track (pomarańcz) */
+  overflow-y: scroll;                         /* wymusza przewijanie gdy treść wyższa */
+}
+
+/* Chrome / Edge / Safari (WebKit) */
+.sidebar-left::-webkit-scrollbar {
+  width: 16px;                              /* gruby pasek */
+}
+
+.sidebar-left::-webkit-scrollbar-track {
+  background: #ff4713;                      /* tor pomarańczowy */
+}
+
+.sidebar-left::-webkit-scrollbar-thumb {
+  background-color: #35173f;                /* uchwyt fioletowy */
+  border-radius: 8px;
+  border: 3px solid #ff4713;                /* kontrast, żeby nie zlewał się z tłem */
+}
+
+.header .toggle-results-btn {
+  position: fixed !important;     /* zależne od font-size */
+  right: 2.5rem !important;              /* względnie od prawej krawędzi */
+  z-index: 3600 !important;
+
+  padding: 0.5em 1em;                  /* skaluje się z font-size */
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem); /* responsywny tekst */
+  min-height: 2.5em;                   /* minimalna wysokość zależna od font-size */
+  min-width: 6em;                      /* minimalna szerokość zależna od font-size */
+  height: auto;
+  width: auto;
+  box-sizing: border-box;
+}

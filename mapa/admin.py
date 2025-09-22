@@ -5,6 +5,6 @@ from .models import Institution
 @admin.register(Institution)
 class InstitutionAdmin(LeafletGeoAdmin):
     list_display = ('name', 'address',)
-    search_fields = ['name', 'address', 'help_type']
+    search_fields = ['name', 'address',]
 
 

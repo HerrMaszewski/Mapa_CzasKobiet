@@ -35,19 +35,20 @@
           <label for="radius-select">Promień</label>
           <select id="radius-select">
             <option value="10">10 km</option>
-            <option value="15">15 km</option>
             <option value="30">30 km</option>
             <option value="50" selected>50 km</option>
+            <option value="70">70 km</option>
             <option value="100">100 km</option>
             <option value="150">150 km</option>
             <option value="200">200 km</option>
-            <option value="500">500 km</option>
+            <option value="300">300 km</option>
           </select>
         </div>
       </div>
     </div>
     <div id="address-error" class="error-msg"></div>
   </div>
+</div>
 
   <h4>Wybierz rodzaj pomocy</h4>
     <div class="filters-grid" id="help-filters">
@@ -79,15 +80,13 @@
 
   <hr>
 
-  <button id="search-btn" class="main-search-btn">Szukaj</button>
-
-  <div class="button-row small-controls">
-    <button id="geolocate-btn">Lokalizuj</button>
-    <button id="reset-btn">Resetuj</button>
-  </div>
+<div class="sidebar-buttons">
+  <button id="search-btn" class="sidebar-btn main-search-btn">Szukaj</button>
+  <button id="geolocate-btn" class="sidebar-btn geolocate-btn">Lokalizuj</button>
+  <button id="reset-btn" class="sidebar-btn reset-btn">Resetuj</button>
+  <a href="{% url 'about' %}" class="info-btn">O nas</a>
 </div>
 
-<a href="{% url 'about' %}" class="info-btn">O nas</a>
 {% endblock %}
 
 {% block scripts %}
@@ -99,136 +98,92 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  // ===== KONFIG =====
-  const POLAND_BOUNDS = L.latLngBounds([48.8, 13.5], [55.0, 24.5]);
-  const MAX_BOUNDS    = POLAND_BOUNDS.pad(0.02);
-  const START_CENTER  = [52.0, 19.0];
-  const START_ZOOM    = 7;
+    // ===== KONFIG =====
+    const POLAND_BOUNDS = L.latLngBounds([48.8, 13.5], [55.0, 24.5]);
+    const MAX_BOUNDS = POLAND_BOUNDS.pad(0.50);
 
-  // Stałe przesunięcie tylko dla fitToPoland (start/reset)
-  // +X => treść mapy idzie w lewo (viewport w prawo), +Y => trochę w dół
-  const EXTRA_PAN_X = 0;   // dostosuj jeśli chcesz bardziej w lewo
-  const EXTRA_PAN_Y = 0;    // w dół, żeby było widać zoom +/-
+    // ===== MAPA =====
+    const map = L.map('map', {
+        preferCanvas: true,
+        minZoom: 5,
+        maxZoom: 20,
+        zoom: 7,          // startowy zoom
+        center: [52.0, 19.0], // ustawienie centrum na środek Polski
+        maxBounds: MAX_BOUNDS,
+        maxBoundsViscosity: 1.0,
+        zoomControl: true
+    });
 
-  // Czy przesuwać mapę przy otwieraniu/zwijaniu wyników? (NIE)
-  const MOVE_ON_RESULTS = false;
+        // Startowe centrum Polski
+    const POLAND_CENTER = [52.0, 19.0];
 
-  // ===== MAPA =====
-  const map = L.map('map', {
-    preferCanvas: true,
-    minZoom: 7,
-    maxZoom: 16,
-    maxBounds: MAX_BOUNDS,
-    maxBoundsViscosity: 1.0,
-    zoomControl: true
-  });
-
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
-
-    // Jeśli chcesz jednocześnie ustawić inne centrum i zoom:
-    if (isMobile) {
-    map.setView([52.0, 19.0], 2);   // środek PL + oddalenie; dopasuj wg potrzeb
+    function getStartZoom() {
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        return isMobile ? 2 : 7; // mobile: zoom 4, desktop: zoom 7
     }
 
-  const SMALL_ICONS = {
-  GOV: {
-    psychological_help: "{% static 'icons/psychologiczna-glyph.svg' %}",
-    legal_help:         "{% static 'icons/prawna-magenta-glyph.svg' %}",
-    social_help:        "{% static 'icons/socjalna-manta-glyph.svg' %}",
-    accommodation:      "{% static 'icons/nocleg-glyph.svg' %}",
-  },
-  NGO: {
-    psychological_help: "{% static 'icons/psychologiczna-glyph_pink.svg' %}",
-    legal_help:         "{% static 'icons/prawna-glyph_pink.svg' %}",
-    social_help:        "{% static 'icons/socjalna_glyph_pink.svg' %}",
-    accommodation:      "{% static 'icons/nocleg-glyph_pink.svg' %}",
-  }
-};
+    // Startowa konfiguracja mapy
+    map.setView(POLAND_CENTER, getStartZoom());
 
-  const CONTACT_ICONS = {
-  GOV: {
-    phone:   "{% static 'icons/phone_mag.svg' %}",
-    email:   "{% static 'icons/email_mag.svg' %}",
-    infoline:"{% static 'icons/info_mag.svg' %}",
-    hours:   "{% static 'icons/clock_mag.svg' %}",
-  },
-  NGO: {
-    phone:   "{% static 'icons/phone_pink.svg' %}",
-    email:   "{% static 'icons/email_pink.svg' %}",
-    infoline:"{% static 'icons/info_pink.svg' %}",
-    hours:   "{% static 'icons/clock_pink.svg' %}",
-  }
-};
+    // Resize – zmiana zoomu przy zmianie rozmiaru okna
+    window.addEventListener('resize', debounce(() => {
+        map.setView(POLAND_CENTER, getStartZoom(), { animate: false });
+    }, 150));
 
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap, &copy; CARTO',
-    detectRetina: true
-  }).addTo(map);
 
-  // Start PL (zaraz i tak zrobimy fitToPoland)
-  map.setView(START_CENTER, START_ZOOM, { animate: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+        minZoom: 5,
+        noWrap: true,
+        detectRetina: true
+    }).addTo(map);
 
-  // ===== UTYL =====
-  const $  = (sel) => document.querySelector(sel);
-  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    // ===== UTYL =====
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
-  function dims () {
-    const headerH = $('.header')?.offsetHeight || 0;
-    const footerH = $('footer')?.offsetHeight || 0;
-    const leftW   = $('.sidebar-left')?.offsetWidth || 0;
+    function dims() {
+        const headerH = $('.header')?.offsetHeight || 0;
+        const footerH = $('footer')?.offsetHeight || 0;
+        const leftW = $('.sidebar-left')?.offsetWidth || 0;
+        const layout = $('.layout-container');
+        const rightGutter = layout ? (parseInt(getComputedStyle(layout).paddingRight) || 0) : 0;
+        const main = $('.main-content');
+        const gridGap = main ? (parseInt(getComputedStyle(main).columnGap) || 0) : 0;
+        return {headerH, footerH, leftW, rightGutter, gridGap};
+    }
 
-    // PRAWDZIWY prawy margines – padding-right na .layout-container (Twój „pasek”)
-    const layout      = $('.layout-container');
-    const rightGutter = layout ? (parseInt(getComputedStyle(layout).paddingRight) || 0) : 0;
+    function fitToPoland() {
+        requestAnimationFrame(() => map.invalidateSize(false));
+    }
 
-    // odstęp między kolumnami (sidebar + mapa)
-    const main    = $('.main-content');
-    const gridGap = main ? (parseInt(getComputedStyle(main).columnGap) || 0) : 0;
+ fetch("{% static 'geo/poland.json' %}")
+    .then(res => res.json())
+    .then(geojson => {
+        const poland = geojson.features[0];
+        const world = turf.polygon([[[ -180,-90],[180,-90],[180,90],[-180,90],[-180,-90] ]]);
+        const outsidePoland = turf.difference(world, poland);
 
-    return { headerH, footerH, leftW, rightGutter, gridGap };
-  }
+        window.polandMask = L.geoJSON(outsidePoland, {
+            style: { fillColor: 'rgba(0,0,0,0.3)', fillOpacity: 0.3, color: 'transparent' }
+        }).addTo(map);
 
-  // Dopasowanie Polski + „optyczne” przesunięcie (tylko tu!)
-  function fitToPoland () {
-    const { headerH, footerH, leftW, rightGutter, gridGap } = dims();
+        L.geoJSON(poland, { style: { color: '#5f2b75', weight: 2, fillOpacity: 0 } }).addTo(map);
 
-    map.fitBounds(POLAND_BOUNDS, {
-      paddingTopLeft:     [leftW + gridGap + 8, headerH + 8],
-      paddingBottomRight: [rightGutter + 8,     footerH + 8],
-      maxZoom: 7,
-      animate: false
+        fitToPoland();
     });
 
-    // Po dopasowaniu — aktualizuj rozmiar i przesuń delikatnie
-    requestAnimationFrame(() => {
-      map.invalidateSize(false);
-      visualNudge();
-    });
-  }
-
-  // Stałe, niewielkie przesunięcie środka (tylko po fitToPoland)
-  function visualNudge () {
-    const { headerH, leftW, rightGutter } = dims();
-
-    // Wyrównanie różnicy szerokości: lewy panel vs prawy „oddech”
-    const dxBase = (leftW - rightGutter) / 2;
-
-    // Końcowe przesunięcie
-    const dx = dxBase + EXTRA_PAN_X;
-    const dy = (headerH / 2) + EXTRA_PAN_Y;
-
-    map.panBy([dx, dy], { animate: false });
-  }
-
-  // Kadrowanie obszaru wyszukiwania (BEZ visualNudge!)
   function focusSearchArea(center, radiusKm) {
-    const bounds = L.latLng(center.lat, center.lng).toBounds(radiusKm * 2000); // 2*R
+    const bounds = L.latLng(center.lat, center.lng).toBounds(radiusKm * 5000); // 2*R
     map.fitBounds(bounds, { maxZoom: 12, animate: false });
     requestAnimationFrame(() => map.invalidateSize(false));
   }
@@ -239,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ===== PANEL WYNIKÓW / PRZYCISK =====
   function updateToggleButtons(isVisible) {
     $$('.toggle-results-btn').forEach(btn => {
-      btn.textContent = isVisible ? '❌ Zamknij wyniki' : '📋 Wyniki';
+      btn.textContent = isVisible ? 'Zamknij wyniki' : 'Wyniki';
     });
   }
   function showSidebar() {
@@ -276,33 +231,63 @@ document.addEventListener('DOMContentLoaded', function () {
 
       return str;
     }
-  // ===== DANE / KLASTRY =====
-  const institutions  = JSON.parse(document.getElementById('institution-data').textContent);
-    const markerCluster = L.markerClusterGroup({
-      maxClusterRadius: 120,
-      iconCreateFunction: function(cluster) {
-        const count = cluster.getChildCount();
+      // ===== DANE / KLASTRY =====
+      const institutions  = JSON.parse(document.getElementById('institution-data').textContent);
+        const markerCluster = L.markerClusterGroup({
+          maxClusterRadius: 120,
+          iconCreateFunction: function(cluster) {
+            const count = cluster.getChildCount();
 
-        // kolor wg liczności (dostosuj do brandu/mapy)
-        let color = '#5f2b75'; // fiolet bazowy
-        //if (count < 20) color = '#da8ff8';    // jasnozielony
-        //else if (count < 50) color = '#923cb1';
-        //else if (count < 100) color = '#5f2b75';
-        //else color = '#2f1144';               // ciemnozielony
+            // kolor wg liczności (dostosuj do brandu/mapy)
+            let color = '#5f2b75'; // fiolet bazowy
+            //if (count < 20) color = '#da8ff8';    // jasnozielony
+            //else if (count < 50) color = '#923cb1';
+            //else if (count < 100) color = '#5f2b75';
+            //else color = '#2f1144';               // ciemnozielony
 
-        return new L.DivIcon({
-          html: `<div style="
-            background:${color};
-            border-radius:50%;
-            color:#fff;
-            width:40px;height:40px;
-            display:flex;align-items:center;justify-content:center;
-            font-weight:bold;">${count}</div>`,
-          className: 'custom-cluster',
-          iconSize: [40, 40]
-        });
+            return new L.DivIcon({
+              html: `<div style="
+                background:${color};
+                border-radius:50%;
+                color:#fff;
+                width:40px;height:40px;
+                display:flex;align-items:center;justify-content:center;
+                font-weight:bold;">${count}</div>`,
+              className: 'custom-cluster',
+              iconSize: [40, 40]
+            });
+          }
+        }).addTo(map);
+
+       const SMALL_ICONS = {
+      GOV: {
+        psychological_help: "{% static 'icons/psychologiczna-glyph.svg' %}",
+        legal_help:         "{% static 'icons/prawna-magenta-glyph.svg' %}",
+        social_help:        "{% static 'icons/socjalna-manta-glyph.svg' %}",
+        accommodation:      "{% static 'icons/nocleg-glyph.svg' %}",
+      },
+      NGO: {
+        psychological_help: "{% static 'icons/psychologiczna-glyph_pink.svg' %}",
+        legal_help:         "{% static 'icons/prawna-glyph_pink.svg' %}",
+        social_help:        "{% static 'icons/socjalna_glyph_pink.svg' %}",
+        accommodation:      "{% static 'icons/nocleg-glyph_pink.svg' %}",
       }
-    }).addTo(map);
+    };
+
+      const CONTACT_ICONS = {
+      GOV: {
+        phone:   "{% static 'icons/phone_mag.svg' %}",
+        email:   "{% static 'icons/email_mag.svg' %}",
+        infoline:"{% static 'icons/info_mag.svg' %}",
+        hours:   "{% static 'icons/clock_mag.svg' %}",
+      },
+      NGO: {
+        phone:   "{% static 'icons/phone_pink.svg' %}",
+        email:   "{% static 'icons/email_pink.svg' %}",
+        infoline:"{% static 'icons/info_pink.svg' %}",
+        hours:   "{% static 'icons/clock_pink.svg' %}",
+      }
+    };
 
   // ===== STATE =====
   let currentPage  = 1;
@@ -361,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function () {
       map.setView(loc, 12);
       renderInstitutions(loc, radius, true);
       showSidebar();
-      focusSearchArea(loc, radius); // <- bez visualNudge
+      focusSearchArea(loc, radius);
     }, () => showError('address-error', 'Nie udało się pobrać lokalizacji.'));
   });
 
@@ -378,7 +363,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     renderInstitutions(null, null, false);
     hideSidebar();
-    fitToPoland(); // <- tutaj jest visualNudge
+    map.invalidateSize(); // Leaflet wie, że kontener mógł się zmienić
+    fitToPoland();
   });
 
   // ===== SZUKAJ =====
@@ -408,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function () {
       map.setView([lat, lng], 12);
       renderInstitutions(loc, radius, true);
       showSidebar();
-      focusSearchArea(loc, radius); // <- bez visualNudge
+      focusSearchArea(loc, radius);
     });
   });
 
@@ -497,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function () {
           '<p>' + inst.address + '</p>' +
           '<p><img class="contact-icon" src="'+contactIcons.phone+'" alt="telefon"> ' + (inst.phone_number || 'brak') + '</p>' +
           '<p><img class="contact-icon" src="'+contactIcons.email+'" alt="email"> ' + (inst.email || 'brak') + '</p>' +
-          '<p><img class="contact-icon" src="'+contactIcons.infoline+'" alt="infolinia"> ' + (inst.infoline || 'brak') + '</p>' +
+          '<p><img class="contact-icon" src="'+contactIcons.infoline+'" alt="infolinia"> ' + 'infolinia:' + (inst.infoline || 'brak') + '</p>' +
           '<p><img class="contact-icon" src="'+contactIcons.hours+'" alt="Godziny"> ' + (openingHours || 'brak') + '</p>' +
         '</div>' +
         '<div class="popup-icons">' + iconsHtml + '</div>' +
@@ -576,7 +562,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '<div class="result-content">' +
               '<p>' + inst.address + '</p>' +
               '<p><img class="contact-icon" src="' + contactIcons.phone + '" alt="telefon"> ' + (inst.phone_number || 'brak') + '</p>' +
-              '<p><img class="contact-icon" src="' + contactIcons.infoline + '" alt="infolinia"> ' + (inst.infoline || 'brak') + '</p>' +
+              '<p><img class="contact-icon" src="' + contactIcons.infoline + '" alt="infolinia"> ' + 'infolinia:' + (inst.infoline || 'brak') + '</p>' +
               '<p><img class="contact-icon" src="' + contactIcons.email + '" alt="email"> ' + (inst.email || 'brak') + '</p>' +
               '<p><img class="contact-icon" src="'+contactIcons.hours+'" alt="Godziny"> ' + (openingHours || 'brak') + '</p>' +
               '<div class="help-icons">' + iconsHtml + '</div>' +
@@ -645,11 +631,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ===== START =====
-  map.whenReady(() => { fitToPoland(); });
-  window.addEventListener('resize', debounce(fitToPoland, 150));
-
-  // Pierwszy render – same markery, bez listy
-  renderInstitutions(null, null, false);
+    map.whenReady(() => fitToPoland());
+    window.addEventListener('resize', debounce(fitToPoland, 150));
+    renderInstitutions(null, null, false);
 });
 </script>
 {% endblock %}

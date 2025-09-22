@@ -5,7 +5,7 @@
     flex-direction: column;
     justify-content: flex-start;
     flex: 0 0 500px;
-    padding: 24px 16px;
+    padding: 0px 16px;
     gap: 16px;
     overflow-y: auto;
     position: relative;
@@ -39,8 +39,8 @@
 }
 
 .location-col {
-  flex: 2 1 50%;
-  min-width: 250px;
+  flex: 2 1 60%;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   max-width: 60%;
@@ -48,11 +48,12 @@
 
 .radius-col {
   flex: 1 1 20%;
-  min-width: 70px;
+  min-width: 80px;
   display: flex;
   flex-direction: column;
   max-width: 30%;
   padding-right: 4px;
+  padding-left: 20px;
 }
 
 .sidebar-left input,
@@ -77,7 +78,6 @@
 /* === TYTUŁY SEKCJI === */
 #filters-panel > h3,
 #filters-panel > h4 {
-  margin-top: 8px;
   margin-bottom: 8px;
 }
 
@@ -88,4 +88,21 @@
   align-items: flex-start;
   margin-bottom: 4px;
 }
+
+/* Logo w lewym panelu (pierwszy element w aside.sidebar-left) */
+.sidebar-left { padding-top: 0px; position: relative; }
+.sidebar-logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -30px 0px 0px 70px;
+}
+.sidebar-logo a{ display:inline-block; }
+.sidebar-logo img{
+  width: 80%;
+  max-width: 300px;   /* zmień według potrzeb */
+  height: auto;
+  object-fit: contain;
+}
+
 

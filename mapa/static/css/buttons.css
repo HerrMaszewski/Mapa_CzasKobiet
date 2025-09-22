@@ -31,7 +31,7 @@ button:not(.main-search-btn):not(.toggle-results-btn):not(#reset-btn) {
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
-  margin: 10px 0;
+  margin: 0px 10px;
   transition: transform 0.2s, box-shadow 0.2s;
   width: 100%;
 }
@@ -48,7 +48,7 @@ button.main-search-btn {
   background: linear-gradient(to right, #2e9a92, #91cfbf);
   font-weight: bold;
   border-radius: 16px;
-  margin: 18px 0 12px 0;
+  margin: 0px 0 0px 0;
   width: 100%;
   text-align: center;
   display: flex;
@@ -85,7 +85,7 @@ button,
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 4px;
 }
 
 .filter-tile {
@@ -139,7 +139,7 @@ button,
 
 #help-filters .icon {
   font-size: 0.85rem;
-  margin-bottom: 4px;
+  margin-bottom: 1px;
 }
 
 #help-filters .label {
@@ -180,7 +180,7 @@ button,
 /* === IKONY i ETYKIETY === */
 .filter-tile .icon {
   font-size: 0.6rem;
-  margin-bottom: 4px;
+  margin-bottom: 1px;
 }
 .filter-tile .label {
   font-size: 0.4rem;
@@ -188,7 +188,7 @@ button,
 }
 .label {
   display: block;
-  margin-top: 12px;
+  margin-top: 5px;
   font-size: 0.9rem;
 }
 
@@ -385,19 +385,6 @@ button.main-search-btn:focus,
   color: #fff;
 }
 
-/* Styl dla przycisku „O nas” */
-.info-btn {
-  display: inline-block;
-  text-align: center;         /* wycentrowany napis */
-/*  text-transform: uppercase;   duże litery */
-  font-weight: bold;
-  color: white;
-  background-color: #35173f;
-  padding: 12px 20px;
-  border-radius: 12px;
-  border: 2px solid transparent;  /* domyślnie brak obwódki */
-  transition: box-shadow 0.2s, transform 0.1s;
-}
 
 /* Hover / focus */
 .info-btn:hover,
@@ -405,6 +392,151 @@ button.main-search-btn:focus,
   box-shadow: 0 0 0 3px #fff inset, 0 6px 14px rgba(0,0,0,.2);
   outline: none;
   transform: none;
+}
+
+/* Zachowanie paginacji i innych przycisków */
+.pagination button,
+.toggle-results-btn {
+  border: none;      /* nie ingerujemy w paginację */
+  box-shadow: none;
+  background: none;
+  color: inherit;
+  font-weight: normal;
+  width: auto;
+  height: auto;
+  padding: 0.5em 0.75em;
+}
+
+/* KONTEJNER */
+.sidebar-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* UJEDNOLICONE PRZYCISKI */
+.sidebar-btn,
+.info-btn {
+  font-family: "Acumin Pro", "Acumin", Arial, sans-serif !important;
+  font-weight: 400 !important;   /* usuwa pogrubienie */
+  background-color: #35173f !important;
+  color: #fff !important;
+  padding: 12px 20px !important;
+  border-radius: 12px;
+  border: 2px solid rgba(255,255,255,.25) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 260px !important;  /* taki sam jak reszta */
+  height: 40px !important;
+  box-sizing: border-box;
+}
+
+/* Hover/focus */
+.sidebar-btn:hover,
+.sidebar-btn:focus,
+.info-btn:hover,
+.info-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px #fff inset, 0 6px 14px rgba(0,0,0,.2);
+  transform: none;
+}
+
+/* Kolory */
+.main-search-btn,
+.geolocate-btn { background-color: #2e9a92 !important; }
+.reset-btn        { background-color: #d30404 !important; }
+.info-btn         { background-color: #35173f !important; }
+
+/* „O nas” blisko resetu */
+.info-btn {
+  margin-top: 4px;
+}
+
+/* === GLOBALNA CZCIONKA DLA CAŁEJ STRONY === */
+body, input, button, select, textarea {
+  font-family: "Acumin Pro", "Acumin", Arial, sans-serif !important;
+  font-weight: 700 !important; /* zwykła, bez pogrubień */
+  letter-spacing: normal !important;
+}
+
+/* Nadpisanie wszystkich buttonów (żeby nie mieszały fontów ani wag) */
+.info-btn
+ {
+  font-family: "Acumin Pro", "Acumin", Arial, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: normal !important;
+  font-size: 1rem !important;
+}
+
+/* === PRZYCISK "POKAŻ WIĘCEJ" === */
+.load-more-btn {
+  font-family: "Acumin Pro", "Acumin", Arial, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 0.85rem !important;
+  background: #2e9a92 !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255,255,255,.25) !important;
+  padding: 6px 14px !important;
+  margin: 10px auto !important;
+  display: inline-block !important;
+  width: auto !important;       /* <-- nie na pełną szerokość */
+  height: auto !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.1s;
+}
+.load-more-btn:hover {
+  box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0,0,0,.2);
+}
+
+/* === PAGINACJA === */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin: 10px 0;
+}
+
+.pagination button {
+  font-family: "Acumin Pro", "Acumin", Arial, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 0.8rem !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 6px !important;
+  background: #2e9a92 !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,.25) !important;
+  box-shadow: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.pagination button:hover,
+.pagination button:focus {
+  box-shadow: 0 0 0 2px #fff inset, 0 4px 10px rgba(0,0,0,.2);
+}
+
+button,
+.button-row button,
+button.main-search-btn,
+#search-btn,
+#geolocate-btn,
+#reset-btn,
+.toggle-results-btn
+{
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  padding: 8px 12px !important;
+  letter-spacing: 0.5px; /* więcej światła między literkami */
 }
 
 
