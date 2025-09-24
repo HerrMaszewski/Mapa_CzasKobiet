@@ -1,3 +1,4 @@
+app = "mapa-czaskobiet"   # <- dokładnie tak, jak nazwa Twojej aplikacji na fly.io
 primary_region = "waw"
 
 [build]

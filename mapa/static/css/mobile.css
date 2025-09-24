@@ -1,13 +1,11 @@
-/* === MOBILE ONLY (max 768px) === */
+
 @media (max-width: 768px) {
 
-    /* Stałe */
     :root {
-        --fab-w: clamp(120px, 42vw, 170px); /* szerokość FAB-a */
-        --header-h: 0px; /* header zwinięty */
+        --fab-w: clamp(120px, 42vw, 170px);
+        --header-h: 0px;
     }
 
-    /* Podstawy */
     html, body {
         margin: 0;
         padding: 0;
@@ -17,7 +15,6 @@
         overflow-y: auto;
     }
 
-    /* ==== HEADER (zwinięty, ale NIE ukrywamy .header-right) ==== */
     .header {
         min-height: 0 !important;
         height: 0 !important;
@@ -27,7 +24,6 @@
         position: relative;
     }
 
-    /* chowamy tytuł i fioletowy pasek, ale ZOSTAWIAMY .header-right */
     .header-center,
     .header-right-extension,
     .header::after {
@@ -35,12 +31,10 @@
     }
 
     .header-right {
-        display: block !important; /* <-- przycisk ma gdzie żyć */
+        display: block !important;
         position: static !important;
     }
 
-
-    /* ==== LAYOUT + MAPA ==== */
     .layout-container {
         display: flex;
         flex-direction: column;
@@ -57,7 +51,6 @@
         position: relative;
     }
 
-    /* Filtry nad mapą */
     .sidebar-left {
         order: 1;
         width: 100%;
@@ -85,12 +78,11 @@
         width: 100%;
     }
 
-    /* Mapa – stabilna wysokość */
     main {
         order: 2;
         position: relative;
         width: 97%;
-        height: 50vh; /* zmień wg potrzeb: 55–70vh */
+        height: 50vh;
         min-height: 100px;
         padding: 0 !important;
         margin-left: 5px;
@@ -103,7 +95,6 @@
         height: 20vh;
     }
 
-    /* ==== PRAWY PANEL (WYNIKI) jako bottom sheet ==== */
     .sidebar-right {
         position: fixed;
         left: 0;
@@ -125,8 +116,6 @@
         bottom: 0;
     }
 
-    /* ==== FAB „Wyniki/Zamknij” ==== */
-    /* domyślnie masz klasę .desktop-only – jawnie pokazujemy ją na mobile */
     .toggle-results-btn.desktop-only {
         display: inline-flex !important;
     }
@@ -146,7 +135,7 @@
         max-width: var(--fab-w) !important;
         min-width: 0 !important;
 
-        padding: 10px 12px !important; /* kompaktowy (nie za wysoki) */
+        padding: 10px 12px !important;
         line-height: 1 !important;
         font-size: .95rem !important;
         font-weight: 700 !important;
@@ -157,12 +146,11 @@
         border: none !important;
         box-shadow: 0 8px 22px rgba(0, 0, 0, .25);
 
-        z-index: 11000 !important; /* ponad sheetem i mapą */
+        z-index: 11000 !important;
         white-space: nowrap !important;
         pointer-events: auto !important;
     }
 
-    /* Na wszelki wypadek – upewniamy się, że nikt go nie ukryje gdziekolwiek */
     header .toggle-results-btn,
     main .toggle-results-btn,
     .mobile-toggle-wrapper .toggle-results-btn,
@@ -170,12 +158,10 @@
         display: inline-flex !important;
     }
 
-    /* Delikatny reset rozmiarów pozostałych kontrolek (nie dotyka FAB-a) */
     input, .filter-tile, button {
         font-size: clamp(.95rem, 2.6vw, 1.05rem);
     }
 
-    /* Header zwijamy, ale NIE polegamy na nim dla przycisku */
     .header {
         min-height: 0 !important;
         height: 0 !important;
@@ -191,7 +177,6 @@
         display: none !important;
     }
 
-    /* LOGO – pokaż i wycentruj (jeśli chcesz je mieć na mobile) */
     .header-logo-wrapper {
         position: static !important;
         display: flex !important;
@@ -216,13 +201,12 @@
         display: none !important;
     }
 
-    /* FAB „Wyniki/Zamknij” – tylko mobile */
     .mobile-only {
         display: inline-flex !important;
         position: fixed !important;
         right: 16px !important;
         bottom: max(16px, env(safe-area-inset-bottom)) !important;
-        z-index: 11000 !important; /* ponad panelem wyników i mapą */
+        z-index: 11000 !important;
         align-items: center;
         justify-content: center;
         gap: .4rem;
@@ -238,12 +222,10 @@
         box-shadow: 0 8px 22px rgba(0, 0, 0, .25);
     }
 
-    /* Bottom-sheet wyników zostaje jak był; upewniamy się o warstwach */
     .sidebar-right {
         z-index: 9999 !important;
     }
 
-    /* Mapa – stabilna wysokość sekcji */
     main {
         height: 60vh;
         min-height: 360px;
@@ -257,23 +239,19 @@
         z-index: 0;
     }
 
-    /* 1) brak fioletowych pasów po bokach na mobile */
     body {
-        background-color: #ff4713 !important; /* na mobile tło całej strony = orange */
+        background-color: #ff4713 !important;
     }
 
-    /* opcjonalnie wyłącz zaokrąglenia/karty, jeśli gdzieś są */
     .header, .sidebar-left, .main-content, footer {
         border-radius: 0 !important;
         margin: 0 !important;
     }
 
-    /* margin-right, który robił „pasek” po prawej */
     .main-content {
         margin-right: 0 !important;
     }
 
-    /* pasek pseudo-element headera – schowaj na mobile */
     .header::after {
         width: 0 !important;
     }
@@ -285,31 +263,27 @@
 
 
     .sidebar-logo img {
-        max-width: 180px; /* można dostroić */
+        max-width: 180px;
         height: auto;
     }
 
-    /* 3) węższe pole „Miejscowość” */
     #filters-panel .location-col #address-input {
-        width: 86% !important; /* było na całą szerokość – zawężamy */
-        max-width: 280px; /* twardy limit, żeby nie było za szerokie */
+        width: 86% !important;
+        max-width: 280px;
         margin-left: auto;
         margin-right: auto;
         display: block;
     }
 
-    /* trochę ciaśniej ogólnie w panelu */
     #filters-panel {
         padding-left: 16px !important;
         padding-right: 16px !important;
     }
 
-    /* wyłącz desktopowy przycisk na mobile – zostaje tylko FAB */
     .toggle-results-btn.desktop-only {
         display: none !important;
     }
 
-    /* FAB (ten mobilny) – normalny rozmiar, nie rozciąga się na całą wysokość */
     .toggle-results-btn,
     .toggle-results-btn.mobile-only {
         display: inline-flex !important;
@@ -326,38 +300,34 @@
         z-index: 11000 !important;
     }
 
-    /* Nadpisz desktopowe #sidebarResults (ma większą specyficzność) */
     #sidebarResults {
         position: fixed !important;
         left: 0 !important;
         right: 0 !important;
-        top: auto !important; /* nie podpinaj pod header */
-        bottom: -100% !important; /* startowo schowany */
+        top: auto !important;
+        bottom: -100% !important;
         width: 100% !important;
         height: min(65vh, 70dvh) !important;
         max-height: 70dvh !important;
         background: #35173f !important;
-        transform: none !important; /* ZABIJA translateX z desktopu */
+        transform: none !important;
         box-shadow: 0 -8px 24px rgba(0, 0, 0, .25);
         overflow: auto !important;
         z-index: 9999 !important;
     }
 
     #sidebarResults.visible {
-        bottom: 0 !important; /* wysuwa się z dołu */
+        bottom: 0 !important;
     }
 
-    /* Schowaj fioletowy „pasek” z desktopu */
     .header-right-extension, .header::after {
         display: none !important;
     }
 
-    /* tło strony na pomarańczowo, żeby nie prześwitywały pasy */
     body {
         background: #ff4713 !important;
     }
 
-    /* zabij desktopowy gutter/pasek po prawej */
     .layout-container {
         padding-right: 0 !important;
     }
@@ -370,13 +340,11 @@
         width: 0 !important;
     }
 
-    /* bottom-sheet – na wszelki wypadek trzyma się krawędzi */
     #sidebarResults {
         left: 0 !important;
         right: 0 !important;
     }
 
-    /* panel z filtrami – pełna szerokość kolumny adresu */
     .location-col {
         flex: 1 1 55% !important;
         max-width: 70% !important;
@@ -388,7 +356,6 @@
         max-width: 40%;
     }
 
-    /* pole „Miejscowość” – do lewej, 100% szerokości */
     #filters-panel .location-col #address-input {
         width: 100% !important;
         max-width: none !important;
@@ -399,17 +366,16 @@
         justify-content: center !important;
         padding-left: 0 !important;
         margin-top: 8px;
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     .sidebar-logo img {
         display: block !important;
         margin: 0 auto !important;
-        max-width: 180px; /* jak lubisz */
+        max-width: 180px;
         height: auto;
     }
 
-    /* pozwól na pionowe przewijanie nad mapą kosztem pionowego dragowania mapy */
     .leaflet-container {
         touch-action: pan-y !important;
     }
@@ -417,7 +383,7 @@
     main::after {
         content: "";
         display: block;
-        height: 96px; /* możesz zmniejszyć do 72px, jeśli wolisz */
+        height: 96px;
     }
 
     .info-btn {
@@ -433,23 +399,22 @@
       #help-filters,
       #type-filters {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* 2 kolumny równej szerokości */
-        gap: 12px !important; /* odstęp między kafelkami */
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
       }
 
-      /* Dostosowanie kafelków */
       #help-filters .filter-tile,
       #type-filters .filter-tile {
-        width: 100% !important; /* wypełniają kolumnę */
-        height: auto !important; /* zachowują proporcje */
+        width: 100% !important;
+        height: auto !important;
         padding: 8px !important;
         font-size: 0.9rem !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        -webkit-tap-highlight-color: transparent; /* usuwa błysk */
-        touch-action: manipulation; /* szybkie tapnięcie działa od razu */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
       }
 
       #help-filters .filter-tile .icon img,
@@ -484,4 +449,23 @@
         box-sizing: border-box;
         outline: none !important;
       }
+}
+
+@media (max-width: 1100px){
+  #help-filters{ grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
+}
+@media (max-width: 720px){
+  #help-filters{ grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+}
+@media (max-width: 420px){
+  #help-filters{ grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 1200px){
+  :root{ --header-h: 80px; }
+}
+
+@media (max-width: 768px){
+  :root{ --header-h: 72px; }
+  .header-right-extension{ height: var(--header-h); }
 }

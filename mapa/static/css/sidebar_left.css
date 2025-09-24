@@ -1,5 +1,3 @@
-/* === LEWY SIDEBAR === */
-
 .sidebar-left {
     display: flex;
     flex-direction: column;
@@ -14,7 +12,7 @@
 
 .header { overflow: hidden; }
 
-/* Nagłówki i etykiety */
+
 .sidebar-left h3 {
   font-size: 1.2rem;
   font-weight: bold;
@@ -26,8 +24,6 @@
   margin-top: 12px;
   margin-bottom: 4px;
 }
-
-/* === LOKALIZACJA I PROMIEŃ === */
 
 .location-row {
   display: flex;
@@ -72,10 +68,9 @@
 .main-search-wrapper {
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.4); /* lekki separator */
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-/* === TYTUŁY SEKCJI === */
 #filters-panel > h3,
 #filters-panel > h4 {
   margin-bottom: 8px;
@@ -89,7 +84,6 @@
   margin-bottom: 4px;
 }
 
-/* Logo w lewym panelu (pierwszy element w aside.sidebar-left) */
 .sidebar-left { padding-top: 0px; position: relative; }
 .sidebar-logo{
   display: flex;
@@ -100,7 +94,7 @@
 .sidebar-logo a{ display:inline-block; }
 .sidebar-logo img{
   width: 80%;
-  max-width: 300px;   /* zmień według potrzeb */
+  max-width: 300px;
   height: auto;
   object-fit: contain;
 }

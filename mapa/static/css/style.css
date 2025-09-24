@@ -1,71 +1,158 @@
-/* === RESET === */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* Reset globalny */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-
+/* Podstawowe style html/body */
 html, body {
-  min-height: 100dvh;
+  min-height: 100vh;
   font-family: 'Acumin', sans-serif;
   font-size: 14px;
   background-color: #35173f;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  height: auto !important;
+  width: 100% !important;
 }
 
-/* === LAYOUT === */
+/* Layout główny */
 .layout-container {
   display: flex;
   flex-direction: column;
-  position: relative;
-  min-height: 100dvh;
-  overflow: visible;/
+  min-height: 100vh;
+  height: auto !important;
+  padding-right: var(--bar-collapsed);
 }
 
-/* === HEADER (tytuł nad mapą) === */
+/* Header */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  gap: 0.3rem;
   background-color: #ff4713;
   color: #ffffff;
   padding: 12px 16px;
-  z-index: 3000;          /* nad mapą i paskiem */
-  overflow: visible;
-  position: relative;
+  position: relative !important;
+  overflow: visible !important;
+  z-index: 3000;
 }
 
-.header-center { flex: 1 1 auto; min-width: 240px; }
+.header::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 100%;
+  width: var(--bar-collapsed);
+  background: #35173f;
+  pointer-events: none;
+  transition: width .3s ease;
+  z-index: 0 !important;
+}
+
+.header-center {
+  flex: 1 1 auto;
+  min-width: 240px;
+  margin-right: calc(var(--bar-collapsed) + 170px + 12px) !important;
+}
+
+body.results-open .header-center {
+  margin-right: calc(var(--bar-expanded) + 170px + 12px) !important;
+}
+
 .header-center h1 {
   margin-right: 20px;
   line-height: 1.1;
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 700;
-  white-space: normal;
-  word-break: break-word;
-  padding-left: 460px;
+  font-size: clamp(1rem, 1.5vw, 1.6rem);
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  transform: translateX(20px);
+  padding-left: 0 !important;
 }
 
-.header-right { display: flex; align-items: center; gap: 12px; }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
+.header-right-extension {
+  position: absolute !important;
+  top: 0;
+  right: 0;
+  height: var(--header-h) !important;
+  width: var(--bar-collapsed);
+  background: #35173f;
+  z-index: 1000 !important;
+  pointer-events: none;
+  transition: width .3s ease;
+}
 
-/* === MAIN / MAPA === */
-.main-content{
+body.results-open .header-right-extension {
+  width: var(--bar-expanded);
+}
+
+.header-logo-wrapper { display: none !important; }
+
+/* Main / sidebar */
+.main-content {
   display: grid;
-  grid-template-columns: var(--sidebar-w) 1fr; /* lewy panel + mapa */
-  gap: 16px;
-  min-height: calc(100dvh - var(--header-h));
-  position: relative;      /* kotwica dla absolutów niżej */
-  background: transparent; /* ważne: nie zasłaniaj mapy tłem */
+  grid-template-columns: var(--sidebar-w) 1fr;
+  align-items: stretch;
+  gap: 0 !important;
+  min-height: calc(100vh - var(--header-h));
+  height: calc(90dvh - var(--header-h)) !important;
+  position: relative;
+  background: transparent;
 }
 
-.sidebar-left { width: var(--sidebar-w); } /* jawnie, dla czytelności */
+.sidebar-left {
+  width: var(--sidebar-w);
+  padding-right: 16px;
+  background-color: #ff4713;
+  color: #ffffff;
+  z-index: 1;
 
+  scrollbar-width: auto;
+  scrollbar-color: #35173f #ff4713;
+  overflow-y: scroll;
+}
 
-main{ flex: 1 1 auto; min-width: 0; min-height: 0; height: 100%;}
+.sidebar-left::-webkit-scrollbar {
+  width: 16px;
+}
 
+.sidebar-left::-webkit-scrollbar-track {
+  background: #ff4713;
+}
+
+.sidebar-left::-webkit-scrollbar-thumb {
+  background-color: #35173f;
+  border-radius: 8px;
+  border: 3px solid #ff4713;
+}
+
+.sidebar-right {
+  background-color: #ff4713;
+  color: #ffffff;
+  z-index: 1;
+}
+
+main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+/* Info bar */
 .info-bar {
   background-color: #ff4713;
   color: #ffffff;
@@ -74,19 +161,7 @@ main{ flex: 1 1 auto; min-width: 0; min-height: 0; height: 100%;}
   font-size: 1rem;
 }
 
-/* === SIDEBARY === */
-.sidebar-left,
-.sidebar-right {
-  background-color: #ff4713;
-  color: #ffffff;
-  z-index: 1;
-}
-
-
-/* Jeśli w DOM zostało stare logo w headerze — ukryj je */
-.header-logo-wrapper { display: none !important; }
-
-/* === FOOTER === */
+/* Footer */
 footer {
   background-color: #35173f;
   color: #fff;
@@ -97,299 +172,42 @@ footer {
   width: 100%;
 }
 
-/* Dodatkowe tekstowe sekcje (jak miałeś) */
-.about-link { text-align: center; margin-top: 24px; font-size: 0.95rem; text-decoration: underline; color: #555; }
-.about-link a { color: inherit; }
-.about-page { max-width: 800px; margin: 0 auto; padding: 32px 16px; font-size: 1.05rem; line-height: 1.6; }
-.about-page h1, .about-page h2 { margin-top: 2em; font-weight: bold; }
-.about-page ul { margin-left: 1.2em; padding-left: 0; }
-.about-page a { color: #2e9a92; text-decoration: underline; }
-.about-page a:hover { text-decoration: none; }
-.about-page details summary { cursor: pointer; font-weight: bold; margin-top: 1em; }
-.about-page .thanks { margin-top: 3em; font-style: italic; text-align: center; font-size: 1.1rem; }
-
-/* === RESPONSYWKA === */
-@media (max-width: 1200px){
-  :root{ --header-h: 80px; }
-}
-
-@media (max-width: 768px){
-  :root{ --header-h: 72px; }
-  .header-right-extension{ height: var(--header-h); }
-}
-
-
-/* 1) header jest kotwicą dla absolutów wewnątrz (przycisk) */
-.header{ position: relative !important; }
-
-/* 2) tytuł przesuwamy nad mapę i rezerwujemy miejsce po prawej
-      na pasek + przycisk, żeby nic się nie nachodziło */
-.header-center{
-  margin-left: calc(var(--sidebar-w) - 35px) !important;
-  margin-right: calc(var(--bar-collapsed) + var(--btn-safe) + var(--btn-gap)) !important;
-  min-width: 0;
-}
-body.results-open .header-center{
-  margin-right: calc(var(--bar-expanded) + var(--btn-safe) + var(--btn-gap)) !important;
-}
-/* nie używamy padding-left na h1 */
-.header-center h1{ padding-left: 0 !important; }
-
-body.results-open .header .toggle-results-btn{
-  right: 16px !important; /* na rozsuniętym pasku */
-}
-
-/* 4) pasek ma być NA headerze (zamyka ramkę), ale nie blokuje klików */
-.header-right-extension{
-  position: absolute !important;
-  top: 0; right: 0;
-  height: var(--header-h) !important;
-  width: var(--bar-collapsed);
-  background: #35173f;
-  z-index: 1000 !important;     /* > header(1000), < przycisk(1205) */
-  pointer-events: none;
-  transition: width .3s ease;
-}
-body.results-open .header-right-extension{ width: var(--bar-expanded); }
-
-
-/* 3) Nowy pasek – jako pseudo-element headera */
-:root{
-  --bar-collapsed: 0px;
-  --bar-expanded: calc(30px + 220px);
-}
-
-.header::after{
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: var(--bar-collapsed);
-  background: #35173f;
-  pointer-events: none;
-  z-index: 3000;          /* pasek nad tłem headera, ale pod przyciskiem */
-  transition: width .3s ease;
-}
-body.results-open .header::after{
-  width: var(--bar-expanded);
-}
-
-
-/* (opcjonalnie) miejsce po prawej dla tytułu, żeby nie wpadał pod przycisk */
-.header-center{
-  margin-right: calc(var(--bar-collapsed) + 170px + 12px) !important;
-}
-body.results-open .header-center{
-  margin-right: calc(var(--bar-expanded) + 170px + 12px) !important;
-}
-
-.desktop-only { display: inline-flex; }    /* przycisk w headerze na desktopie */
-.mobile-only  { display: none !important; }/* FAB domyślnie ukryty */
-
-html, body, .layout-container {
-  width: 100% !important;  /* zamiast 100vw */
-  overflow-x: hidden !important;
-}
-
-/* === KAFELKI POMOCY — UKŁAD DOKŁADNIE JAK BYŁ === */
-#help-filters{
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important; /* 4 w rzędzie na desktopie */
-  gap: 12px !important;
-  margin-bottom: 6px !important;
-}
-
-/* responsywka tylko kolumny, bez zmiany rozmiarów/odstępów kafelków */
-@media (max-width: 1100px){
-  #help-filters{ grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
-}
-@media (max-width: 720px){
-  #help-filters{ grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
-}
-@media (max-width: 420px){
-  #help-filters{ grid-template-columns: 1fr !important; }
-}
-
-/* kafelek – bez grzebania w paddingach/flexach które już masz */
-#help-filters .help-filter{
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
-}
-
-/* ikona i podpis – tylko kosmetyka, żeby nie rozjeżdżało się przy różnych tłach */
-#help-filters .help-filter .icon img{
-  width: 52px; height: 52px;
-  display: block;
-  margin: 2px auto 6px;
-  transition: filter .15s ease;
-}
-#help-filters .help-filter .label{
-  line-height: 1.2;
-  font-weight: 700;
-}
-
-/* Na ciemnym aktywnym kaflu – napisy białe (żadnego wpływu na layout) */
-#help-filters .help-filter.active:not(.on-light) .label{ color: #ffffff !important; }
-
-
-/* Etykieta też zmienia kolor przy aktywnym kafelku */
-#help-filters .help-filter .label{ color: #ffffff; }
-#help-filters .help-filter.active .label{ color: #ffffff; }
-
-/* 1) Jedna zmienna na prawy gutter */
-:root{
-  --gutter-r: var(--bar-collapsed);
-}
-body.results-open{
-  --gutter-r: var(--bar-expanded);
-}
-
-:root{
-  --sidebar-w: 480px;
-  --header-h: 70px;
-
-  --bar-collapsed: 32px;           /* pasek gdy sidebar schowany */
-  --bar-expanded: 420px;           /* szerokość wysuwanego sidebara */
-}
-
-/* Pasek po prawej – ZOSTAJE na layout-container */
-.layout-container { padding-right: var(--bar-collapsed); }
-body.results-open .layout-container { padding-right: var(--bar-expanded); }
-
-/* Pasek wizualny w headerze (żeby było spójnie z paddingiem powyżej) */
-.header { position: relative; }
-.header::after{
-  content: "";
-  position: absolute; inset: 0 auto 0 100%;
-  width: var(--bar-collapsed);
-  right: 0; top: 0; bottom: 0;
-  background: #35173f;
-  pointer-events: none;
-  transition: width .3s ease;
-}
-body.results-open .header::after{ width: var(--bar-expanded); }
-
-/* Sidebar z wynikami – NA mapie, nigdy pod mapą */
-#sidebarResults{
+/* Sidebar wyników */
+#sidebarResults {
   position: fixed;
   top: var(--header-h);
   right: 0;
-  width: var(--bar-expanded);
+  width: var(--bar-expanded, 320px);
   height: calc(100dvh - var(--header-h));
   background: #35173f;
   color: #fff;
-  z-index: 3500;               /* ponad mapą */
-  transform: translateX(100%); /* schowany */
-  transition: transform .25s ease;
+  z-index: 3500;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
   overflow: auto;
   pointer-events: auto;
 }
-#sidebarResults.visible{ transform: translateX(0); }
 
-/* Mapa nigdy nie zasłania sidebara */
-.leaflet-container{ z-index: 0; }
+#sidebarResults.visible { transform: translateX(0); }
 
-
-body.results-open .header .toggle-results-btn{
-  right: 16px !important;
+/* Map container */
+#map {
+  width: 100% !important;
+  min-height: calc(70dvh - var(--header-h)) !important;
+  flex: 1 1 auto;
+  z-index: 0;
+  height: calc(95vh - 18px);
 }
 
-.leaflet-top {
-  top: calc(var(--header-h) + 16px) !important;
-}
+/* Popup styles */
+.leaflet-popup-content { line-height: 1.4; }
 
-.leaflet-right {
-  right: calc(var(--bar-collapsed) + 16px) !important;
-}
-
-/* Gdy pasek wyników otwarty */
-body.results-open .leaflet-right {
-  right: calc(var(--bar-expanded) + 16px) !important;
-}
-
-/* Zbij przerwę między kolumnami do zera */
-.main-content {
-  gap: 0 !important;
-}
-
-/* A „oddech” przenieś do środka panelu, żeby nic nie zjechało */
-.sidebar-left {
-  padding-right: 16px; /* tyle co wcześniejszy gap */
-}
-
-/* === KAFELKI === */
-#help-filters .help-filter,
-.type-filters-grid .filter-tile {
-  border: 2px solid var(--btn-ring) !important;
-  border-radius: 12px !important;
-}
-#help-filters .help-filter:hover,
-#help-filters .help-filter:focus-visible,
-.type-filters-grid .filter-tile:hover,
-.type-filters-grid .filter-tile:focus-visible {
-  box-shadow: 0 0 0 3px #fff inset, 0 6px 14px rgba(0,0,0,.2);
-}
-
-/* === H1: nie ucina się, przesunięty o 20px w lewo, stabilny przy otwartych wynikach === */
-
-/* 0) Pasek w headerze ma być POD treścią, a nie nad nią */
-html body .header::after{
-  z-index: 0 !important;            /* wcześniej było wysoko – zasłaniało h1 */
-}
-
-/* 0.1) Sam header nie może ucinać zawartości */
-html body .header{
-  overflow: visible !important;     /* nadpisuje ewentualne overflow:hidden */
-}
-
-/* 1) Rezerwa miejsca po prawej, żeby otwieranie wyników NIE zmieniało szerokości tytułu */
-html body .header-center{
-  margin-right: 0 !important;
-  padding-right: calc(var(--bar-expanded) + var(--btn-safe) + var(--btn-gap)) !important;
-  flex: 1 1 auto !important;
-  min-width: 0 !important;          /* pozwala się poprawnie „zmieścić” w flexie */
-}
-
-/* 2) Sam tytuł – 20px w lewo, bez sztucznego paddingu z dawnych reguł */
-html body .header-center h1{
-  padding-left: 0 !important;
-  transform: translateX(+20px);     /* przesunięcie o 20px w lewo */
-  white-space: nowrap !important;   /* nie zawijaj przy otwieraniu panelu */
-  overflow: visible !important;     /* nic nie ucinamy */
-  text-overflow: clip !important;   /* 'wrap' nie jest prawidłową wartością */
-}
-
-
-.filter-tile button,
-.filter-tile span{
-  font-size: 1rem;           /* wielkość jak „Publiczne” / „Pozarządowe” */
-  font-weight: 700;          /* boldowane */
-}
-
-.popup-body .contact-icon {
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
-  margin-right: 6px;
-}
-
-/* === POPUP === */
-.leaflet-popup-content {
-  line-height: 1.4;
-}
-
-/* tytuł */
 .leaflet-popup-content .popup-title {
   margin: 0 0 8px 0;
   font-weight: 700;
   font-size: 0.95rem;
 }
 
-/* badge – pełna szerokość i odstęp od tytułu */
 .leaflet-popup-content .type-badge {
   display: block;
   width: 100%;
@@ -398,13 +216,11 @@ html body .header-center h1{
   border-radius: 6px;
 }
 
-/* odstępy między liniami treści */
 .leaflet-popup-content .popup-body p {
   margin: 6px 0;
   font-size: 0.8rem;
 }
 
-/* ikony na dole */
 .leaflet-popup-content .popup-icons {
   margin-top: 14px;
   display: flex;
@@ -412,56 +228,56 @@ html body .header-center h1{
   flex-wrap: wrap;
 }
 
+.leaflet-popup-content .help-icons img,
+.result-content .contact-icon { width: 18px; height: 18px; object-fit: contain; }
 
+.popup-body .contact-icon { width: 16px; height: 16px; vertical-align: middle; margin-right: 6px; }
 
-.main-content {
-  height: calc(90dvh - var(--header-h)) !important;
+/* Filtry */
+#help-filters {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  margin-bottom: 6px !important;
 }
 
-/* Sidebar wyników – wysuwany nad mapą */
-#sidebarResults {
-  position: fixed;
-  top: var(--header-h);           /* start pod headerem */
-  right: 0;
-  width: var(--bar-expanded, 320px);
-  height: calc(100dvh - var(--header-h));
-  background: #35173f;
-  color: #fff;
-  z-index: 3500;                  /* niższy niż przycisk */
-  transform: translateX(100%);
-  transition: transform 0.25s ease;
-  overflow: auto;
-}
-#sidebarResults.visible {
-  transform: translateX(0);
+#help-filters .help-filter {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  border: 2px solid var(--btn-ring) !important;
+  border-radius: 12px !important;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;       /* żeby się nie nachodziły */
-  gap: 0.3rem;
+#help-filters .help-filter .icon img {
+  width: 52px;
+  height: 52px;
+  display: block;
+  margin: 2px auto 6px;
+  transition: filter .15s ease;
 }
 
-.header h1 {
-  flex: 1 1 auto;        /* tytuł może się zawijać */
-  font-size: clamp(1.0rem, 1.5vw, 1.6rem); /* responsywny rozmiar */
-  margin: 0;
+#help-filters .help-filter .label {
+  line-height: 1.2;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-/* Przesunięcie przycisku, gdy sidebar jest otwarty */
-body.results-open .header .toggle-results-btn {
-  right: 16px !important;         /* zawsze po prawej od sidebaru */
-}
+#help-filters .help-filter.active:not(.on-light) .label { color: #ffffff !important; }
 
-#map {
-  width: 100% !important;
-  min-height: calc(70dvh - var(--header-h)) !important;
-  flex: 1 1 auto;
-  z-index: 0;
-  height: calc(95vh - 18px); /* odejmujemy header + footer */
-}
+/* About page */
+.about-link { text-align: center; margin-top: 24px; margin-bottom: 24px; font-size: 0.95rem; text-decoration: underline; color: #555; }
+.about-link a { color: inherit; }
+
+.about-page { max-width: 800px; margin: 0 auto; padding: 32px 16px; font-size: 1.05rem; line-height: 1.6; }
+.about-page h1, .about-page h2 { margin-top: 2em; font-weight: bold; }
+.about-page ul { margin-left: 1.2em; padding-left: 0; }
+.about-page a { color: #2e9a92; text-decoration: underline; }
+.about-page a:hover { text-decoration: none; }
+.about-page details summary { cursor: pointer; font-weight: bold; margin-top: 1em; }
+.about-page .thanks { margin-top: 3em; font-style: italic; text-align: center; font-size: 1.1rem; }
 
 
 .partners {
@@ -477,80 +293,33 @@ body.results-open .header .toggle-results-btn {
   align-items: center;
   gap: 32px;
   margin-top: 20px;
-  flex-wrap: wrap;  /* pozwala łamać się w kolumny na mniejszych ekranach */
+  flex-wrap: wrap;
 }
 
 .partners img {
-  max-height: 70px;   /* kontrola wysokości loga */
-  max-width: 180px;   /* żeby szerokie loga nie wystrzeliły */
+  max-height: 70px;
+  max-width: 180px;
   width: auto;
   height: auto;
   object-fit: contain;
-  filter: brightness(0) invert(1); /* opcjonalnie – białe na ciemnym tle */
+  filter: brightness(0) invert(1);
 }
 
-html, body {
-  min-height: 100vh;
-  height: auto !important;       /* usuń sztywne blokowanie */
-  overflow-y: auto !important;   /* zawsze można przewinąć */
+.filter-tile button,
+.filter-tile span {
+  font-size: 1rem;
+  font-weight: 700;
 }
 
-.layout-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  height: auto !important;       /* zamiast height:100vh */
+.desktop-only { display: inline-flex; }
+.mobile-only  { display: none !important; }
+
+:root {
+  --sidebar-w: 480px;
+  --header-h: 70px;
+  --bar-collapsed: 32px;
+  --bar-expanded: 420px;
+  --gutter-r: var(--bar-collapsed);
 }
 
-/* Sekcja main – sidebar i mapa równe wysokości */
-.main-content {
-  display: grid;
-  grid-template-columns: var(--sidebar-w) 1fr;
-  align-items: stretch;           /* sidebar i mapa mają tę samą wysokość */
-  min-height: calc(100vh - var(--header-h));
-}
-
-.leaflet-popup-content .help-icons img,
-.result-content .contact-icon {
-  width: 18px;
-  height: 18px;
-  object-fit: contain; /* zachowanie proporcji */
-}
-
-.about-link { margin-bottom: 24px; }
-
-/* Firefoks */
-.sidebar-left {
-  scrollbar-width: auto;                    /* nie thin, tylko normalny/gruby */
-  scrollbar-color: #35173f #ff4713;         /* thumb (fiolet) | track (pomarańcz) */
-  overflow-y: scroll;                         /* wymusza przewijanie gdy treść wyższa */
-}
-
-/* Chrome / Edge / Safari (WebKit) */
-.sidebar-left::-webkit-scrollbar {
-  width: 16px;                              /* gruby pasek */
-}
-
-.sidebar-left::-webkit-scrollbar-track {
-  background: #ff4713;                      /* tor pomarańczowy */
-}
-
-.sidebar-left::-webkit-scrollbar-thumb {
-  background-color: #35173f;                /* uchwyt fioletowy */
-  border-radius: 8px;
-  border: 3px solid #ff4713;                /* kontrast, żeby nie zlewał się z tłem */
-}
-
-.header .toggle-results-btn {
-  position: fixed !important;     /* zależne od font-size */
-  right: 2.5rem !important;              /* względnie od prawej krawędzi */
-  z-index: 3600 !important;
-
-  padding: 0.5em 1em;                  /* skaluje się z font-size */
-  font-size: clamp(0.9rem, 1.5vw, 1.2rem); /* responsywny tekst */
-  min-height: 2.5em;                   /* minimalna wysokość zależna od font-size */
-  min-width: 6em;                      /* minimalna szerokość zależna od font-size */
-  height: auto;
-  width: auto;
-  box-sizing: border-box;
-}
+body.results-open { --gutter-r: var(--bar-expanded); }
