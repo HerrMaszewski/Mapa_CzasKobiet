@@ -1,95 +1,139 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block right_sidebar %}
-  <div id="sidebarResults" class="sidebar-right">
-    <div id="results-count"></div>
-    <div id="results-loader"><div class="loader"></div></div>
-    <div id="results-list"></div>
-  </div>
-{% endblock %}
-
-{% block map %}
-  <div id="map"></div>
-{% endblock %}
-
-{% block left_sidebar %}
-<div class="sidebar-logo">
+{% extends "base.html" %} {% load static %} {% block right_sidebar %}
+<div id="sidebarResults" class="sidebar-right">
+  <div id="results-count"></div>
+  <div id="results-loader"><div class="loader"></div></div>
+  <div id="results-list"></div>
+</div>
+{% endblock %} {% block map %}
+<div id="map"></div>
+{% endblock %} {% block left_sidebar %}
+<div class="sidebar__header full-width">
   <a href="https://www.czaskobiet.org" target="_blank" rel="noopener">
-    <img src="{% static 'images/logo bez tła.png' %}" alt="Czas Kobiet">
+    <img src="{% static 'icons/logo.svg' %}" alt="Fundacja Czas Kobiet" />
   </a>
+  <img src="{% static 'icons/mapa-pomocy.svg' %}" alt="Fundacja Czas Kobiet" />
+  <h3>
+    Jeśli doświadczasz przemocy,<br />znajdź wsparcie w&nbsp;swojej okolicy:
+  </h3>
 </div>
 
-<div id="filters-panel">
-  <h3>Znajdź pomoc w swojej okolicy</h3>
-
-  <div class="location-wrapper">
-    <div class="location-row">
-      <div class="input-row">
-        <div class="location-col">
-          <label for="address-input">Miejscowość</label>
-          <input type="text" id="address-input" placeholder="np. Poznań"/>
-        </div>
-
-        <div class="radius-col">
-          <label for="radius-select">Promień</label>
-          <select id="radius-select">
-            <option value="10">10 km</option>
-            <option value="30">30 km</option>
-            <option value="50" selected>50 km</option>
-            <option value="70">70 km</option>
-            <option value="100">100 km</option>
-            <option value="150">150 km</option>
-            <option value="200">200 km</option>
-            <option value="300">300 km</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div id="address-error" class="error-msg"></div>
+<div id="filters-panel" class="subgrid">
+  <div class="input-col">
+    <label for="address-input">Miejscowość</label>
+    <input type="text" id="address-input" placeholder="np. Poznań" />
   </div>
-</div>
 
-  <h4>Wybierz rodzaj pomocy</h4>
-    <div class="filters-grid" id="help-filters">
-      <div class="filter-tile help-filter" data-filter="psychological_help">
-        <span class="icon"><img src="{% static 'icons/psychologiczna.svg' %}" alt="" /></span>
-        <span class="label">Psychologiczna</span>
-      </div>
-      <div class="filter-tile help-filter" data-filter="legal_help">
-        <span class="icon"><img src="{% static 'icons/prawna.svg' %}" alt="" /></span>
-        <span class="label">Prawna</span>
-      </div>
-      <div class="filter-tile help-filter" data-filter="social_help">
-        <span class="icon"><img src="{% static 'icons/socjalna.svg' %}" alt="" /></span>
-        <span class="label">Socjalna</span>
-      </div>
-      <div class="filter-tile help-filter" data-filter="accommodation">
-        <span class="icon"><img src="{% static 'icons/nocleg.svg' %}" alt="" /></span>
-        <span class="label">Nocleg</span>
-      </div>
-    </div>
-  <div id="help-error" class="error-msg"></div>
-
-  <h4>Wybierz rodzaj ośrodka pomocowego</h4>
-  <div class="type-filters-grid" id="type-filters">
-    <div class="filter-tile type-filter" data-type="NGO">Pozarządowe</div>
-    <div class="filter-tile type-filter" data-type="GOV">Publiczne</div>
+  <div class="input-col">
+    <label for="radius-select">Promień</label>
+    <select id="radius-select">
+      <option value="10">10 km</option>
+      <option value="30">30 km</option>
+      <option value="50" selected>50 km</option>
+      <option value="70">70 km</option>
+      <option value="100">100 km</option>
+      <option value="150">150 km</option>
+      <option value="200">200 km</option>
+      <option value="300">300 km</option>
+    </select>
   </div>
-  <div id="type-error" class="error-msg"></div>
-
-  <hr>
-
-<div class="sidebar-buttons">
-  <button id="search-btn" class="sidebar-btn main-search-btn">Szukaj</button>
-  <button id="geolocate-btn" class="sidebar-btn geolocate-btn">Lokalizuj</button>
-  <button id="reset-btn" class="sidebar-btn reset-btn">Resetuj</button>
-  <a href="{% url 'about' %}" class="info-btn">O nas</a>
+  <div id="address-error" class="error-msg full-width"></div>
 </div>
 
-{% endblock %}
+<div class="filters subgrid">
+  <h4 class="full-width">Wybierz rodzaj pomocy</h4>
+  <div class="subgrid" id="help-filters">
+    <div
+      class="filter-tile help-filter button--effect-transform button--effect-outline button--teal"
+      data-filter="psychological_help"
+    >
+      <img
+        src="{% static 'icons/psychologiczna.svg' %}"
+        alt="mapa czas kobiet - pomoc psychologiczna"
+      />
+      <span class="label">Psychologiczna</span>
+    </div>
+    <div
+      class="filter-tile help-filter button--effect-transform button--effect-outline button--teal"
+      data-filter="legal_help"
+    >
+      <img
+        src="{% static 'icons/prawna.svg' %}"
+        alt="mapa czas kobiet - pomoc prawna"
+      />
+      <span class="label">Prawna</span>
+    </div>
+    <div
+      class="filter-tile help-filter button--effect-transform button--effect-outline button--teal"
+      data-filter="social_help"
+    >
+      <img
+        src="{% static 'icons/socjalna.svg' %}"
+        alt="mapa czas kobiet - pomoc socjalna"
+      />
+      <span class="label">Socjalna</span>
+    </div>
+    <div
+      class="filter-tile help-filter button--effect-transform button--effect-outline button--teal"
+      data-filter="accommodation"
+    >
+      <img
+        src="{% static 'icons/nocleg.svg' %}"
+        alt="mapa czas kobiet - pomoc nocleg"
+      />
+      <span class="label">Nocleg</span>
+    </div>
+  </div>
+  <div id="help-error" class="error-msg full-width"></div>
+</div>
 
-{% block scripts %}
+<div class="type-filters subgrid">
+  <h4 class="full-width">Wybierz rodzaj ośrodka pomocowego</h4>
+  <div class="subgrid" id="type-filters">
+    <div
+      class="filter-tile button--text button--effect-transform button--effect-outline button--pink"
+      data-type="NGO"
+    >
+      Pozarządowe
+    </div>
+    <div
+      class="filter-tile button--text button--effect-transform button--effect-outline button--violet"
+      data-type="GOV"
+    >
+      Publiczne
+    </div>
+  </div>
+  <div id="type-error" class="error-msg full-width"></div>
+</div>
+
+<div class="horizontal-line full-width"></div>
+
+<div class="sidebar-buttons gap-1 full-width">
+  <button
+    id="search-btn"
+    class="button--text sidebar-btn button--teal button--effect-outline"
+  >
+    Szukaj
+  </button>
+  <button
+    id="geolocate-btn"
+    class="button--text sidebar-btn button--teal button--effect-outline"
+  >
+    Lokalizuj
+  </button>
+  <button
+    id="reset-btn"
+    class="button--text sidebar-btn button--red button--effect-outline"
+  >
+    Resetuj
+  </button>
+  <a
+    href="{% url 'about' %}"
+    class="button--text button--violet button--effect-outline"
+    >O nas</a
+  >
+</div>
+
+{% endblock %} {% block scripts %}
 <script id="institution-data" type="application/json">
   {{ institutions_json|safe }}
 </script>
@@ -99,52 +143,67 @@
 <script src="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+/>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener("DOMContentLoaded", function () {
     // ===== KONFIG =====
     const POLAND_BOUNDS = L.latLngBounds([48.8, 13.5], [55.0, 24.5]);
-    const MAX_BOUNDS = POLAND_BOUNDS.pad(0.50);
+    const MAX_BOUNDS = POLAND_BOUNDS.pad(0.5);
 
     // ===== MAPA =====
-    const map = L.map('map', {
-        preferCanvas: true,
-        minZoom: 5,
-        maxZoom: 20,
-        zoom: 7,          // startowy zoom
-        center: [52.0, 19.0], // ustawienie centrum na środek Polski
-        maxBounds: MAX_BOUNDS,
-        maxBoundsViscosity: 1.0,
-        zoomControl: true
+    const map = L.map("map", {
+      preferCanvas: true,
+      minZoom: 5,
+      maxZoom: 20,
+      zoom: 7, // startowy zoom
+      center: [52.0, 19.0], // ustawienie centrum na środek Polski
+      maxBounds: MAX_BOUNDS,
+      maxBoundsViscosity: 1.0,
+      zoomControl: true,
     });
 
-        // Startowe centrum Polski
+    // Startowe centrum Polski
     const POLAND_CENTER = [52.0, 19.0];
 
     function getStartZoom() {
-        const isMobile = window.matchMedia('(max-width: 768px)').matches;
-        return isMobile ? 2 : 7; // mobile: zoom 4, desktop: zoom 7
+      const isMobile = window.matchMedia("(max-width: 768px)").matches;
+      return isMobile ? 2 : 7; // mobile: zoom 4, desktop: zoom 7
     }
 
     // Startowa konfiguracja mapy
     map.setView(POLAND_CENTER, getStartZoom());
 
     // Resize – zmiana zoomu przy zmianie rozmiaru okna
-    window.addEventListener('resize', debounce(() => {
+    window.addEventListener(
+      "resize",
+      debounce(() => {
         map.setView(POLAND_CENTER, getStartZoom(), { animate: false });
-    }, 150));
+      }, 150)
+    );
 
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-        minZoom: 5,
-        noWrap: true,
-        detectRetina: true
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+      minZoom: 5,
+      noWrap: true,
+      detectRetina: true,
     }).addTo(map);
 
     // ===== UTYL =====
@@ -152,261 +211,345 @@ document.addEventListener('DOMContentLoaded', function () {
     const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
     function dims() {
-        const headerH = $('.header')?.offsetHeight || 0;
-        const footerH = $('footer')?.offsetHeight || 0;
-        const leftW = $('.sidebar-left')?.offsetWidth || 0;
-        const layout = $('.layout-container');
-        const rightGutter = layout ? (parseInt(getComputedStyle(layout).paddingRight) || 0) : 0;
-        const main = $('.main-content');
-        const gridGap = main ? (parseInt(getComputedStyle(main).columnGap) || 0) : 0;
-        return {headerH, footerH, leftW, rightGutter, gridGap};
+      const headerH = $(".header")?.offsetHeight || 0;
+      const footerH = $("footer")?.offsetHeight || 0;
+      const leftW = $(".sidebar-left")?.offsetWidth || 0;
+      const layout = $(".layout-container");
+      const rightGutter = layout
+        ? parseInt(getComputedStyle(layout).paddingRight) || 0
+        : 0;
+      const main = $(".main-content");
+      const gridGap = main
+        ? parseInt(getComputedStyle(main).columnGap) || 0
+        : 0;
+      return { headerH, footerH, leftW, rightGutter, gridGap };
     }
 
     function fitToPoland() {
-        requestAnimationFrame(() => map.invalidateSize(false));
+      requestAnimationFrame(() => map.invalidateSize(false));
     }
 
- fetch("{% static 'geo/poland.json' %}")
-    .then(res => res.json())
-    .then(geojson => {
+    fetch("{% static 'geo/poland.json' %}")
+      .then((res) => res.json())
+      .then((geojson) => {
         const poland = geojson.features[0];
-        const world = turf.polygon([[[ -180,-90],[180,-90],[180,90],[-180,90],[-180,-90] ]]);
+        const world = turf.polygon([
+          [
+            [-180, -90],
+            [180, -90],
+            [180, 90],
+            [-180, 90],
+            [-180, -90],
+          ],
+        ]);
         const outsidePoland = turf.difference(world, poland);
 
         window.polandMask = L.geoJSON(outsidePoland, {
-            style: { fillColor: 'rgba(0,0,0,0.3)', fillOpacity: 0.3, color: 'transparent' }
+          style: {
+            fillColor: "rgba(0,0,0,0.3)",
+            fillOpacity: 0.3,
+            color: "transparent",
+          },
         }).addTo(map);
 
-        L.geoJSON(poland, { style: { color: '#5f2b75', weight: 2, fillOpacity: 0 } }).addTo(map);
+        L.geoJSON(poland, {
+          style: { color: "#5f2b75", weight: 2, fillOpacity: 0 },
+        }).addTo(map);
 
         fitToPoland();
-    });
+      });
 
-  function focusSearchArea(center, radiusKm) {
-    const bounds = L.latLng(center.lat, center.lng).toBounds(radiusKm * 5000); // 2*R
-    map.fitBounds(bounds, { maxZoom: 12, animate: false });
-    requestAnimationFrame(() => map.invalidateSize(false));
-  }
+    function focusSearchArea(center, radiusKm) {
+      const bounds = L.latLng(center.lat, center.lng).toBounds(radiusKm * 5000); // 2*R
+      map.fitBounds(bounds, { maxZoom: 12, animate: false });
+      requestAnimationFrame(() => map.invalidateSize(false));
+    }
 
-  // Debounce
-  function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+    // Debounce
+    function debounce(fn, ms) {
+      let t;
+      return (...a) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...a), ms);
+      };
+    }
 
-  // ===== PANEL WYNIKÓW / PRZYCISK =====
-  function updateToggleButtons(isVisible) {
-    $$('.toggle-results-btn').forEach(btn => {
-      btn.textContent = isVisible ? 'Zamknij wyniki' : 'Wyniki';
-    });
-  }
-  function showSidebar() {
-    $('#sidebarResults')?.classList.add('visible');
-    document.body.classList.add('results-open');
-    updateToggleButtons(true);
-    if (MOVE_ON_RESULTS) setTimeout(fitToPoland, 60);
-  }
-  function hideSidebar() {
-    $('#sidebarResults')?.classList.remove('visible');
-    document.body.classList.remove('results-open');
-    updateToggleButtons(false);
-    if (MOVE_ON_RESULTS) setTimeout(fitToPoland, 60);
-  }
-  window.toggleResults = function () {
-    const sidebar = $('#sidebarResults');
-    const isVisible = sidebar?.classList.toggle('visible');
-    document.body.classList.toggle('results-open', !!isVisible);
-    updateToggleButtons(!!isVisible);
-    if (MOVE_ON_RESULTS) setTimeout(fitToPoland, 60);
-  };
+    // ===== PANEL WYNIKÓW / PRZYCISK =====
+    function updateToggleButtons(isVisible) {
+      $$(".toggle-results-btn").forEach((btn) => {
+        btn.textContent = isVisible ? "Ukryj wyniki" : "Pokaż wyniki";
+      });
+    }
+
+    function showSidebar() {
+      $("#sidebarResults")?.classList.add("visible");
+      document.body.classList.add("results-open");
+      updateToggleButtons(true);
+      if (MOVE_ON_RESULTS) setTimeout(fitToPoland, 60);
+    }
+    function hideSidebar() {
+      $("#sidebarResults")?.classList.remove("visible");
+      document.body.classList.remove("results-open");
+      updateToggleButtons(false);
+      if (MOVE_ON_RESULTS) setTimeout(fitToPoland, 60);
+    }
+    window.toggleResults = function () {
+      const sidebar = $("#sidebarResults");
+      const isVisible = sidebar?.classList.toggle("visible");
+      document.body.classList.toggle("results-open", !!isVisible);
+      updateToggleButtons(!!isVisible);
+      if (MOVE_ON_RESULTS) setTimeout(fitToPoland, 60);
+    };
 
     function normalizeTimeRange(str) {
-      if (!str) return '';
+      if (!str) return "";
       // usuń spacje wokół myślnika i zamień '-' lub '–' na półpauzę
-      str = str.replace(/\s*[-–]\s*/g, '–');
+      str = str.replace(/\s*[-–]\s*/g, "–");
 
       // poprawnie dodaj wiodące zero tylko do godzin jednocyfrowych
       str = str.replace(/\b(\d{1,2})(?::(\d{2}))?\b/g, (match, h, m) => {
-        h = h.padStart(2, '0');        // godzina 1 -> 01
-        if (m) return `${h}:${m}`;     // jeśli minuty są, zostaw jak są
-        return h;                      // jeśli brak minut, tylko godzina
+        h = h.padStart(2, "0"); // godzina 1 -> 01
+        if (m) return `${h}:${m}`; // jeśli minuty są, zostaw jak są
+        return h; // jeśli brak minut, tylko godzina
       });
 
       return str;
     }
-      // ===== DANE / KLASTRY =====
-      const institutions  = JSON.parse(document.getElementById('institution-data').textContent);
-        const markerCluster = L.markerClusterGroup({
-          maxClusterRadius: 120,
-          iconCreateFunction: function(cluster) {
-            const count = cluster.getChildCount();
+    // ===== DANE / KLASTRY =====
+    const institutions = JSON.parse(
+      document.getElementById("institution-data").textContent
+    );
+    const markerCluster = L.markerClusterGroup({
+      maxClusterRadius: 120,
+      iconCreateFunction: function (cluster) {
+        const count = cluster.getChildCount();
 
-            // kolor wg liczności (dostosuj do brandu/mapy)
-            let color = '#5f2b75'; // fiolet bazowy
-            //if (count < 20) color = '#da8ff8';    // jasnozielony
-            //else if (count < 50) color = '#923cb1';
-            //else if (count < 100) color = '#5f2b75';
-            //else color = '#2f1144';               // ciemnozielony
+        // kolor wg liczności (dostosuj do brandu/mapy)
+        let color = "#5f2b75"; // fiolet bazowy
+        //if (count < 20) color = '#da8ff8';    // jasnozielony
+        //else if (count < 50) color = '#923cb1';
+        //else if (count < 100) color = '#5f2b75';
+        //else color = '#2f1144';               // ciemnozielony
 
-            return new L.DivIcon({
-              html: `<div style="
+        return new L.DivIcon({
+          html: `<div style="
                 background:${color};
                 border-radius:50%;
                 color:#fff;
                 width:40px;height:40px;
                 display:flex;align-items:center;justify-content:center;
                 font-weight:bold;">${count}</div>`,
-              className: 'custom-cluster',
-              iconSize: [40, 40]
-            });
-          }
-        }).addTo(map);
+          className: "custom-cluster",
+          iconSize: [40, 40],
+        });
+      },
+    }).addTo(map);
 
-       const SMALL_ICONS = {
+    const SMALL_ICONS = {
       GOV: {
         psychological_help: "{% static 'icons/psychologiczna-glyph.svg' %}",
-        legal_help:         "{% static 'icons/prawna-magenta-glyph.svg' %}",
-        social_help:        "{% static 'icons/socjalna-manta-glyph.svg' %}",
-        accommodation:      "{% static 'icons/nocleg-glyph.svg' %}",
+        legal_help: "{% static 'icons/prawna-magenta-glyph.svg' %}",
+        social_help: "{% static 'icons/socjalna-manta-glyph.svg' %}",
+        accommodation: "{% static 'icons/nocleg-glyph.svg' %}",
       },
       NGO: {
-        psychological_help: "{% static 'icons/psychologiczna-glyph_pink.svg' %}",
-        legal_help:         "{% static 'icons/prawna-glyph_pink.svg' %}",
-        social_help:        "{% static 'icons/socjalna_glyph_pink.svg' %}",
-        accommodation:      "{% static 'icons/nocleg-glyph_pink.svg' %}",
-      }
+        psychological_help:
+          "{% static 'icons/psychologiczna-glyph_pink.svg' %}",
+        legal_help: "{% static 'icons/prawna-glyph_pink.svg' %}",
+        social_help: "{% static 'icons/socjalna_glyph_pink.svg' %}",
+        accommodation: "{% static 'icons/nocleg-glyph_pink.svg' %}",
+      },
     };
 
-      const CONTACT_ICONS = {
+    const CONTACT_ICONS = {
       GOV: {
-        phone:   "{% static 'icons/phone_mag.svg' %}",
-        email:   "{% static 'icons/email_mag.svg' %}",
-        infoline:"{% static 'icons/info_mag.svg' %}",
-        hours:   "{% static 'icons/clock_mag.svg' %}",
+        phone: "{% static 'icons/phone_mag.svg' %}",
+        email: "{% static 'icons/email_mag.svg' %}",
+        infoline: "{% static 'icons/info_mag.svg' %}",
+        hours: "{% static 'icons/clock_mag.svg' %}",
       },
       NGO: {
-        phone:   "{% static 'icons/phone_pink.svg' %}",
-        email:   "{% static 'icons/email_pink.svg' %}",
-        infoline:"{% static 'icons/info_pink.svg' %}",
-        hours:   "{% static 'icons/clock_pink.svg' %}",
-      }
+        phone: "{% static 'icons/phone_pink.svg' %}",
+        email: "{% static 'icons/email_pink.svg' %}",
+        infoline: "{% static 'icons/info_pink.svg' %}",
+        hours: "{% static 'icons/clock_pink.svg' %}",
+      },
     };
 
-  // ===== STATE =====
-  let currentPage  = 1;
-  let lastCenter   = null;
-  let lastRadius   = null;
-  let userMarker   = null;
-  const RESULTS_PER_PAGE = 5;
+    // ===== STATE =====
+    let currentPage = 1;
+    let lastCenter = null;
+    let lastRadius = null;
+    let userMarker = null;
+    const RESULTS_PER_PAGE = 5;
 
-  // ===== UTIL =====
-  function showError(id, msg) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = msg;
-    el.classList.remove('visible');
-    void el.offsetWidth;
-    el.classList.add('visible');
-    setTimeout(() => { el.classList.remove('visible'); el.textContent = ''; }, 4000);
-  }
-  function getActiveTypes() {
-    return Array.from(document.querySelectorAll('#type-filters .filter-tile.active'))
-      .map(tile => tile.dataset.type);
-  }
-  function getActiveFilters() {
-    return Array.from(document.querySelectorAll('#help-filters .filter-tile.active'))
-      .map(tile => tile.dataset.filter)
-      .filter(Boolean);
-  }
-  function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2)**2 +
-      Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
-      Math.sin(dLon/2)**2;
-    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-  }
+    // ===== UTIL =====
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove("visible");
+      void el.offsetWidth;
+      el.classList.add("visible");
+      setTimeout(() => {
+        el.classList.remove("visible");
+        el.textContent = "";
+      }, 4000);
+    }
+    function getActiveTypes() {
+      return Array.from(
+        document.querySelectorAll("#type-filters .filter-tile.active")
+      ).map((tile) => tile.dataset.type);
+    }
+    function getActiveFilters() {
+      return Array.from(
+        document.querySelectorAll("#help-filters .filter-tile.active")
+      )
+        .map((tile) => tile.dataset.filter)
+        .filter(Boolean);
+    }
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = ((lat2 - lat1) * Math.PI) / 180;
+      const dLon = ((lon2 - lon1) * Math.PI) / 180;
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos((lat1 * Math.PI) / 180) *
+          Math.cos((lat2 * Math.PI) / 180) *
+          Math.sin(dLon / 2) ** 2;
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+    }
 
-  // Klikalność kafelków
-  $$('.filter-tile').forEach(tile =>
-    tile.addEventListener('click', () => tile.classList.toggle('active'))
-  );
+    // Klikalność kafelków
+    $$(".filter-tile").forEach((tile) =>
+      tile.addEventListener("click", () => tile.classList.toggle("active"))
+    );
 
-  // ===== GEO =====
-  document.getElementById('geolocate-btn')?.addEventListener('click', () => {
-    if (!navigator.geolocation) return showError('address-error', 'Twoja przeglądarka nie obsługuje geolokalizacji.');
+    // ===== GEO =====
+    document.getElementById("geolocate-btn")?.addEventListener("click", () => {
+      if (!navigator.geolocation)
+        return showError(
+          "address-error",
+          "Twoja przeglądarka nie obsługuje geolokalizacji."
+        );
 
-    const radius  = parseFloat(document.getElementById('radius-select').value) || 50;
-    const types   = getActiveTypes();
-    const filters = getActiveFilters();
+      const radius =
+        parseFloat(document.getElementById("radius-select").value) || 50;
+      const types = getActiveTypes();
+      const filters = getActiveFilters();
 
-    if (!types.length)   return showError('type-error', 'Wybierz rodzaj instytucji (Pozarządowa lub Publiczna).');
-    if (!filters.length) return showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
+      if (!types.length)
+        return showError(
+          "type-error",
+          "Wybierz rodzaj instytucji (Pozarządowa lub Publiczna)."
+        );
+      if (!filters.length)
+        return showError(
+          "help-error",
+          "Wybierz co najmniej jeden rodzaj pomocy."
+        );
 
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      map.setView(loc, 12);
-      renderInstitutions(loc, radius, true);
-      showSidebar();
-      focusSearchArea(loc, radius);
-    }, () => showError('address-error', 'Nie udało się pobrać lokalizacji.'));
-  });
-
-  // ===== RESET =====
-  document.getElementById('reset-btn')?.addEventListener('click', () => {
-    document.getElementById('address-input').value = '';
-    document.querySelectorAll('.filter-tile').forEach(t => t.classList.remove('active'));
-
-    if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
-
-    document.getElementById('results-list').innerHTML = '';
-    document.getElementById('results-count').textContent = '';
-    document.getElementById('results-loader').classList.remove('visible');
-
-    renderInstitutions(null, null, false);
-    hideSidebar();
-    map.invalidateSize(); // Leaflet wie, że kontener mógł się zmienić
-    fitToPoland();
-  });
-
-  // ===== SZUKAJ =====
-  document.getElementById('search-btn')?.addEventListener('click', () => {
-    const address = document.getElementById('address-input').value.trim();
-    const radius  = parseFloat(document.getElementById('radius-select').value) || 50;
-    const types   = getActiveTypes();
-    const filters = getActiveFilters();
-
-    if (!address)        return showError('address-error', 'Wpisz nazwę miejscowości.');
-    if (!types.length)   return showError('type-error', 'Wybierz rodzaj instytucji (GOV lub NGO).');
-    if (!filters.length) return showError('help-error', 'Wybierz co najmniej jeden rodzaj pomocy.');
-
-    const geocoder = L.Control.Geocoder.nominatim();
-    geocoder.geocode(address + ', Polska', function (results) {
-      if (!results || !results.length) return showError('address-error', 'Nie znaleziono miejscowości.');
-      const cityResult = results.find(r =>
-        ['city','town','village','hamlet','municipality','locality','administrative','neighbourhood']
-          .includes(r.properties?.type)
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          map.setView(loc, 12);
+          renderInstitutions(loc, radius, true);
+          showSidebar();
+          focusSearchArea(loc, radius);
+        },
+        () => showError("address-error", "Nie udało się pobrać lokalizacji.")
       );
-      if (!cityResult) return showError('address-error', 'Nie znaleziono miejscowości w Polsce.');
-      const { lat, lng } = cityResult.center;
-      if (!(lat >= 48.8 && lat <= 55.0 && lng >= 13.5 && lng <= 24.5))
-        return showError('address-error', 'Podana miejscowość nie znajduje się w Polsce.');
-
-      const loc = { lat, lng };
-      map.setView([lat, lng], 12);
-      renderInstitutions(loc, radius, true);
-      showSidebar();
-      focusSearchArea(loc, radius);
     });
-  });
 
-  // ===== MARKERY SVG – KOLORY BRANDU =====
-  const PIN_COLORS = {
-    NGO: '#e5007e',     // magenta (Pozarządowe)
-    GOV: '#35173f',     // głęboki fiolet (Publiczne)
-    PRIORITY: '#7b2cbf' // np. Czas Kobiet – opcjonalnie
-  };
+    // ===== RESET =====
+    document.getElementById("reset-btn")?.addEventListener("click", () => {
+      document.getElementById("address-input").value = "";
+      document
+        .querySelectorAll(".filter-tile")
+        .forEach((t) => t.classList.remove("active"));
 
-  function pinSVG(color) {
-    return `
+      if (userMarker) {
+        map.removeLayer(userMarker);
+        userMarker = null;
+      }
+
+      document.getElementById("results-list").innerHTML = "";
+      document.getElementById("results-count").textContent = "";
+      document.getElementById("results-loader").classList.remove("visible");
+
+      renderInstitutions(null, null, false);
+      hideSidebar();
+      map.invalidateSize(); // Leaflet wie, że kontener mógł się zmienić
+      fitToPoland();
+    });
+
+    // ===== SZUKAJ =====
+    document.getElementById("search-btn")?.addEventListener("click", () => {
+      const address = document.getElementById("address-input").value.trim();
+      const radius =
+        parseFloat(document.getElementById("radius-select").value) || 50;
+      const types = getActiveTypes();
+      const filters = getActiveFilters();
+
+      if (!address)
+        return showError("address-error", "Wpisz nazwę miejscowości.");
+      if (!types.length)
+        return showError(
+          "type-error",
+          "Wybierz rodzaj instytucji (GOV lub NGO)."
+        );
+      if (!filters.length)
+        return showError(
+          "help-error",
+          "Wybierz co najmniej jeden rodzaj pomocy."
+        );
+
+      const geocoder = L.Control.Geocoder.nominatim();
+      geocoder.geocode(address + ", Polska", function (results) {
+        if (!results || !results.length)
+          return showError("address-error", "Nie znaleziono miejscowości.");
+
+        const cityResult = results.find((r) =>
+          [
+            "city",
+            "town",
+            "village",
+            "hamlet",
+            "municipality",
+            "locality",
+            "administrative",
+            "neighbourhood",
+          ].includes(r.properties?.type)
+        );
+        if (!cityResult)
+          return showError(
+            "address-error",
+            "Nie znaleziono miejscowości w Polsce."
+          );
+        const { lat, lng } = cityResult.center;
+        if (!(lat >= 48.8 && lat <= 55.0 && lng >= 13.5 && lng <= 24.5))
+          return showError(
+            "address-error",
+            "Podana miejscowość nie znajduje się w Polsce."
+          );
+
+        const loc = { lat, lng };
+        map.setView([lat, lng], 12);
+        renderInstitutions(loc, radius, true);
+        showSidebar();
+        focusSearchArea(loc, radius);
+      });
+    });
+
+    // ===== MARKERY SVG – KOLORY BRANDU =====
+    const PIN_COLORS = {
+      NGO: "#e5007e", // magenta (Pozarządowe)
+      GOV: "#35173f", // głęboki fiolet (Publiczne)
+      PRIORITY: "#7b2cbf", // np. Czas Kobiet – opcjonalnie
+    };
+
+    function pinSVG(color) {
+      return `
     <svg width="30" height="44" viewBox="0 0 30 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
         <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
@@ -418,222 +561,325 @@ document.addEventListener('DOMContentLoaded', function () {
         fill="${color}" stroke="white" stroke-width="2"/>
       <circle cx="15" cy="14" r="5.5" fill="white" fill-opacity=".9"/>
     </svg>`;
-  }
-
-  // ===== RENDER INSTYTUCJI =====
-  function renderInstitutions(center = null, radius = null, renderList = false) {
-    markerCluster.clearLayers();
-
-    const resultsContainer = document.getElementById('results-list');
-    const resultsCount     = document.getElementById('results-count');
-    const loader           = document.getElementById('results-loader');
-
-    if (renderList) {
-      resultsContainer.innerHTML = '';
-      resultsCount.textContent = '';
-      loader.classList.add('visible');
-      lastCenter = center;
-      lastRadius = radius;
     }
 
-    const filters = getActiveFilters();
-    const types   = getActiveTypes();
-    const results = [];
+    // ===== RENDER INSTYTUCJI =====
+    function renderInstitutions(
+      center = null,
+      radius = null,
+      renderList = false
+    ) {
+      markerCluster.clearLayers();
 
-    institutions.forEach(inst => {
-      const lat = inst.location.latitude;
-      const lng = inst.location.longitude;
-      const distance = center ? getDistance(center.lat, center.lng, lat, lng) : null;
+      const resultsContainer = document.getElementById("results-list");
+      const resultsCount = document.getElementById("results-count");
+      const loader = document.getElementById("results-loader");
 
-      const matchesFilter = !filters.length || filters.every(type => inst[type]);
-      const inRadius      = !radius || (distance !== null && distance <= radius);
-      const matchesType   = !types.length  || types.includes(inst.type);
-      const shouldDisplay = (!center && !radius) || (matchesFilter && matchesType && inRadius);
-      if (!shouldDisplay) return;
+      if (renderList) {
+        resultsContainer.innerHTML = "";
+        resultsCount.textContent = "";
+        loader.classList.add("visible");
+        lastCenter = center;
+        lastRadius = radius;
+      }
 
-      const services = [];
-      if (inst.psychological_help) services.push('psychological_help');
-      if (inst.legal_help)         services.push('legal_help');
-      if (inst.social_help)        services.push('social_help');
-      if (inst.accommodation)      services.push('accommodation');
+      const filters = getActiveFilters();
+      const types = getActiveTypes();
+      const results = [];
 
-    // Wybierz właściwy zestaw ikon w zależności od typu instytucji
-    const iconsSet = inst.type === 'GOV' ? SMALL_ICONS.GOV : SMALL_ICONS.NGO;
+      institutions.forEach((inst) => {
+        const lat = inst.location.latitude;
+        const lng = inst.location.longitude;
+        const distance = center
+          ? getDistance(center.lat, center.lng, lat, lng)
+          : null;
 
-    // Generowanie HTML dla ikon usług
-    const iconsHtml = services
-      .map(k => `<img class="help-icon" src="${iconsSet[k]}" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">`)
-      .join("");
+        const matchesFilter =
+          !filters.length || filters.every((type) => inst[type]);
+        const inRadius = !radius || (distance !== null && distance <= radius);
+        const matchesType = !types.length || types.includes(inst.type);
+        const shouldDisplay =
+          (!center && !radius) || (matchesFilter && matchesType && inRadius);
+        if (!shouldDisplay) return;
 
-    // Generowanie badge typu instytucji
-    const typeBadge =
-      `<div class="type-badge ${inst.type === 'GOV' ? 'public' : 'ngo'}">` +
-      `${inst.type === 'GOV' ? 'Publiczna' : 'Pozarządowa'}</div>`;
+        const services = [];
+        if (inst.psychological_help) services.push("psychological_help");
+        if (inst.legal_help) services.push("legal_help");
+        if (inst.social_help) services.push("social_help");
+        if (inst.accommodation) services.push("accommodation");
 
-    // Wybierz ikony kontaktowe dla typu instytucji
-    const contactIcons = CONTACT_ICONS[inst.type === 'GOV' ? 'GOV' : 'NGO'];
+        // Wybierz właściwy zestaw ikon w zależności od typu instytucji
+        const iconsSet =
+          inst.type === "GOV" ? SMALL_ICONS.GOV : SMALL_ICONS.NGO;
 
-    const openingHours = normalizeTimeRange(inst.opening_hours);
+        // Generowanie HTML dla ikon usług
+        const iconsHtml = services
+          .map(
+            (k) =>
+              `<img class="help-icon" src="${iconsSet[k]}" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;">`
+          )
+          .join("");
 
-    const popup =
-      '<div class="popup-content ' + (inst.type === 'GOV' ? 'public' : 'ngo') + '">' +
-        '<h3 class="popup-title">' + inst.name + '</h3>' +
-        typeBadge +
-        '<div class="popup-body">' +
-          '<p>' + inst.address + '</p>' +
-          '<p><img class="contact-icon" src="'+contactIcons.phone+'" alt="telefon"> ' + (inst.phone_number || 'brak') + '</p>' +
-          '<p><img class="contact-icon" src="'+contactIcons.email+'" alt="email"> ' + (inst.email || 'brak') + '</p>' +
-          '<p><img class="contact-icon" src="'+contactIcons.infoline+'" alt="infolinia"> ' + 'infolinia:' + (inst.infoline || 'brak') + '</p>' +
-          '<p><img class="contact-icon" src="'+contactIcons.hours+'" alt="Godziny"> ' + (openingHours || 'brak') + '</p>' +
-        '</div>' +
-        '<div class="popup-icons">' + iconsHtml + '</div>' +
-      '</div>';
+        // Generowanie badge typu instytucji
+        const typeBadge =
+          `<div class="type-badge ${inst.type === "GOV" ? "public" : "ngo"}">` +
+          `${inst.type === "GOV" ? "Publiczna" : "Pozarządowa"}</div>`;
 
-      // === NOWE: ikony jako SVG w kolorach brandu ===
-      const pinColor =
-        inst.name.includes('Czas Kobiet') ? PIN_COLORS.PRIORITY :
-        (inst.type === 'GOV' ? PIN_COLORS.GOV : PIN_COLORS.NGO);
+        // Wybierz ikony kontaktowe dla typu instytucji
+        const contactIcons = CONTACT_ICONS[inst.type === "GOV" ? "GOV" : "NGO"];
 
-      const icon = L.divIcon({
-        className: 'leaflet-div-icon svg-pin',
-        html: pinSVG(pinColor),
-        iconSize: [30, 44],
-        iconAnchor: [15, 44],
-        popupAnchor: [0, -38]
+        const openingHours = normalizeTimeRange(inst.opening_hours);
+
+        const popup =
+          '<div class="popup-content ' +
+          (inst.type === "GOV" ? "public" : "ngo") +
+          '">' +
+          '<h3 class="popup-title">' +
+          inst.name +
+          "</h3>" +
+          typeBadge +
+          '<div class="popup-body">' +
+          "<p>" +
+          inst.address +
+          "</p>" +
+          '<p><img class="contact-icon" src="' +
+          contactIcons.phone +
+          '" alt="telefon"> ' +
+          (inst.phone_number || "brak") +
+          "</p>" +
+          '<p><img class="contact-icon" src="' +
+          contactIcons.email +
+          '" alt="email"> ' +
+          (inst.email || "brak") +
+          "</p>" +
+          '<p><img class="contact-icon" src="' +
+          contactIcons.infoline +
+          '" alt="infolinia"> ' +
+          "infolinia:" +
+          (inst.infoline || "brak") +
+          "</p>" +
+          '<p><img class="contact-icon" src="' +
+          contactIcons.hours +
+          '" alt="Godziny"> ' +
+          (openingHours || "brak") +
+          "</p>" +
+          "</div>" +
+          '<div class="popup-icons">' +
+          iconsHtml +
+          "</div>" +
+          "</div>";
+
+        // === NOWE: ikony jako SVG w kolorach brandu ===
+        const pinColor = inst.name.includes("Czas Kobiet")
+          ? PIN_COLORS.PRIORITY
+          : inst.type === "GOV"
+          ? PIN_COLORS.GOV
+          : PIN_COLORS.NGO;
+
+        const icon = L.divIcon({
+          className: "leaflet-div-icon svg-pin",
+          html: pinSVG(pinColor),
+          iconSize: [30, 44],
+          iconAnchor: [15, 44],
+          popupAnchor: [0, -38],
+        });
+
+        const marker = L.marker([lat, lng], { icon }).bindPopup(popup);
+        markerCluster.addLayer(marker);
+
+        results.push({
+          inst,
+          distance,
+          lat,
+          lng,
+          iconsHtml,
+          typeBadge,
+          marker,
+        });
       });
 
-      const marker = L.marker([lat, lng], { icon }).bindPopup(popup);
-      markerCluster.addLayer(marker);
+      if (renderList) {
+        setTimeout(() => {
+          loader.classList.remove("visible");
 
-      results.push({ inst, distance, lat, lng, iconsHtml, typeBadge, marker });
-    });
+          if (!results.length) {
+            resultsContainer.innerHTML = "";
+            resultsCount.textContent = "";
+            $("#sidebarResults")?.classList.remove("visible");
+            showError("address-error", "Brak wyników dla podanych kryteriów.");
+            hideSidebar();
+            return;
+          }
 
-    if (renderList) {
-      setTimeout(() => {
-        loader.classList.remove('visible');
+          // Priorytet + odległość
+          const priorityNames = ["Fundacja Czas Kobiet", "Feminoteka"];
+          const isPriority = (name) =>
+            priorityNames.some((p) =>
+              name.toLowerCase().includes(p.toLowerCase())
+            );
+          results.sort((a, b) => {
+            const ap = isPriority(a.inst.name),
+              bp = isPriority(b.inst.name);
+            if (ap && !bp) return -1;
+            if (!ap && bp) return 1;
+            return (a.distance ?? Infinity) - (b.distance ?? Infinity);
+          });
 
-        if (!results.length) {
-          resultsContainer.innerHTML = '';
-          resultsCount.textContent = '';
-          $('#sidebarResults')?.classList.remove('visible');
-          showError('address-error', 'Brak wyników dla podanych kryteriów.');
-          return;
-        }
+          const totalPages = Math.ceil(results.length / RESULTS_PER_PAGE);
+          const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
+          const endIndex = startIndex + RESULTS_PER_PAGE;
+          const pageResults = results.slice(startIndex, endIndex);
 
-        // Priorytet + odległość
-        const priorityNames = ['Fundacja Czas Kobiet','Feminoteka'];
-        const isPriority = name => priorityNames.some(p => name.toLowerCase().includes(p.toLowerCase()));
-        results.sort((a, b) => {
-          const ap = isPriority(a.inst.name), bp = isPriority(b.inst.name);
-          if (ap && !bp) return -1;
-          if (!ap && bp) return 1;
-          return (a.distance ?? Infinity) - (b.distance ?? Infinity);
-        });
-
-        const totalPages = Math.ceil(results.length / RESULTS_PER_PAGE);
-        const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
-        const endIndex   = startIndex + RESULTS_PER_PAGE;
-        const pageResults = results.slice(startIndex, endIndex);
-
-        resultsCount.innerHTML =
-          '<div class="results-summary">' +
+          resultsCount.innerHTML =
+            '<div class="results-summary">' +
             (lastCenter && lastRadius
-              ? ('Znaleziono ' + results.length + ' miejsc oferujących wybrane formy pomocy w promieniu ' + lastRadius + ' km')
-              : ('Znaleziono ' + results.length + ' miejsc oferujących wybrane formy pomocy')) +
-          '</div>';
+              ? "Znaleziono " +
+                results.length +
+                " miejsc oferujących wybrane formy pomocy w promieniu " +
+                lastRadius +
+                " km"
+              : "Znaleziono " +
+                results.length +
+                " miejsc oferujących wybrane formy pomocy") +
+            "</div>";
 
-        resultsContainer.innerHTML = '';
-        pageResults.forEach(({ inst, distance, lat, lng, iconsHtml, typeBadge, marker }) => {
-          const div = document.createElement('div');
-          const contactIcons = CONTACT_ICONS[inst.type === 'GOV' ? 'GOV' : 'NGO'];
-          const openingHours = normalizeTimeRange(inst.opening_hours);
-          div.className = 'result-card ' + (inst.type === 'GOV' ? 'gov-card' : 'ngo-card');
-          div.innerHTML =
-          '<div class="result-header">' +
-            '<div class="type-badge ' + (inst.type === 'GOV' ? 'public' : 'ngo') + '">' +
-              (inst.type === 'GOV' ? 'Publiczna' : 'Pozarządowa') +
-            '</div>' +
-            '<div class="result-title">' + inst.name + '</div>' +
-          '</div>' +
+          resultsContainer.innerHTML = "";
+          pageResults.forEach(
+            ({ inst, distance, lat, lng, iconsHtml, typeBadge, marker }) => {
+              const div = document.createElement("div");
+              const contactIcons =
+                CONTACT_ICONS[inst.type === "GOV" ? "GOV" : "NGO"];
+              const openingHours = normalizeTimeRange(inst.opening_hours);
+              div.className =
+                "result-card " +
+                (inst.type === "GOV" ? "gov-card" : "ngo-card");
+              div.innerHTML =
+                '<div class="result-header">' +
+                '<div class="type-badge ' +
+                (inst.type === "GOV" ? "public" : "ngo") +
+                '">' +
+                (inst.type === "GOV" ? "Publiczna" : "Pozarządowa") +
+                "</div>" +
+                '<div class="result-title">' +
+                inst.name +
+                "</div>" +
+                "</div>" +
+                '<div class="distance-info"> ' +
+                (distance !== null ? distance.toFixed(1) + " km" : "") +
+                "</div>" +
+                '<div class="result-body collapsed">' +
+                '<div class="result-content">' +
+                "<p>" +
+                inst.address +
+                "</p>" +
+                '<p><img class="contact-icon" src="' +
+                contactIcons.phone +
+                '" alt="telefon"> ' +
+                (inst.phone_number || "brak") +
+                "</p>" +
+                '<p><img class="contact-icon" src="' +
+                contactIcons.infoline +
+                '" alt="infolinia"> ' +
+                "infolinia:" +
+                (inst.infoline || "brak") +
+                "</p>" +
+                '<p><img class="contact-icon" src="' +
+                contactIcons.email +
+                '" alt="email"> ' +
+                (inst.email || "brak") +
+                "</p>" +
+                '<p><img class="contact-icon" src="' +
+                contactIcons.hours +
+                '" alt="Godziny"> ' +
+                (openingHours || "brak") +
+                "</p>" +
+                '<div class="help-icons">' +
+                iconsHtml +
+                "</div>" +
+                "</div>" +
+                "</div>" +
+                '<div class="result-footer">' +
+                '<button class="toggle-btn">Pokaż więcej</button>' +
+                "</div>";
 
-          '<div class="distance-info"> ' + (distance !== null ? (distance.toFixed(1) + ' km') : '') + '</div>' +
+              const btn = div.querySelector(".toggle-btn");
+              const body = div.querySelector(".result-body");
+              let expanded = false;
+              btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                expanded = !expanded;
+                body.classList.toggle("expanded", expanded);
+                btn.textContent = expanded ? "Pokaż mniej" : "Pokaż więcej";
+              });
 
-          '<div class="result-body collapsed">' +
-            '<div class="result-content">' +
-              '<p>' + inst.address + '</p>' +
-              '<p><img class="contact-icon" src="' + contactIcons.phone + '" alt="telefon"> ' + (inst.phone_number || 'brak') + '</p>' +
-              '<p><img class="contact-icon" src="' + contactIcons.infoline + '" alt="infolinia"> ' + 'infolinia:' + (inst.infoline || 'brak') + '</p>' +
-              '<p><img class="contact-icon" src="' + contactIcons.email + '" alt="email"> ' + (inst.email || 'brak') + '</p>' +
-              '<p><img class="contact-icon" src="'+contactIcons.hours+'" alt="Godziny"> ' + (openingHours || 'brak') + '</p>' +
-              '<div class="help-icons">' + iconsHtml + '</div>' +
-            '</div>' +
-          '</div>' +
+              div.addEventListener("click", () => {
+                map.flyTo([lat, lng], 16, { animate: true, duration: 0.6 });
+                setTimeout(() => marker.openPopup(), 600);
+              });
 
-          '<div class="result-footer">' +
-            '<button class="toggle-btn">Pokaż więcej</button>' +
-          '</div>';
+              resultsContainer.appendChild(div);
+            }
+          );
 
-          const btn  = div.querySelector('.toggle-btn');
-          const body = div.querySelector('.result-body');
-          let expanded = false;
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            expanded = !expanded;
-            body.classList.toggle('expanded', expanded);
-            btn.textContent = expanded ? 'Pokaż mniej' : 'Pokaż więcej';
-          });
+          // Paginacja
+          const pagination = document.createElement("div");
+          pagination.className = "pagination";
 
-          div.addEventListener('click', () => {
-            map.flyTo([lat, lng], 16, { animate: true, duration: 0.6 });
-            setTimeout(() => marker.openPopup(), 600);
-          });
+          function addBtn(txt, handler, cls) {
+            const b = document.createElement("button");
+            b.textContent = txt;
+            if (cls) b.className = cls;
+            b.addEventListener("click", handler);
+            pagination.appendChild(b);
+          }
 
-          resultsContainer.appendChild(div);
-        });
+          if (currentPage > 1)
+            addBtn("←", () => renderPage(currentPage - 1), "page-arrow");
 
-        // Paginacja
-        const pagination = document.createElement('div');
-        pagination.className = 'pagination';
+          const maxVisible = 3;
+          const startPage = Math.max(
+            1,
+            currentPage - Math.floor(maxVisible / 2)
+          );
+          const endPage = Math.min(totalPages, startPage + maxVisible - 1);
 
-        function addBtn(txt, handler, cls){
-          const b = document.createElement('button');
-          b.textContent = txt; if (cls) b.className = cls;
-          b.addEventListener('click', handler);
-          pagination.appendChild(b);
-        }
+          if (startPage > 1) {
+            addBtn("1", () => renderPage(1), "page-num");
+            if (startPage > 2) pagination.append("…");
+          }
+          for (let i = startPage; i <= endPage; i++) {
+            const b = document.createElement("button");
+            b.className = "page-num" + (i === currentPage ? " active" : "");
+            b.textContent = i;
+            b.addEventListener("click", () => renderPage(i));
+            pagination.appendChild(b);
+          }
+          if (endPage < totalPages) {
+            if (endPage < totalPages - 1) pagination.append("…");
+            addBtn(
+              String(totalPages),
+              () => renderPage(totalPages),
+              "page-num"
+            );
+          }
 
-        if (currentPage > 1) addBtn('←', () => renderPage(currentPage - 1), 'page-arrow');
+          if (currentPage < totalPages)
+            addBtn("→", () => renderPage(currentPage + 1), "page-arrow");
 
-        const maxVisible = 3;
-        const startPage  = Math.max(1, currentPage - Math.floor(maxVisible/2));
-        const endPage    = Math.min(totalPages, startPage + maxVisible - 1);
-
-        if (startPage > 1) { addBtn('1', () => renderPage(1), 'page-num'); if (startPage > 2) pagination.append('…'); }
-        for (let i = startPage; i <= endPage; i++) {
-          const b = document.createElement('button');
-          b.className = 'page-num' + (i === currentPage ? ' active' : '');
-          b.textContent = i;
-          b.addEventListener('click', () => renderPage(i));
-          pagination.appendChild(b);
-        }
-        if (endPage < totalPages) { if (endPage < totalPages - 1) pagination.append('…'); addBtn(String(totalPages), () => renderPage(totalPages), 'page-num'); }
-
-        if (currentPage < totalPages) addBtn('→', () => renderPage(currentPage + 1), 'page-arrow');
-
-        resultsContainer.appendChild(pagination);
-      }, 300);
+          resultsContainer.appendChild(pagination);
+        }, 300);
+      }
     }
-  }
 
-  function renderPage(page) {
-    currentPage = page;
-    renderInstitutions(lastCenter, lastRadius, true);
-  }
+    function renderPage(page) {
+      currentPage = page;
+      renderInstitutions(lastCenter, lastRadius, true);
+    }
 
-  // ===== START =====
+    // ===== START =====
     map.whenReady(() => fitToPoland());
-    window.addEventListener('resize', debounce(fitToPoland, 150));
+    window.addEventListener("resize", debounce(fitToPoland, 150));
     renderInstitutions(null, null, false);
-});
+  });
 </script>
 {% endblock %}

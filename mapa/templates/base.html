@@ -1,59 +1,62 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Mapa ośrodków wsparcia dla kobiet doświadczających przemocy{% endblock %}</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}Mapa ośrodków wsparcia dla kobiet doświadczających
+      przemocy{% endblock %}
+    </title>
 
     <!-- Zewnętrzne CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Własny CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/sidebar_left.css' %}">
-    <link rel="stylesheet" href="{% static 'css/sidebar_right.css' %}">
-    <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/buttons.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/sidebar_left.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/sidebar_right.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'css/mobile.css' %}" /> -->
 
     {% block head %}{% endblock %}
-</head>
-<body>
-<div class="layout-container">
-    <header class="header">
-
-      <div class="header-center">
-        <h1>Mapa ośrodków wsparcia dla kobiet doświadczających przemocy</h1>
-      </div>
-
-      <div class="header-right">
-        <button class="toggle-results-btn desktop-only" onclick="toggleResults()">Wyniki</button>
-      </div>
-
-    </header>
-
-
+  </head>
+  <body>
     <div class="header-right-extension"></div>
 
     <div class="main-content">
-      <aside class="sidebar-left">
-        {% block left_sidebar %}{% endblock %}
-      </aside>
+      <div class="top-bar">
+        <button
+          class="toggle-results-btn button--text button--teal"
+          onclick="toggleResults()"
+        >
+          Pokaż wyniki
+        </button>
+      </div>
+
+      <aside class="sidebar-left">{% block left_sidebar %}{% endblock %}</aside>
 
       <main>
         {% block map %}
-            <section class="map-wrap">
-                <div id="map"></div>
-            </section>
+        <section class="map-wrap">
+          <div id="map"></div>
+        </section>
         {% endblock %}
       </main>
 
-    {% block right_sidebar %}{% endblock %}
-
+      {% block right_sidebar %}{% endblock %}
     </div>
-</div>
-{% block scripts %}{% endblock %}
-</body>
+    {% block scripts %}{% endblock %}
+  </body>
 </html>
