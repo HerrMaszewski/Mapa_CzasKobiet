@@ -8,6 +8,11 @@
       {% block title %}Mapa ośrodków wsparcia dla kobiet doświadczających
       przemocy{% endblock %}
     </title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'images/favicon.ico' %}"
+    />
 
     <!-- Zewnętrzne CSS -->
     <link
@@ -28,8 +33,6 @@
     <link rel="stylesheet" href="{% static 'css/buttons.css' %}" />
     <link rel="stylesheet" href="{% static 'css/sidebar_left.css' %}" />
     <link rel="stylesheet" href="{% static 'css/sidebar_right.css' %}" />
-    <!-- <link rel="stylesheet" href="{% static 'css/mobile.css' %}" /> -->
-
     {% block head %}{% endblock %}
   </head>
   <body>
@@ -45,7 +48,9 @@
         </button>
       </div>
 
-      <aside class="sidebar-left">{% block left_sidebar %}{% endblock %}</aside>
+      <aside class="sidebar-left-container">
+        <div class="sidebar-left">{% block left_sidebar %}{% endblock %}</div>
+      </aside>
 
       <main>
         {% block map %}
