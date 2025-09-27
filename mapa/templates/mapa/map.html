@@ -282,8 +282,13 @@
     }
 
     function showSidebar() {
-      $("#sidebarResults")?.classList.add("visible");
+      const sidebar = document.querySelector("#sidebarResults");
+      if (!sidebar) return;
+
+      sidebar.classList.add("visible");
+      sidebar.scrollIntoView({ behavior: "smooth", block: "start" });
       document.body.classList.add("results-open");
+
       updateToggleButtons(true);
       if (MOVE_ON_RESULTS) setTimeout(fitToPoland, 60);
     }
