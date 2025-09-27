@@ -819,6 +819,7 @@
 
               div.addEventListener("click", () => {
                 map.flyTo([lat, lng], 16, { animate: true, duration: 0.6 });
+                hideSidebar();
                 setTimeout(() => marker.openPopup(), 600);
               });
 
