@@ -1,102 +1,169 @@
+.sidebar-left-container {
+  container-type: inline-size;
+}
 .sidebar-left {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    flex: 0 0 500px;
-    padding: 0px 16px;
-    gap: 16px;
-    overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow-y: auto;
+  padding: 1rem 1rem 2rem;
+  row-gap: 1rem;
+  column-gap: 0.75rem;
+  color: #fff;
+  scrollbar-width: auto;
+  scrollbar-color: var(--violet-200) var(--orange);
+  grid-auto-rows: min-content;
+
+  .sidebar__header {
     position: relative;
-    z-index: 1100;
+    padding-top: 2rem;
+    padding-inline: 1rem;
+    @media (width > 1200px) {
+      padding-inline: 3rem;
+    }
+    > img {
+      width: 90%;
+      position: relative;
+    }
+    a {
+      position: absolute;
+      top: -1rem;
+      right: -1rem;
+      width: 6.5rem;
+      z-index: 1;
+
+      @media (width > 1200px) {
+        right: 1rem;
+        width: 7.5rem;
+      }
+    }
+
+    h3 {
+      margin-top: 1.5rem;
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 16px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--orange);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--violet-200);
+    border-radius: 8px;
+    border: 3px solid var(--orange);
+  }
+}
+.full-width {
+  grid-column: -1/1;
 }
 
-.header { overflow: hidden; }
+.subgrid {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: -1/1;
+}
+/* Filtry */
+#help-filters {
+  .help-filter {
+    display: grid;
+    border: 2px solid var(--btn-ring);
+    aspect-ratio: 1.8;
+    place-items: center;
+    font-size: 0.75rem;
+    border-radius: 0.75rem;
+    gap: 0.5rem;
 
+    img {
+      width: 30%;
+      align-self: end;
+    }
 
-.sidebar-left h3 {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 16px;
+    &.active {
+      box-shadow: 0 0 0 3px #fff inset, 0 6px 14px rgba(0, 0, 0, 0.2);
+    }
+    .label {
+      align-self: start;
+    }
+    @media (width > 1200px) {
+      aspect-ratio: 1.03;
+      img {
+        width: 50%;
+      }
+    }
+  }
 }
 
-.sidebar-left label {
-  font-size: 1.0rem;
-  margin-top: 12px;
-  margin-bottom: 4px;
+.type-filters .filter-tile {
+  grid-column: 1/3;
+
+  + & {
+    grid-column: -3/-1;
+  }
 }
 
-.location-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  margin-bottom: 16px;
-  width: 100%;
-  flex-wrap: nowrap;
-}
-
-.location-col {
-  flex: 2 1 60%;
-  min-width: 300px;
+.input-col {
+  grid-column: 1 / -2;
   display: flex;
   flex-direction: column;
-  max-width: 60%;
+  gap: 0.375rem;
+
+  + .input-col {
+    grid-column: -2 / -1;
+  }
+  label {
+    font-size: 0.875rem;
+  }
+  input,
+  select {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    border-radius: 10px;
+    border: none;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    outline: none;
+    width: 100%;
+    &:active,
+    &:focus {
+      box-shadow: 0 0 0 3px #fff inset, 0 6px 14px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+.horizontal-line {
+  background-color: white;
+  height: 1px;
 }
 
-.radius-col {
-  flex: 1 1 20%;
-  min-width: 80px;
+.sidebar-buttons {
   display: flex;
   flex-direction: column;
-  max-width: 30%;
-  padding-right: 4px;
-  padding-left: 20px;
+  gap: 1rem;
 }
 
-.sidebar-left input,
-.sidebar-left select {
-  padding: 12px 14px;
-  font-size: 0.85rem;
-  border-radius: 10px;
-  border: none;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-  outline: none;
-  width: 100%;
+#help-filters {
+  row-gap: 0.75rem;
 }
 
-
-.main-search-wrapper {
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
+#type-filters {
+  row-gap: 0.75rem;
 }
 
-#filters-panel > h3,
-#filters-panel > h4 {
-  margin-bottom: 8px;
+@container (inline-size >= 480px) {
+  .sidebar-left {
+    padding: 1rem 1.5rem 2rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    .sidebar__header {
+      max-width: 430px;
+    }
+  }
 }
 
-.input-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  margin-bottom: 4px;
+@media (height > 900px) {
+  .sidebar-left {
+    row-gap: clamp(1rem, 5vh, 2.5rem);
+  }
 }
-
-.sidebar-left { padding-top: 0px; position: relative; }
-.sidebar-logo{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: -30px 0px 0px 70px;
-}
-.sidebar-logo a{ display:inline-block; }
-.sidebar-logo img{
-  width: 80%;
-  max-width: 300px;
-  height: auto;
-  object-fit: contain;
-}
-
-
