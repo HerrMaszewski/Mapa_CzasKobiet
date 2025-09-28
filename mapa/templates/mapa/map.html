@@ -20,12 +20,17 @@
 <div id="filters-panel" class="subgrid">
   <div class="input-col">
     <label for="address-input">Miejscowość</label>
-    <input type="text" id="address-input" placeholder="np. Poznań" />
+    <input
+      type="text"
+      id="address-input"
+      placeholder="np. Poznań"
+      class="effect--box-shadow"
+    />
   </div>
 
   <div class="input-col">
     <label for="radius-select">Promień</label>
-    <select id="radius-select">
+    <select id="radius-select" class="effect--box-shadow">
       <option value="10">10 km</option>
       <option value="30">30 km</option>
       <option value="50" selected>50 km</option>
@@ -43,7 +48,7 @@
   <h4 class="full-width">Wybierz rodzaj pomocy</h4>
   <div class="subgrid" id="help-filters">
     <div
-      class="filter-tile help-filter button--effect-transform button--effect-outline button--teal"
+      class="filter-tile help-filter button--effect-transform button--effect-outline effect--box-shadow button--teal"
       data-filter="psychological_help"
     >
       <img
@@ -53,7 +58,7 @@
       <span class="label">Psychologiczna</span>
     </div>
     <div
-      class="filter-tile help-filter button--effect-transform button--effect-outline button--teal"
+      class="filter-tile help-filter button--effect-transform button--effect-outline effect--box-shadow button--teal"
       data-filter="legal_help"
     >
       <img
@@ -63,7 +68,7 @@
       <span class="label">Prawna</span>
     </div>
     <div
-      class="filter-tile help-filter button--effect-transform button--effect-outline button--teal"
+      class="filter-tile help-filter button--effect-transform button--effect-outline effect--box-shadow button--teal"
       data-filter="social_help"
     >
       <img
@@ -73,7 +78,7 @@
       <span class="label">Socjalna</span>
     </div>
     <div
-      class="filter-tile help-filter button--effect-transform button--effect-outline button--teal"
+      class="filter-tile help-filter button--effect-transform button--effect-outline effect--box-shadow button--teal"
       data-filter="accommodation"
     >
       <img
@@ -90,13 +95,13 @@
   <h4 class="full-width">Wybierz rodzaj ośrodka pomocowego</h4>
   <div class="subgrid" id="type-filters">
     <div
-      class="filter-tile button--text button--effect-transform button--effect-outline button--pink"
+      class="filter-tile button--text button--effect-transform button--effect-outline effect--box-shadow button--pink"
       data-type="NGO"
     >
       Pozarządowe
     </div>
     <div
-      class="filter-tile button--text button--effect-transform button--effect-outline button--violet"
+      class="filter-tile button--text button--effect-transform button--effect-outline effect--box-shadow button--violet"
       data-type="GOV"
     >
       Publiczne
@@ -399,7 +404,7 @@
       setTimeout(() => {
         el.classList.remove("visible");
         el.textContent = "";
-      }, 4000);
+      }, 5000);
     }
     function getActiveTypes() {
       return Array.from(
