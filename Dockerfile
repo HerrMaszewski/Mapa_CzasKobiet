@@ -38,3 +38,11 @@ COPY . .
 # 🚀 Uruchomienie
 EXPOSE 8000
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
+
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y gnupg2 curl && \
+    curl -sSL https://apache.jfrog.io/artifactory/api/gpg/key/public \
+      | gpg --dearmor -o /usr/share/keyrings/apache-arrow.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/apache-arrow.gpg] https://apache.jfrog.io/artifactory/arrow/ubuntu jammy main" \
+      > /etc/apt/sources.list.d/apache-arrow.list

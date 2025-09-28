@@ -9,6 +9,7 @@
   --sidebar-w: 20rem;
   --sidebar-right-w: 0;
   --header-h: 3rem;
+  --sidebar-right-mobile: 0;
 
   --teal: #2e9a92;
   --orange: #ff4714;
@@ -26,6 +27,7 @@
 
 body.results-open {
   --sidebar-right-w: 20rem;
+  --sidebar-right-mobile: auto;
 }
 
 /* Podstawowe style html/body */
@@ -63,9 +65,9 @@ h4 {
   grid-template-areas:
     "top-bar"
     "aside"
-    "main"
-    "sidebar-right";
-  grid-template-rows: 0 1fr 80vh 0;
+    "sidebar-right"
+    "main";
+  grid-template-rows: 0 1fr var(--sidebar-right-mobile) 80vh;
   grid-template-columns: 1fr;
   overflow: hidden;
   aside {
