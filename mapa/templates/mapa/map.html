@@ -211,6 +211,8 @@
       detectRetina: true,
     }).addTo(map);
 
+    const MOVE_ON_RESULTS = true;
+
     // ===== UTYL =====
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => Array.from(document.querySelectorAll(sel));
@@ -286,6 +288,8 @@
       });
     }
 
+    window.MOVE_ON_RESULTS = window.MOVE_ON_RESULTS ?? true;
+
     function showSidebar() {
       const sidebar = document.querySelector("#sidebarResults");
       if (!sidebar) return;
@@ -297,12 +301,18 @@
       updateToggleButtons(true);
       if (MOVE_ON_RESULTS) setTimeout(fitToPoland, 60);
     }
+
+    window.MOVE_ON_RESULTS = window.MOVE_ON_RESULTS ?? true;
+
     function hideSidebar() {
       $("#sidebarResults")?.classList.remove("visible");
       document.body.classList.remove("results-open");
       updateToggleButtons(false);
       if (MOVE_ON_RESULTS) setTimeout(fitToPoland, 60);
     }
+
+    window.MOVE_ON_RESULTS = window.MOVE_ON_RESULTS ?? true;
+
     window.toggleResults = function () {
       const sidebar = $("#sidebarResults");
       const isVisible = sidebar?.classList.toggle("visible");
@@ -496,59 +506,41 @@
     // ===== SZUKAJ =====
     document.getElementById("search-btn")?.addEventListener("click", () => {
       const address = document.getElementById("address-input").value.trim();
-      const radius =
-        parseFloat(document.getElementById("radius-select").value) || 50;
+      const radius = parseFloat(document.getElementById("radius-select").value) || 50;
       const types = getActiveTypes();
       const filters = getActiveFilters();
 
-      if (!address)
-        return showError("address-error", "Wpisz nazwę miejscowości.");
-      if (!types.length)
-        return showError(
-          "type-error",
-          "Wybierz rodzaj instytucji (GOV lub NGO)."
-        );
-      if (!filters.length)
-        return showError(
-          "help-error",
-          "Wybierz co najmniej jeden rodzaj pomocy."
-        );
+      if (!address) return showError("address-error", "Wpisz nazwę miejscowości.");
+      if (!types.length) return showError("type-error", "Wybierz rodzaj instytucji.");
+      if (!filters.length) return showError("help-error", "Wybierz co najmniej jeden rodzaj pomocy.");
 
-      const geocoder = L.Control.Geocoder.nominatim();
-      geocoder.geocode(address + ", Polska", function (results) {
-        if (!results || !results.length)
-          return showError("address-error", "Nie znaleziono miejscowości.");
+      const backendUrl = window.location.origin === "http://localhost:3000"
+        ? "https://mapa-czaskobiet.fly.dev"
+        : window.location.origin;
 
-        const cityResult = results.find((r) =>
-          [
-            "city",
-            "town",
-            "village",
-            "hamlet",
-            "municipality",
-            "locality",
-            "administrative",
-            "neighbourhood",
-          ].includes(r.properties?.type)
-        );
-        if (!cityResult)
-          return showError(
-            "address-error",
-            "Nie znaleziono miejscowości w Polsce."
+      fetch(`${backendUrl}/geocode/?q=${encodeURIComponent(address + ', Polska')}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Błąd serwera geokodera");
+          return res.json();
+        })
+        .then(results => {
+          if (!results || !results.length)
+            return showError("address-error", "Nie znaleziono miejscowości.");
+
+          const cityResult = results.find(r =>
+            ["city","town","village","hamlet","municipality","locality","administrative","neighbourhood"]
+              .includes(r.type)
           );
-        const { lat, lng } = cityResult.center;
-        if (!(lat >= 48.8 && lat <= 55.0 && lng >= 13.5 && lng <= 24.5))
-          return showError(
-            "address-error",
-            "Podana miejscowość nie znajduje się w Polsce."
-          );
+          if (!cityResult)
+            return showError("address-error", "Nie znaleziono miejscowości w Polsce.");
 
-        const loc = { lat, lng };
-        map.setView([lat, lng], 12);
-        renderInstitutions(loc, radius, true);
-        showSidebar();
-        focusSearchArea(loc, radius);
-      });
+          const loc = { lat: parseFloat(cityResult.lat), lng: parseFloat(cityResult.lon) };
+          map.setView([loc.lat, loc.lng], 12);
+          renderInstitutions(loc, radius, true);
+          showSidebar();
+          focusSearchArea(loc, radius);
+        })
+        .catch(err => showError("address-error", "Błąd geokodowania: " + err.message));
     });
 
     // ===== MARKERY SVG – KOLORY BRANDU =====
