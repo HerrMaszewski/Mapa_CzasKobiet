@@ -293,3 +293,6 @@ footer {
 .mobile-only {
   display: none !important;
 }
+#address-suggestions:empty {
+  display: none;
+}
