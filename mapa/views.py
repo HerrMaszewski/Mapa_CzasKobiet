@@ -33,25 +33,33 @@ def map_view(request):
         'institutions_json': json.dumps(data)
     })
 
-@csrf_exempt  # jeśli robisz GET, zwykle nie trzeba, ale na wszelki wypadek
+
+@csrf_exempt
 @require_GET
 def geocode_proxy(request):
     q = request.GET.get("q")
     if not q:
-        return JsonResponse({"error": "Missing query parameter 'q'"}, status=400)
+        resp = JsonResponse({"error": "Missing query parameter 'q'"}, status=400)
+        resp["Access-Control-Allow-Origin"] = "*"
+        return resp
 
     url = "https://nominatim.openstreetmap.org/search"
     params = {
-        "q": q,
+        "q": f"{q}, Polska",   # 👈 tu dodajemy Polska
         "format": "json",
         "addressdetails": 1,
-        "limit": 5,
+        "limit": 10,           # lepiej dać 10 i filtrować w JS
     }
 
     try:
-        response = requests.get(url, params=params, headers={"User-Agent": "CzasKobietApp"})
+        response = requests.get(url, params=params, headers={"User-Agent": "CzasKobietApp/1.0"})
         response.raise_for_status()
     except requests.RequestException as e:
-        return JsonResponse({"error": str(e)}, status=502)
+        resp = JsonResponse({"error": str(e)}, status=502)
+        resp["Access-Control-Allow-Origin"] = "*"
+        return resp
 
-    return JsonResponse(response.json(), safe=False)
+    data = response.json()
+    resp = JsonResponse(data, safe=False)
+    resp["Access-Control-Allow-Origin"] = "*"
+    return resp
