@@ -43,24 +43,23 @@ button {
 .effect--box-shadow {
   box-shadow: none;
   transition: box-shadow 0.15s;
-  &input {
-    &:placeholder-shown {
-      background-color: #fffc;
-      box-shadow: none;
-    }
-    &:not(:placeholder-shown) {
-      background-color: #fff;
-    }
-  }
 
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
-  &:not(:placeholder-shown),
   &.active,
   &:active,
   &:focus {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  }
+}
+
+input.effect--box-shadow {
+  &:placeholder-shown {
+    box-shadow: none;
+  }
+  &:not(:placeholder-shown) {
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
   }
 }
