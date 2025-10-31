@@ -26,8 +26,8 @@
     }
     a {
       position: absolute;
-      top: -1rem;
-      right: -1rem;
+      top: -0.5rem;
+      right: -0.5rem;
       width: 6.5rem;
       z-index: 1;
 
@@ -70,14 +70,17 @@
   .help-filter {
     display: grid;
     border: 2px solid var(--btn-ring);
-    aspect-ratio: 1.8;
+    aspect-ratio: 2.15;
     place-items: center;
     font-size: 0.75rem;
+    max-height: 5rem;
+    width: 100%;
+    min-height: 3.5rem;
     border-radius: 0.75rem;
     gap: 0.5rem;
 
     img {
-      width: 30%;
+      width: 22.5%;
       align-self: end;
     }
 
@@ -158,6 +161,20 @@
 
     .sidebar__header {
       max-width: 430px;
+      a {
+        right: -1.5rem;
+      }
+      > img {
+        width: 85%;
+      }
+    }
+
+    .button--square {
+      grid-column: 1 / 3;
+
+      + & {
+        grid-column: -3 / -1;
+      }
     }
   }
 }

@@ -107,19 +107,21 @@
 
 <div class="horizontal-line full-width"></div>
 
-<div class="sidebar-buttons gap-1 full-width">
-  <button
-    id="search-btn"
-    class="button--text sidebar-btn button--teal button--effect-outline"
-  >
-    Szukaj
-  </button>
+<div class="subgrid" style="gap: 0; padding: 0 1rem">
   <button
     id="geolocate-btn"
-    class="button--text sidebar-btn button--teal button--effect-outline"
+    class="button--text button--teal button--effect-outline button--square"
   >
     Lokalizuj
   </button>
+  <button
+    id="search-btn"
+    class="button--text button--teal button--effect-outline button--square"
+  >
+    Szukaj
+  </button>
+</div>
+<div class="sidebar-buttons gap-1 full-width">
   <a
     href="{% url 'about' %}"
     class="button--text button--pink button--effect-outline"

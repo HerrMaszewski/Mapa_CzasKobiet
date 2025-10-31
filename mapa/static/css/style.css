@@ -25,7 +25,7 @@
   }
 }
 
-body.results-open {
+body.results-open:not(:has(#results-list:empty)) {
   --sidebar-right-w: 20rem;
   --sidebar-right-mobile: auto;
 }
