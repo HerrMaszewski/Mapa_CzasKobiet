@@ -254,3 +254,9 @@
     }
   }
 }
+
+.main-content:has(#results-list:empty) {
+  .toggle-results-btn {
+    display: none;
+  }
+}
