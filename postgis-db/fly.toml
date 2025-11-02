@@ -4,15 +4,10 @@
 #
 
 app = 'mapa-postgis-spring-surf-6865'
-primary_region = 'waw'
+primary_region = 'arn'
 
 [build]
   image = 'postgis/postgis:15-3.3'
-
-[env]
-  POSTGRES_DB = 'mapa'
-  POSTGRES_PASSWORD = 'czas_kobiet'
-  POSTGRES_USER = 'postgres'
 
 [[services]]
   protocol = 'tcp'
@@ -25,3 +20,14 @@ primary_region = 'waw'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+
+[mounts]
+source="pgdata"
+destination="/var/lib/postgresql"
+
+[env]
+POSTGRES_USER = "postgres"
+POSTGRES_PASSWORD = 'czas_kobiet'
+POSTGRES_DB = "mapa"
+PGDATA = "/var/lib/postgresql/data"

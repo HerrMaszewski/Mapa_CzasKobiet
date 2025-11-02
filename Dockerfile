@@ -21,7 +21,10 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 6. Uruchamiamy collectstatic (TERAZ manage.py istnieje)
-RUN python manage.py collectstatic --noinput
+#RUN python manage.py collectstatic --noinput
+
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 
 # 7. Test GDAL
 RUN python -c "from ctypes import CDLL; CDLL('$GDAL_LIBRARY_PATH')"
