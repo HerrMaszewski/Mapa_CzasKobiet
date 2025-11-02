@@ -25,7 +25,7 @@
   }
 }
 
-body.results-open {
+body.results-open:not(:has(#results-list:empty)) {
   --sidebar-right-w: 20rem;
   --sidebar-right-mobile: auto;
 }
@@ -78,6 +78,12 @@ h4 {
 
   .top-bar {
     grid-area: top-bar;
+    padding: 0.5rem 1rem;
+    justify-content: end;
+    display: flex;
+    button {
+      display: none;
+    }
   }
 
   .sidebar-right {
@@ -97,6 +103,11 @@ h4 {
       "aside main sidebar-right";
     grid-template-rows: var(--header-h) 1fr;
     grid-template-columns: var(--sidebar-w) 1fr var(--sidebar-right-w);
+    .top-bar {
+      button {
+        display: block;
+      }
+    }
   }
 
   > * {
@@ -318,6 +329,10 @@ footer {
   color: #333; /* widoczny tekst */
   display: none; /* domyślnie ukryte */
   font-family: "Arial", sans-serif;
+  &:empty {
+    border-color: transparent;
+    background-color: transparent;
+  }
 }
 
 .suggestions-list li {

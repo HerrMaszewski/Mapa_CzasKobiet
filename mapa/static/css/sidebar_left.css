@@ -2,6 +2,9 @@
   container-type: inline-size;
 }
 .sidebar-left {
+  --logo-size: 4.5rem;
+  --logo-right: -0.5rem;
+  --logo-top: -0.5rem;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   overflow-y: auto;
@@ -15,18 +18,26 @@
 
   .sidebar__header {
     position: relative;
-    margin-top: calc(var(--header-h) + 2rem);
-    margin-inline: 1rem 3rem;
+    padding-top: 2rem;
+    @media (width > 1200px) {
+      padding-inline: 3rem;
+    }
     > img {
-      width: 90%;
+      width: calc(100% - var(--logo-size));
       position: relative;
     }
+
     a {
       position: absolute;
-      top: -3rem;
-      right: -2.5rem;
-      width: clamp(90px, 40%, 120px);
+      top: var(--logo-top);
+      right: var(--logo-right);
+      width: var(--logo-size);
       z-index: 1;
+
+      @media (width > 1200px) {
+        --logo-right: 1rem;
+        --logo-size: 7.5rem;
+      }
     }
 
     h3 {
@@ -62,14 +73,17 @@
   .help-filter {
     display: grid;
     border: 2px solid var(--btn-ring);
-    aspect-ratio: 1.8;
+    aspect-ratio: 2.15;
     place-items: center;
     font-size: 0.75rem;
+    max-height: 5rem;
+    width: 100%;
+    min-height: 3.5rem;
     border-radius: 0.75rem;
     gap: 0.5rem;
 
     img {
-      width: 25%;
+      width: 22.5%;
       align-self: end;
     }
 
@@ -125,6 +139,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 1vh;
 }
 
 #help-filters {
@@ -135,28 +150,43 @@
   row-gap: 0.75rem;
 }
 
+@container (inline-size >= 400px) {
+  .sidebar-left {
+    --logo-size: 5rem;
+  }
+}
 @container (inline-size >= 480px) {
   .sidebar-left {
     grid-template-columns: repeat(4, minmax(0, 1fr));
 
     .sidebar__header {
-      max-width: 30rem;
-
+      padding-inline: 1rem;
+      max-width: 430px;
       a {
-        right: -3rem;
+        --logo-right: -1rem;
+        --logo-size: 6.5rem;
+      }
+    }
+
+    .button--square {
+      grid-column: 1 / 3;
+
+      + & {
+        grid-column: -3 / -1;
       }
     }
   }
 }
 
-@media (height > 900px) {
+@media (height > 940px) {
   .sidebar-left {
-    row-gap: clamp(1rem, 5vh, 2.5rem);
+    row-gap: calc(2.5vh);
   }
 }
 
 @media (width > 800px) {
   .sidebar-left {
+    --logo-top: 0;
     padding: 0 1rem 2rem;
   }
 }
